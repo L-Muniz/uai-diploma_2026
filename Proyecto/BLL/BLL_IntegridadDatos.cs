@@ -1,0 +1,336 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BE;
+using DAL;
+using SERVICE;
+
+namespace BLL
+{
+    public class BLL_IntegridadDatos
+    {
+        public static void CalcularDVHUsuario(BE_USUARIO usuario)
+        {
+            if (usuario == null)
+                return;
+
+            string datosUsuario = usuario.Username + usuario.HashedPassword + usuario.Bloqueado.ToString();
+            usuario.DVHorizontal = SV_DigitoVerificadorHorizontal.CalcularDV(datosUsuario);
+        }
+
+        public static bool VerificarIntegridadDVHUsuario(BE_USUARIO usuario)
+        {
+            if (usuario == null)
+                return false;
+
+            string datosUsuario = usuario.Username + usuario.HashedPassword + usuario.Bloqueado.ToString();
+            return SV_DigitoVerificadorHorizontal.VerificarDV(datosUsuario, usuario.DVHorizontal);
+        }
+
+        public static BE_DigitoVerificadorVertical CalcularDVVUsuario(BE_USUARIO usuario)
+        {
+            // DVV de tabla: acumula aporte de todos los registros (contenido + posición de fila)
+            MP_USUARIO mpUsuario = new MP_USUARIO();
+            var usuarios = mpUsuario.Listar();
+            if (usuarios == null || usuarios.Count == 0)
+            {
+                if (usuario == null) return null;
+                usuarios = new List<BE_USUARIO> { usuario };
+            }
+
+            int sumaUser = 0, sumaPass = 0, sumaBloq = 0;
+            int fila = 1;
+            foreach (var u in usuarios.OrderBy(x => x.ID))
+            {
+                sumaUser = (sumaUser + SV_DigitoVerificadorVertical.CalcularDVAtributo(u.Username, fila)) % 11;
+                sumaPass = (sumaPass + SV_DigitoVerificadorVertical.CalcularDVAtributo(u.HashedPassword, fila)) % 11;
+                sumaBloq = (sumaBloq + SV_DigitoVerificadorVertical.CalcularDVAtributo(u.Bloqueado.ToString(), fila)) % 11;
+                fila++;
+            }
+
+            BE_DigitoVerificadorVertical dvv = new BE_DigitoVerificadorVertical();
+            dvv.IdEntidad = 0;
+            dvv.TipoEntidad = "USUARIO";
+            dvv.DVUsername = sumaUser;
+            dvv.DVHashedPassword = sumaPass;
+            dvv.DVBloqueado = sumaBloq;
+            dvv.FechaCreacion = DateTime.Now;
+            return dvv;
+        }
+
+        public static bool VerificarIntegridadDVVUsuario(BE_USUARIO usuario, BE_DigitoVerificadorVertical dvv)
+        {
+            if (dvv == null)
+                return false;
+
+            var calculado = CalcularDVVUsuario(usuario);
+            if (calculado == null)
+                return false;
+
+            return calculado.DVUsername == dvv.DVUsername
+                && calculado.DVHashedPassword == dvv.DVHashedPassword
+                && calculado.DVBloqueado == dvv.DVBloqueado;
+        }
+
+        /// <summary>
+        /// Verifica solo el DVH del usuario (fila). No toca el DVV de tabla.
+        /// </summary>
+        public static (bool esValido, string mensaje) VerificarSoloDVH(BE_USUARIO usuario)
+        {
+            if (usuario == null)
+                return (false, "Usuario no encontrado");
+
+            if (usuario.DVHorizontal == 0)
+                return (false, $"Error DVH: el usuario ID={usuario.ID} ({usuario.Username}) no tiene dígito horizontal calculado");
+
+            if (!VerificarIntegridadDVHUsuario(usuario))
+                return (false, $"Error DVH: el usuario ID={usuario.ID} ({usuario.Username}) está comprometido (DV Horizontal no coincide)");
+
+            return (true, "DVH OK");
+        }
+
+        /// <summary>
+        /// Verifica el DVV de la tabla USUARIO (una sola vez, no por fila).
+        /// </summary>
+        public static (bool esValido, string mensaje) VerificarSoloDVV(BE_DigitoVerificadorVertical dvv)
+        {
+            if (dvv == null)
+                return (false, "Error DVV: la tabla USUARIO está comprometida (no existe dígito vertical almacenado)");
+
+            var calculado = CalcularDVVUsuario(null);
+            if (calculado == null)
+                return (false, "Error DVV: la tabla USUARIO está comprometida (no se pudo recalcular el dígito vertical)");
+
+            bool ok = calculado.DVUsername == dvv.DVUsername
+                && calculado.DVHashedPassword == dvv.DVHashedPassword
+                && calculado.DVBloqueado == dvv.DVBloqueado;
+
+            if (!ok)
+                return (false, "Error DVV: la tabla USUARIO está comprometida (DV Vertical no coincide)");
+
+            return (true, "DVV OK");
+        }
+
+        /// <summary>
+        /// Detecta el fallo de integridad prioritario:
+        /// 1) DVV de tabla → mensaje de tabla comprometida
+        /// 2) Si la tabla está OK, DVH del primer usuario alterado → apunta al ID
+        /// </summary>
+        public static (bool esValido, string mensaje) DetectarFalloIntegridadPrioritario()
+        {
+            MP_USUARIO mpUsuario = new MP_USUARIO();
+            MP_DigitoVerificadorVertical mpDVV = new MP_DigitoVerificadorVertical();
+            var usuarios = mpUsuario.Listar() ?? new List<BE_USUARIO>();
+            var dvv = mpDVV.BuscarPorTipoEntidad("USUARIO");
+
+            var resultadoDvv = VerificarSoloDVV(dvv);
+            if (!resultadoDvv.esValido)
+                return resultadoDvv;
+
+            foreach (var usuario in usuarios.OrderBy(u => u.ID))
+            {
+                if (usuario.DVHorizontal == 0)
+                    continue;
+
+                var resultadoDvh = VerificarSoloDVH(usuario);
+                if (!resultadoDvh.esValido)
+                    return resultadoDvh;
+            }
+
+            return (true, "Integridad verificada correctamente");
+        }
+
+        public static (bool esValido, string mensaje) VerificarIntegridadCompleta(BE_USUARIO usuario, BE_DigitoVerificadorVertical dvv)
+        {
+            if (usuario == null)
+                return (false, "Usuario no encontrado");
+
+            bool dvhFaltaba = false;
+            bool dvvFaltaba = false;
+
+            // Si el usuario no tiene DVH calculado (es 0), lo calcula automáticamente
+            if (usuario.DVHorizontal == 0)
+            {
+                dvhFaltaba = true;
+                CalcularDVHUsuario(usuario);
+                System.Diagnostics.Debug.WriteLine($"[DVH] Calculado para {usuario.Username}: {usuario.DVHorizontal}");
+                DAL.MP_USUARIO mpUsuario = new DAL.MP_USUARIO();
+                try
+                {
+                    int filasActualizadas = mpUsuario.ActualizarDVHorizontal(usuario);
+                    System.Diagnostics.Debug.WriteLine($"[DVH] ActualizarDVHorizontal retornó: {filasActualizadas} filas");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[DVH] ERROR: {ex.Message}");
+                }
+            }
+
+            // Si no tiene DVV, lo calcula y guarda (uno por tabla, no por usuario)
+            if (dvv == null)
+            {
+                dvvFaltaba = true;
+                dvv = CalcularDVVUsuario(usuario);
+                System.Diagnostics.Debug.WriteLine($"[DVV] Calculado para tabla USUARIO");
+                DAL.MP_DigitoVerificadorVertical mpDVV = new DAL.MP_DigitoVerificadorVertical();
+
+                // Buscar si ya existe DVV para la tabla
+                var dvvExistente = mpDVV.BuscarPorTipoEntidad("USUARIO");
+                if (dvvExistente != null)
+                {
+                    dvv.ID = dvvExistente.ID;
+                    mpDVV.Editar(dvv);
+                    System.Diagnostics.Debug.WriteLine($"[DVV] Actualizado en BD");
+                }
+                else
+                {
+                    dvv.TipoEntidad = "USUARIO";
+                    mpDVV.Alta(dvv);
+                    System.Diagnostics.Debug.WriteLine($"[DVV] Guardado en BD");
+                }
+            }
+
+            // Si DVH y DVV faltaban, no verificar (es usuario nuevo, auto-inicializado)
+            if (dvhFaltaba && dvvFaltaba)
+                return (true, "DVH/DVV inicializados automáticamente");
+
+            // Prioridad: si la tabla está comprometida, no culpar al usuario de la fila
+            var dvvResultado = VerificarSoloDVV(dvv);
+            if (!dvvResultado.esValido)
+                return (false, dvvResultado.mensaje);
+
+            bool dvhValido = VerificarIntegridadDVHUsuario(usuario);
+            if (!dvhValido)
+                return (false, $"Error DVH: el usuario ID={usuario.ID} ({usuario.Username}) está comprometido (DV Horizontal no coincide)");
+
+            return (true, "Integridad verificada correctamente");
+        }
+
+        /// <summary>
+        /// Verifica integridad de todos los usuarios y genera un detalle por entidad.
+        /// DVH se reporta por fila; DVV se reporta una sola vez a nivel tabla.
+        /// </summary>
+        public static (bool esValido, string detalle) VerificarTodasLasEntidades()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"Verificación de integridad — {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
+            sb.AppendLine(new string('=', 60));
+
+            MP_USUARIO mpUsuario = new MP_USUARIO();
+            MP_DigitoVerificadorVertical mpDVV = new MP_DigitoVerificadorVertical();
+            var usuarios = mpUsuario.Listar();
+            var dvv = mpDVV.BuscarPorTipoEntidad("USUARIO");
+
+            bool okGlobal = true;
+            sb.AppendLine($"Entidad: USUARIO ({usuarios.Count} registros)");
+            sb.AppendLine();
+            sb.AppendLine("— DVH por registro —");
+
+            foreach (var usuario in usuarios.OrderBy(u => u.ID))
+            {
+                var resultado = VerificarSoloDVH(usuario);
+                string estado = resultado.esValido ? "OK" : "FALLA";
+                if (!resultado.esValido) okGlobal = false;
+                sb.AppendLine($"  [{estado}] ID={usuario.ID} User={usuario.Username} DVH={usuario.DVHorizontal} — {resultado.mensaje}");
+            }
+
+            sb.AppendLine();
+            sb.AppendLine("— DVV de tabla USUARIO —");
+            var resultadoDvv = VerificarSoloDVV(dvv);
+            if (!resultadoDvv.esValido) okGlobal = false;
+            sb.AppendLine($"  [{(resultadoDvv.esValido ? "OK" : "FALLA")}] {resultadoDvv.mensaje}");
+
+            sb.AppendLine();
+            sb.AppendLine(okGlobal ? "RESULTADO GLOBAL: INTEGRIDAD OK" : "RESULTADO GLOBAL: FALLOS DETECTADOS");
+            return (okGlobal, sb.ToString());
+        }
+
+        /// <summary>
+        /// Recalcula DVH de todos los usuarios y el DVV de la tabla USUARIO, persistiendo los valores.
+        /// </summary>
+        public static (bool exito, string mensaje, string detalle) RecalcularTodosLosDV()
+        {
+            var sb = new StringBuilder();
+            try
+            {
+                MP_USUARIO mpUsuario = new MP_USUARIO();
+                MP_DigitoVerificadorVertical mpDVV = new MP_DigitoVerificadorVertical();
+                var usuarios = mpUsuario.Listar();
+
+                sb.AppendLine($"Recálculo de DV — {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
+                sb.AppendLine(new string('=', 60));
+
+                int sumaUser = 0, sumaPass = 0, sumaBloq = 0;
+                int fila = 1;
+
+                foreach (var usuario in usuarios)
+                {
+                    CalcularDVHUsuario(usuario);
+                    mpUsuario.ActualizarDVHorizontal(usuario);
+
+                    // DVV vertical: acumula aporte por fila (contenido + posición)
+                    sumaUser = (sumaUser + SV_DigitoVerificadorVertical.CalcularDVAtributo(usuario.Username, fila)) % 11;
+                    sumaPass = (sumaPass + SV_DigitoVerificadorVertical.CalcularDVAtributo(usuario.HashedPassword, fila)) % 11;
+                    sumaBloq = (sumaBloq + SV_DigitoVerificadorVertical.CalcularDVAtributo(usuario.Bloqueado.ToString(), fila)) % 11;
+
+                    sb.AppendLine($"  DVH recalculado: ID={usuario.ID} User={usuario.Username} DVH={usuario.DVHorizontal}");
+                    fila++;
+                }
+
+                BE_DigitoVerificadorVertical dvv = new BE_DigitoVerificadorVertical
+                {
+                    IdEntidad = 0,
+                    TipoEntidad = "USUARIO",
+                    DVUsername = sumaUser,
+                    DVHashedPassword = sumaPass,
+                    DVBloqueado = sumaBloq,
+                    FechaCreacion = DateTime.Now
+                };
+
+                var existente = mpDVV.BuscarPorTipoEntidad("USUARIO");
+                if (existente != null)
+                {
+                    dvv.ID = existente.ID;
+                    mpDVV.Editar(dvv);
+                    sb.AppendLine($"DVV actualizado (ID={dvv.ID})");
+                }
+                else
+                {
+                    mpDVV.Alta(dvv);
+                    sb.AppendLine($"DVV creado (ID={dvv.ID})");
+                }
+
+                sb.AppendLine();
+                sb.AppendLine("Recálculo completado.");
+                return (true, $"Se recalcularon DVH de {usuarios.Count} usuarios y el DVV de USUARIO.", sb.ToString());
+            }
+            catch (Exception ex)
+            {
+                sb.AppendLine($"ERROR: {ex.Message}");
+                return (false, ex.Message, sb.ToString());
+            }
+        }
+
+        public static void CalcularDVHRol(BE_Rol rol)
+        {
+            if (rol == null)
+                return;
+
+            string datosRol = rol.Nombre + rol.Descripcion;
+            int dv = SV_DigitoVerificadorHorizontal.CalcularDV(datosRol);
+            rol.ToString(); // El rol también podría guardar DVH
+        }
+
+        public static bool VerificarIntegridadDVHRol(BE_Rol rol)
+        {
+            if (rol == null)
+                return false;
+
+            string datosRol = rol.Nombre + rol.Descripcion;
+            // Aquí va la comparación cuando se implemente almacenamiento de DVH en Rol
+            return true;
+        }
+    }
+}

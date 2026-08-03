@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1C1015C8-644D-4FF4-B134-905102F349C9}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>GUI</RootNamespace>
+    <AssemblyName>GUI</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bitacora.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Bitacora.Designer.cs">
+      <DependentUpon>Bitacora.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Register.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Register.Designer.cs">
+      <DependentUpon>Register.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LogInOut.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LogInOut.Designer.cs">
+      <DependentUpon>LogInOut.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAuditoria.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAuditoria.Designer.cs">
+      <DependentUpon>FormAuditoria.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormPermisos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormPermisos.Designer.cs">
+      <DependentUpon>FormPermisos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormPermisoABM.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormPermisoABM.Designer.cs">
+      <DependentUpon>FormPermisoABM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormRoles.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormRoles.Designer.cs">
+      <DependentUpon>FormRoles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormBackups.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBackups.Designer.cs">
+      <DependentUpon>FormBackups.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCambiarIdioma.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAgregarIdioma.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormGestionUsuarios.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormIntegridad.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormPerfiles.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormPerfiles.Designer.cs">
+      <DependentUpon>FormPerfiles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormSnapshots.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSnapshots.Designer.cs">
+      <DependentUpon>FormSnapshots.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormError.cs" />
+    <Compile Include="FormUnico.cs" />
+    <Compile Include="SortableBindingList.cs" />
+    <Compile Include="DataGridViewSortHelper.cs" />
+    <Compile Include="UITheme.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Bitacora.resx">
+      <DependentUpon>Bitacora.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormBackups.resx">
+      <DependentUpon>FormBackups.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormPermisos.resx">
+      <DependentUpon>FormPermisos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormPermisoABM.resx">
+      <DependentUpon>FormPermisoABM.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormPerfiles.resx">
+      <DependentUpon>FormPerfiles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LogInOut.resx">
+      <DependentUpon>LogInOut.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Register.resx">
+      <DependentUpon>Register.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BE\BE.csproj">
+      <Project>{29ceecf8-656c-4635-a7c5-fd1274c7acc2}</Project>
+      <Name>BE</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BLL\BLL.csproj">
+      <Project>{7f44e648-02b6-4d99-a7bf-c1a5c9044652}</Project>
+      <Name>BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SERVICE\SERVICE.csproj">
+      <Project>{574d0a7e-40a6-4ebc-9513-dc5f304fa642}</Project>
+      <Name>SERVICE</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
