@@ -3,12 +3,7 @@ using SERVICE;
 using BLL;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GUI
@@ -17,11 +12,7 @@ namespace GUI
     {
         private SV_IdiomaManager idiomaManager;
         private BLL_PERFIL bllPerfil;
-        private BLL_ROL bllRol;
-        private List<BE_Perfil> perfilesRaiz;
-        private List<BE_Rol> rolesRaiz;
-        private ComboBox cbTipo;
-        private bool mostrandoRoles = false;
+        private bool arrastrandoPerfil;
 
         public FormPerfiles()
         {
@@ -29,52 +20,34 @@ namespace GUI
 
             idiomaManager = SV_IdiomaManager.GetInstance();
             bllPerfil = new BLL_PERFIL();
-            bllRol = new BLL_ROL();
 
-            CrearComboTipo();
             CrearColumnasDataGrid();
             idiomaManager.RegistrarObservador(this);
             ActualizarTextos();
             CargarPerfiles();
+            this.Load += (s, e) => AplicarIdentidadVisual();
         }
 
-        private void CrearComboTipo()
+        private void AplicarIdentidadVisual()
         {
-            cbTipo = new ComboBox();
-            cbTipo.Location = new Point(10, 10);
-            cbTipo.Width = 150;
-            cbTipo.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbTipo.Items.Add("Perfiles");
-            cbTipo.Items.Add("Roles");
-            cbTipo.SelectedIndex = 0;
-            cbTipo.SelectedIndexChanged += (s, e) => CambiarTipo();
-            this.Controls.Add(cbTipo);
-        }
-
-        private void CambiarTipo()
-        {
-            mostrandoRoles = cbTipo.SelectedIndex == 1;
-
-            if (btnAgregarPermiso != null) btnAgregarPermiso.Visible = !mostrandoRoles;
-            if (btnEliminarPermiso != null) btnEliminarPermiso.Visible = !mostrandoRoles;
-            if (lblPermisosLabel != null) lblPermisosLabel.Visible = !mostrandoRoles;
-            if (lblPermisosDisponibles != null) lblPermisosDisponibles.Visible = !mostrandoRoles;
-            if (dgvPermisos != null) dgvPermisos.Visible = !mostrandoRoles;
-            if (cbPermisosDisponibles != null) cbPermisosDisponibles.Visible = !mostrandoRoles;
-
-            ActualizarTextos();
-
-            if (mostrandoRoles)
-                CargarRoles();
-            else
-                CargarPerfiles();
+            UITheme.DiferenciarModulo(
+                panelBotones,
+                panelIzquierdo,
+                idiomaManager.Obtener("PERFILES"),
+                "Paquetes de permisos reutilizables",
+                UITheme.AcentoPerfiles,
+                UITheme.FondoPerfiles,
+                btnNuevo, btnEditar, btnEliminar);
         }
 
         private void CrearColumnasDataGrid()
         {
-            dgvPermisos.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Permiso", DataPropertyName = "Nombre", Width = 200, Tag = "NOMBRE" });
-            dgvPermisos.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Código", DataPropertyName = "Codigo", Width = 150 });
-            dgvPermisos.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Descripción", DataPropertyName = "Descripcion", Width = 300, Tag = "DESCRIPCION" });
+            dgvPermisos.Columns.Clear();
+            dgvPermisos.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Tipo", HeaderText = "Tipo", DataPropertyName = "Tipo", Width = 80 });
+            dgvPermisos.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Nombre", HeaderText = "Nombre", DataPropertyName = "Nombre", Width = 180 });
+            dgvPermisos.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Codigo", HeaderText = "Código", DataPropertyName = "Codigo", Width = 100 });
+            dgvPermisos.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Descripcion", HeaderText = "Descripción", DataPropertyName = "Descripcion", Width = 220 });
+            dgvPermisos.Columns.Add(new DataGridViewCheckBoxColumn() { Name = "EsHeredado", HeaderText = "Heredado", DataPropertyName = "EsHeredado", Width = 70 });
             dgvPermisos.AutoGenerateColumns = false;
             DataGridViewSortHelper.HabilitarOrdenamiento(dgvPermisos);
         }
@@ -82,163 +55,283 @@ namespace GUI
         private void ActualizarTextos()
         {
             this.Text = idiomaManager.Obtener("PERFILES");
-
             if (btnNuevo != null) btnNuevo.Text = idiomaManager.Obtener("NUEVO_PERFIL");
             if (btnEditar != null) btnEditar.Text = idiomaManager.Obtener("EDITAR");
             if (btnEliminar != null) btnEliminar.Text = idiomaManager.Obtener("ELIMINAR");
-            if (btnAgregarPermiso != null) btnAgregarPermiso.Text = idiomaManager.Obtener("AGREGAR_PERMISO");
-            if (btnEliminarPermiso != null) btnEliminarPermiso.Text = idiomaManager.Obtener("QUITAR_PERMISO");
+            if (btnAgregarPermiso != null) btnAgregarPermiso.Text = "Agregar";
+            if (btnEliminarPermiso != null) btnEliminarPermiso.Text = "Desasignar";
             if (lblPerfiles != null) lblPerfiles.Text = idiomaManager.Obtener("JERARQUIA_PERFILES");
             if (lblDetalles != null) lblDetalles.Text = idiomaManager.Obtener("DETALLES_PERFIL");
             if (lblNombrePerfil != null) lblNombrePerfil.Text = idiomaManager.Obtener("NOMBRE");
             if (lblDescripcionPerfil != null) lblDescripcionPerfil.Text = idiomaManager.Obtener("DESCRIPCION");
-            if (lblPermisosLabel != null) lblPermisosLabel.Text = idiomaManager.Obtener("PERMISOS_PERFIL");
-            if (lblPermisosDisponibles != null) lblPermisosDisponibles.Text = idiomaManager.Obtener("AGREGAR_PERMISO");
-
-            if (dgvPermisos.Columns.Count >= 3)
-            {
-                dgvPermisos.Columns[0].HeaderText = idiomaManager.Obtener("NOMBRE");
-                dgvPermisos.Columns[2].HeaderText = idiomaManager.Obtener("DESCRIPCION");
-            }
+            if (lblPermisosLabel != null) lblPermisosLabel.Text = "Componentes del perfil (permisos y sub-perfiles)";
+            if (lblPermisosDisponibles != null) lblPermisosDisponibles.Text = "Agregar componente:";
+            if (IsHandleCreated)
+                AplicarIdentidadVisual();
         }
 
-        private void btnNuevo_Click(object sender, EventArgs e)
+        public void ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo)
         {
-            if (mostrandoRoles)
-                NuevoRolDialog();
-            else
-                NuevoPerfil();
+            ActualizarTextos();
         }
 
-        private void btnEditar_Click(object sender, EventArgs e)
-        {
-            if (mostrandoRoles)
-                EditarRolDialog();
-            else
-                EditarPerfil();
-        }
-
-        private void btnEliminar_Click(object sender, EventArgs e)
-        {
-            if (mostrandoRoles)
-                EliminarRolDialog();
-            else
-                EliminarPerfil();
-        }
-
-        private void btnAgregarPermiso_Click(object sender, EventArgs e)
-        {
-            AgregarPermiso();
-        }
-
-        private void btnEliminarPermiso_Click(object sender, EventArgs e)
-        {
-            QuitarPermiso();
-        }
-
+        private void btnNuevo_Click(object sender, EventArgs e) => NuevoPerfil();
+        private void btnEditar_Click(object sender, EventArgs e) => EditarPerfil();
+        private void btnEliminar_Click(object sender, EventArgs e) => EliminarPerfil();
+        private void btnAgregarPermiso_Click(object sender, EventArgs e) => AgregarComponente();
+        private void btnEliminarPermiso_Click(object sender, EventArgs e) => DesasignarComponente();
         private void tvPerfiles_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (arrastrandoPerfil)
+                return;
             MostrarDetallesPerfil();
         }
 
-        private void CargarPerfiles()
+        private void tvPerfiles_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            if (!(e.Item is TreeNode nodo) || !(nodo.Tag is BE_Perfil))
+                return;
+
+            arrastrandoPerfil = true;
+            try
+            {
+                DoDragDrop(nodo, DragDropEffects.Move);
+            }
+            finally
+            {
+                arrastrandoPerfil = false;
+                BeginInvoke(new Action(MostrarDetallesPerfil));
+            }
+        }
+
+        private void tvPerfiles_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = e.Data.GetDataPresent(typeof(TreeNode)) ? DragDropEffects.Move : DragDropEffects.None;
+        }
+
+        private void tvPerfiles_DragOver(object sender, DragEventArgs e)
+        {
+            var destino = ObtenerNodoBajoCursor(e);
+            var origen = e.Data.GetData(typeof(TreeNode)) as TreeNode;
+            if (!EsSoltarPerfilValido(origen, destino))
+            {
+                e.Effect = DragDropEffects.None;
+                return;
+            }
+
+            e.Effect = DragDropEffects.Move;
+            if (tvPerfiles.SelectedNode != destino)
+                tvPerfiles.SelectedNode = destino;
+            if (!destino.IsExpanded)
+                destino.Expand();
+        }
+
+        private void tvPerfiles_DragDrop(object sender, DragEventArgs e)
+        {
+            var destino = ObtenerNodoBajoCursor(e);
+            var origen = e.Data.GetData(typeof(TreeNode)) as TreeNode;
+            if (!EsSoltarPerfilValido(origen, destino))
+                return;
+
+            var perfilHijo = (BE_Perfil)origen.Tag;
+            var perfilPadre = (BE_Perfil)destino.Tag;
+            int idDestino = perfilPadre.ID;
+            int idOrigen = perfilHijo.ID;
+
+            try
+            {
+                bllPerfil.AsignarSubPerfil(idDestino, idOrigen);
+                RefrescarTrasArrastre(idDestino);
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(ex.Message, "Asignación de perfiles", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                RefrescarTrasArrastre(idOrigen);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al asignar sub-perfil: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                RefrescarTrasArrastre(idOrigen);
+            }
+        }
+
+        private void RefrescarTrasArrastre(int idPerfil)
+        {
+            arrastrandoPerfil = false;
+            BeginInvoke(new Action(() =>
+            {
+                CargarPerfiles(idPerfil);
+                MostrarDetallesPerfil();
+            }));
+        }
+
+        private TreeNode ObtenerNodoBajoCursor(DragEventArgs e)
+        {
+            Point punto = tvPerfiles.PointToClient(new Point(e.X, e.Y));
+            return tvPerfiles.GetNodeAt(punto);
+        }
+
+        private bool EsSoltarPerfilValido(TreeNode origen, TreeNode destino)
+        {
+            if (origen == null || destino == null || origen == destino)
+                return false;
+
+            var perfilHijo = origen.Tag as BE_Perfil;
+            var perfilPadre = destino.Tag as BE_Perfil;
+            if (perfilHijo == null || perfilPadre == null)
+                return false;
+
+            if (perfilHijo.IdPadrePerfil == perfilPadre.ID || origen.Parent == destino)
+                return false;
+
+            return !EsAncestro(origen, destino);
+        }
+
+        private static bool EsAncestro(TreeNode posibleAncestro, TreeNode nodo)
+        {
+            for (TreeNode actual = nodo.Parent; actual != null; actual = actual.Parent)
+            {
+                if (actual == posibleAncestro)
+                    return true;
+            }
+            return false;
+        }
+
+        private void CargarPerfiles(int? idSeleccionar = null)
         {
             try
             {
+                var expandidos = TreeViewExpansionHelper.CapturarExpandidos(tvPerfiles, IdDeNodoPerfil);
+                int? idPrevio = idSeleccionar ?? TreeViewExpansionHelper.CapturarSeleccionado(tvPerfiles, IdDeNodoPerfil);
+
+                tvPerfiles.BeginUpdate();
                 tvPerfiles.Nodes.Clear();
+                foreach (var perfil in bllPerfil.ObtenerPerfilesPrincipales())
+                    tvPerfiles.Nodes.Add(CrearNodoPerfil(perfil, new HashSet<int>()));
 
-                // Cargar Perfiles
-                perfilesRaiz = bllPerfil.ObtenerPerfilesPrincipales();
-                foreach (var perfil in perfilesRaiz)
-                {
-                    var nodo = CrearNodoPerfil(perfil);
-                    tvPerfiles.Nodes.Add(nodo);
-                }
+                TreeViewExpansionHelper.RestaurarExpandidos(tvPerfiles, expandidos, IdDeNodoPerfil);
 
-                // Cargar Roles
-                rolesRaiz = bllRol.ObtenerRolesPrincipales();
-                if (rolesRaiz != null && rolesRaiz.Count > 0)
-                {
-                    TreeNode nodoRoles = new TreeNode("Roles");
-                    foreach (var rol in rolesRaiz)
-                    {
-                        var nodo = CrearNodoRol(rol);
-                        nodoRoles.Nodes.Add(nodo);
-                    }
-                    tvPerfiles.Nodes.Add(nodoRoles);
-                }
-
-                CargarPermisosDisponibles();
+                if (idPrevio.HasValue)
+                    SeleccionarPerfilEnArbol(idPrevio.Value);
+                else if (tvPerfiles.Nodes.Count > 0)
+                    tvPerfiles.SelectedNode = tvPerfiles.Nodes[0];
+                else
+                    LimpiarDetalle();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar perfiles: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            finally
+            {
+                tvPerfiles.EndUpdate();
+            }
         }
 
-        private TreeNode CrearNodoPerfil(BE_Perfil perfil)
+        private static int? IdDeNodoPerfil(object tag) => (tag as BE_Perfil)?.ID;
+
+        private TreeNode CrearNodoPerfil(BE_Perfil perfil, HashSet<int> visitados)
         {
             var nodo = new TreeNode(perfil.Nombre) { Tag = perfil };
+            if (!visitados.Add(perfil.ID))
+                return nodo;
 
-            var hijos = bllPerfil.ObtenerPerfilesHijos(perfil.ID);
-            foreach (var hijo in hijos)
-            {
-                nodo.Nodes.Add(CrearNodoPerfil(hijo));
-            }
+            foreach (var hijo in bllPerfil.ObtenerPerfilesHijos(perfil.ID))
+                nodo.Nodes.Add(CrearNodoPerfil(hijo, visitados));
 
             return nodo;
         }
 
+        private void LimpiarDetalle()
+        {
+            txtNombrePerfil.Text = "";
+            txtDescripcionPerfil.Text = "";
+            dgvPermisos.DataSource = null;
+            cbPermisosDisponibles.DataSource = null;
+        }
+
         private void MostrarDetallesPerfil()
         {
-            if (tvPerfiles.SelectedNode == null) return;
-
-            if (mostrandoRoles)
+            var perfil = tvPerfiles.SelectedNode?.Tag as BE_Perfil;
+            if (perfil == null)
             {
-                var rol = tvPerfiles.SelectedNode.Tag as BE_Rol;
-                if (rol == null) return;
-
-                txtNombrePerfil.Text = rol.Nombre;
-                txtDescripcionPerfil.Text = rol.Descripcion ?? "";
-                dgvPermisos.DataSource = null;
+                LimpiarDetalle();
+                return;
             }
-            else
-            {
-                var perfil = tvPerfiles.SelectedNode.Tag as BE_Perfil;
-                if (perfil == null) return;
 
-                txtNombrePerfil.Text = perfil.Nombre;
-                txtDescripcionPerfil.Text = perfil.Descripcion ?? "";
-
-                CargarPermisosDelPerfil(perfil.ID);
-            }
+            txtNombrePerfil.Text = perfil.Nombre;
+            txtDescripcionPerfil.Text = perfil.Descripcion ?? "";
+            CargarComponentes(perfil.ID);
         }
 
-        private void CargarPermisosDelPerfil(int idPerfil)
+        private void CargarComponentes(int idPerfil)
         {
             try
             {
-                var permisos = bllPerfil.ObtenerPermisosDelPerfil(idPerfil);
-                DataGridViewSortHelper.Bind(dgvPermisos, permisos);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar permisos: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void CargarPermisosDisponibles()
-        {
-            try
-            {
-                var permisos = bllPerfil.ObtenerTodosLosPermisos();
-                cbPermisosDisponibles.DataSource = permisos;
-                cbPermisosDisponibles.DisplayMember = "Nombre";
+                DataGridViewSortHelper.Bind(dgvPermisos, bllPerfil.ObtenerComponentesDelPerfil(idPerfil));
+                cbPermisosDisponibles.DataSource = null;
+                cbPermisosDisponibles.DataSource = bllPerfil.ObtenerComponentesDisponiblesParaAsignar(idPerfil);
+                cbPermisosDisponibles.DisplayMember = "Etiqueta";
                 cbPermisosDisponibles.ValueMember = "ID";
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar permisos disponibles: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error al cargar componentes: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void AgregarComponente()
+        {
+            var perfil = tvPerfiles.SelectedNode?.Tag as BE_Perfil;
+            var componente = cbPermisosDisponibles.SelectedItem as BE_ComponenteAcceso;
+            if (perfil == null)
+            {
+                MessageBox.Show("Selecciona un perfil", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (componente == null) return;
+
+            try
+            {
+                bllPerfil.AsignarComponente(perfil.ID, componente);
+                CargarPerfiles(perfil.ID);
+                MessageBox.Show(componente.EsPerfil ? "Perfil integrante asignado" : "Permiso agregado", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(ex.Message, "Asignación de perfiles", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al agregar componente: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void DesasignarComponente()
+        {
+            var perfil = tvPerfiles.SelectedNode?.Tag as BE_Perfil;
+            if (perfil == null || dgvPermisos.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Selecciona un componente para desasignar", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var componente = dgvPermisos.SelectedRows[0].DataBoundItem as BE_ComponenteAcceso;
+            if (componente == null) return;
+
+            try
+            {
+                bllPerfil.DesasignarComponente(perfil.ID, componente);
+                CargarPerfiles(perfil.ID);
+                MessageBox.Show(componente.EsPerfil ? "Perfil integrante desasignado" : "Permiso removido", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(ex.Message, "Desasignar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al desasignar: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -247,26 +340,24 @@ namespace GUI
             using (Form dialog = new Form())
             {
                 dialog.Text = "Nuevo Perfil";
-                dialog.Width = 400;
-                dialog.Height = 250;
+                dialog.Width = 450;
+                dialog.Height = 350;
                 dialog.StartPosition = FormStartPosition.CenterParent;
                 dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
                 dialog.MaximizeBox = false;
                 dialog.MinimizeBox = false;
 
-                Label lblNombre = new Label() { Left = 20, Top = 20, Text = "Nombre:", Width = 350 };
-                TextBox txtNombre = new TextBox() { Left = 20, Top = 45, Width = 350 };
-                Label lblDesc = new Label() { Left = 20, Top = 75, Text = "Descripción:", Width = 350 };
-                TextBox txtDesc = new TextBox() { Left = 20, Top = 100, Width = 350, Height = 80, Multiline = true };
-                Button btnOK = new Button() { Text = "OK", Left = 200, Width = 80, Top = 190, DialogResult = DialogResult.OK };
-                Button btnCancel = new Button() { Text = "Cancelar", Left = 290, Width = 80, Top = 190, DialogResult = DialogResult.Cancel };
+                Label lblNombre = new Label() { Left = 20, Top = 20, Text = "Nombre:", Width = 400 };
+                TextBox txtNombre = new TextBox() { Left = 20, Top = 45, Width = 400 };
+                Label lblDesc = new Label() { Left = 20, Top = 75, Text = "Descripción:", Width = 400 };
+                TextBox txtDesc = new TextBox() { Left = 20, Top = 100, Width = 400, Height = 80, Multiline = true };
+                Label lblPadre = new Label() { Left = 20, Top = 190, Text = "Perfil Padre (opcional):", Width = 400 };
+                ComboBox cbPadre = new ComboBox() { Left = 20, Top = 215, Width = 400, DropDownStyle = ComboBoxStyle.DropDownList };
+                CargarComboPadre(cbPadre, bllPerfil.ObtenerTodosLosPerfiles(), null);
 
-                dialog.Controls.Add(lblNombre);
-                dialog.Controls.Add(txtNombre);
-                dialog.Controls.Add(lblDesc);
-                dialog.Controls.Add(txtDesc);
-                dialog.Controls.Add(btnOK);
-                dialog.Controls.Add(btnCancel);
+                Button btnOK = new Button() { Text = "OK", Left = 250, Width = 80, Top = 260, DialogResult = DialogResult.OK };
+                Button btnCancel = new Button() { Text = "Cancelar", Left = 340, Width = 80, Top = 260, DialogResult = DialogResult.Cancel };
+                dialog.Controls.AddRange(new Control[] { lblNombre, txtNombre, lblDesc, txtDesc, lblPadre, cbPadre, btnOK, btnCancel });
                 dialog.AcceptButton = btnOK;
                 dialog.CancelButton = btnCancel;
 
@@ -274,9 +365,15 @@ namespace GUI
                 {
                     try
                     {
-                        bllPerfil.CrearPerfil(txtNombre.Text, txtDesc.Text);
+                        var nuevo = new BE_Perfil(txtNombre.Text, txtDesc.Text);
+                        nuevo.IdPadrePerfil = LeerIdPadreSeleccionado(cbPadre);
+                        bllPerfil.CrearPerfil(nuevo);
                         CargarPerfiles();
                         MessageBox.Show("Perfil creado exitosamente", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        MessageBox.Show(ex.Message, "Asignación de perfiles", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     catch (Exception ex)
                     {
@@ -288,38 +385,34 @@ namespace GUI
 
         private void EditarPerfil()
         {
-            if (tvPerfiles.SelectedNode == null)
+            var perfil = tvPerfiles.SelectedNode?.Tag as BE_Perfil;
+            if (perfil == null)
             {
                 MessageBox.Show("Selecciona un perfil", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            var perfil = tvPerfiles.SelectedNode.Tag as BE_Perfil;
-            if (perfil == null) return;
-
             using (Form dialog = new Form())
             {
                 dialog.Text = "Editar Perfil";
-                dialog.Width = 400;
-                dialog.Height = 250;
+                dialog.Width = 450;
+                dialog.Height = 350;
                 dialog.StartPosition = FormStartPosition.CenterParent;
                 dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
                 dialog.MaximizeBox = false;
                 dialog.MinimizeBox = false;
 
-                Label lblNombre = new Label() { Left = 20, Top = 20, Text = "Nombre:", Width = 350 };
-                TextBox txtNombre = new TextBox() { Left = 20, Top = 45, Width = 350, Text = perfil.Nombre };
-                Label lblDesc = new Label() { Left = 20, Top = 75, Text = "Descripción:", Width = 350 };
-                TextBox txtDesc = new TextBox() { Left = 20, Top = 100, Width = 350, Height = 80, Multiline = true, Text = perfil.Descripcion ?? "" };
-                Button btnOK = new Button() { Text = "OK", Left = 200, Width = 80, Top = 190, DialogResult = DialogResult.OK };
-                Button btnCancel = new Button() { Text = "Cancelar", Left = 290, Width = 80, Top = 190, DialogResult = DialogResult.Cancel };
+                Label lblNombre = new Label() { Left = 20, Top = 20, Text = "Nombre:", Width = 400 };
+                TextBox txtNombre = new TextBox() { Left = 20, Top = 45, Width = 400, Text = perfil.Nombre };
+                Label lblDesc = new Label() { Left = 20, Top = 75, Text = "Descripción:", Width = 400 };
+                TextBox txtDesc = new TextBox() { Left = 20, Top = 100, Width = 400, Height = 80, Multiline = true, Text = perfil.Descripcion ?? "" };
+                Label lblPadre = new Label() { Left = 20, Top = 190, Text = "Perfil Padre (opcional):", Width = 400 };
+                ComboBox cbPadre = new ComboBox() { Left = 20, Top = 215, Width = 400, DropDownStyle = ComboBoxStyle.DropDownList };
+                CargarComboPadre(cbPadre, bllPerfil.ObtenerPerfilesCandidatosComoPadre(perfil.ID), perfil.IdPadrePerfil);
 
-                dialog.Controls.Add(lblNombre);
-                dialog.Controls.Add(txtNombre);
-                dialog.Controls.Add(lblDesc);
-                dialog.Controls.Add(txtDesc);
-                dialog.Controls.Add(btnOK);
-                dialog.Controls.Add(btnCancel);
+                Button btnOK = new Button() { Text = "OK", Left = 250, Width = 80, Top = 260, DialogResult = DialogResult.OK };
+                Button btnCancel = new Button() { Text = "Cancelar", Left = 340, Width = 80, Top = 260, DialogResult = DialogResult.Cancel };
+                dialog.Controls.AddRange(new Control[] { lblNombre, txtNombre, lblDesc, txtDesc, lblPadre, cbPadre, btnOK, btnCancel });
                 dialog.AcceptButton = btnOK;
                 dialog.CancelButton = btnCancel;
 
@@ -329,9 +422,14 @@ namespace GUI
                     {
                         perfil.Nombre = txtNombre.Text;
                         perfil.Descripcion = txtDesc.Text;
+                        perfil.IdPadrePerfil = LeerIdPadreSeleccionado(cbPadre);
                         bllPerfil.ActualizarPerfil(perfil);
-                        CargarPerfiles();
+                        CargarPerfiles(perfil.ID);
                         MessageBox.Show("Perfil actualizado", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        MessageBox.Show(ex.Message, "Asignación de perfiles", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     catch (Exception ex)
                     {
@@ -343,16 +441,16 @@ namespace GUI
 
         private void EliminarPerfil()
         {
-            if (tvPerfiles.SelectedNode == null)
+            var perfil = tvPerfiles.SelectedNode?.Tag as BE_Perfil;
+            if (perfil == null)
             {
                 MessageBox.Show("Selecciona un perfil", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            var perfil = tvPerfiles.SelectedNode.Tag as BE_Perfil;
-            if (perfil == null) return;
-
-            if (MessageBox.Show($"¿Eliminar el perfil '{perfil.Nombre}'?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (MessageBox.Show(
+                    $"¿Eliminar el perfil '{perfil.Nombre}' y todo su árbol de sub-perfiles?",
+                    "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                 return;
 
             try
@@ -367,281 +465,46 @@ namespace GUI
             }
         }
 
-        private void AgregarPermiso()
+        private static void CargarComboPadre(ComboBox combo, List<BE_Perfil> candidatos, int? idPadreActual)
         {
-            if (tvPerfiles.SelectedNode == null)
+            var items = new List<BE_Perfil> { new BE_Perfil { ID = 0, Nombre = "(Sin padre)" } };
+            if (candidatos != null)
+                items.AddRange(candidatos);
+
+            combo.DisplayMember = "Nombre";
+            combo.ValueMember = "ID";
+            combo.DataSource = items;
+            combo.SelectedValue = idPadreActual.GetValueOrDefault();
+        }
+
+        private static int? LeerIdPadreSeleccionado(ComboBox combo)
+        {
+            if (combo.SelectedValue is int id && id > 0)
+                return id;
+            return null;
+        }
+
+        private void SeleccionarPerfilEnArbol(int idPerfil)
+        {
+            TreeNode encontrado = BuscarNodo(tvPerfiles.Nodes, idPerfil);
+            if (encontrado != null)
             {
-                MessageBox.Show("Selecciona un perfil", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (cbPermisosDisponibles.SelectedItem == null) return;
-
-            var perfil = tvPerfiles.SelectedNode.Tag as BE_Perfil;
-            var permiso = cbPermisosDisponibles.SelectedItem as BE_Permiso;
-
-            if (perfil == null || permiso == null) return;
-
-            try
-            {
-                bllPerfil.AgregarPermisoAlPerfil(perfil.ID, permiso.ID);
-                CargarPermisosDelPerfil(perfil.ID);
-                MessageBox.Show("Permiso agregado", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al agregar permiso: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tvPerfiles.SelectedNode = encontrado;
+                encontrado.EnsureVisible();
             }
         }
 
-        private void QuitarPermiso()
+        private TreeNode BuscarNodo(TreeNodeCollection nodos, int idPerfil)
         {
-            if (dgvPermisos.SelectedRows.Count == 0)
+            foreach (TreeNode nodo in nodos)
             {
-                MessageBox.Show("Selecciona un permiso para quitar", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                if (nodo.Tag is BE_Perfil p && p.ID == idPerfil)
+                    return nodo;
+                var hijo = BuscarNodo(nodo.Nodes, idPerfil);
+                if (hijo != null)
+                    return hijo;
             }
-
-            if (tvPerfiles.SelectedNode == null) return;
-
-            var perfil = tvPerfiles.SelectedNode.Tag as BE_Perfil;
-            var permisoSeleccionado = dgvPermisos.SelectedRows[0].DataBoundItem as BE_Permiso;
-
-            if (perfil == null || permisoSeleccionado == null) return;
-
-            try
-            {
-                bllPerfil.QuitarPermisoDelPerfil(perfil.ID, permisoSeleccionado.ID);
-                CargarPermisosDelPerfil(perfil.ID);
-                MessageBox.Show("Permiso removido", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al quitar permiso: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private string PromptPerfil(string titulo, string valorPorDefecto)
-        {
-            using (Form prompt = new Form())
-            {
-                prompt.Text = titulo;
-                prompt.Width = 400;
-                prompt.Height = 150;
-                prompt.StartPosition = FormStartPosition.CenterParent;
-                prompt.FormBorderStyle = FormBorderStyle.FixedDialog;
-                prompt.MaximizeBox = false;
-                prompt.MinimizeBox = false;
-
-                Label lbl = new Label() { Left = 20, Top = 20, Text = "Nombre del perfil:", Width = 350 };
-                TextBox textBox = new TextBox() { Left = 20, Top = 50, Width = 350, Text = valorPorDefecto };
-                Button okBtn = new Button() { Text = "OK", Left = 200, Width = 80, Top = 80, DialogResult = DialogResult.OK };
-                Button cancelBtn = new Button() { Text = "Cancelar", Left = 290, Width = 80, Top = 80, DialogResult = DialogResult.Cancel };
-
-                prompt.Controls.Add(lbl);
-                prompt.Controls.Add(textBox);
-                prompt.Controls.Add(okBtn);
-                prompt.Controls.Add(cancelBtn);
-                prompt.AcceptButton = okBtn;
-                prompt.CancelButton = cancelBtn;
-
-                return prompt.ShowDialog() == DialogResult.OK ? textBox.Text : null;
-            }
-        }
-
-        public void ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo)
-        {
-            ActualizarTextos();
-        }
-
-        private void CargarRoles()
-        {
-            try
-            {
-                rolesRaiz = bllRol.ObtenerRolesPrincipales();
-                tvPerfiles.Nodes.Clear();
-
-                foreach (var rol in rolesRaiz)
-                {
-                    var nodo = CrearNodoRol(rol);
-                    tvPerfiles.Nodes.Add(nodo);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar roles: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private TreeNode CrearNodoRol(BE_Rol rol)
-        {
-            var nodo = new TreeNode(rol.Nombre) { Tag = rol };
-
-            var hijos = bllRol.ObtenerRolesHijos(rol.ID);
-            foreach (var hijo in hijos)
-            {
-                nodo.Nodes.Add(CrearNodoRol(hijo));
-            }
-
-            return nodo;
-        }
-
-        private void NuevoRolDialog()
-        {
-            using (Form dialog = new Form())
-            {
-                dialog.Text = "Nuevo Rol";
-                dialog.Width = 450;
-                dialog.Height = 350;
-                dialog.StartPosition = FormStartPosition.CenterParent;
-                dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
-                dialog.MaximizeBox = false;
-                dialog.MinimizeBox = false;
-
-                Label lblNombre = new Label() { Left = 20, Top = 20, Text = "Nombre:", Width = 400 };
-                TextBox txtNombre = new TextBox() { Left = 20, Top = 45, Width = 400 };
-
-                Label lblDesc = new Label() { Left = 20, Top = 75, Text = "Descripción:", Width = 400 };
-                TextBox txtDesc = new TextBox() { Left = 20, Top = 100, Width = 400, Height = 80, Multiline = true };
-
-                Label lblPadre = new Label() { Left = 20, Top = 190, Text = "Rol Padre (opcional):", Width = 400 };
-                ComboBox cbPadre = new ComboBox() { Left = 20, Top = 215, Width = 400, DropDownStyle = ComboBoxStyle.DropDownList };
-
-                var rolesDisponibles = bllRol.ObtenerRolesPrincipales();
-                cbPadre.DataSource = rolesDisponibles;
-                cbPadre.DisplayMember = "Nombre";
-                cbPadre.ValueMember = "ID";
-
-                Button btnOK = new Button() { Text = "OK", Left = 250, Width = 80, Top = 260, DialogResult = DialogResult.OK };
-                Button btnCancel = new Button() { Text = "Cancelar", Left = 340, Width = 80, Top = 260, DialogResult = DialogResult.Cancel };
-
-                dialog.Controls.Add(lblNombre);
-                dialog.Controls.Add(txtNombre);
-                dialog.Controls.Add(lblDesc);
-                dialog.Controls.Add(txtDesc);
-                dialog.Controls.Add(lblPadre);
-                dialog.Controls.Add(cbPadre);
-                dialog.Controls.Add(btnOK);
-                dialog.Controls.Add(btnCancel);
-                dialog.AcceptButton = btnOK;
-                dialog.CancelButton = btnCancel;
-
-                if (dialog.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(txtNombre.Text))
-                {
-                    try
-                    {
-                        BE_Rol nuevoRol = new BE_Rol(txtNombre.Text, txtDesc.Text);
-                        if (cbPadre.SelectedValue is int id)
-                            nuevoRol.IdPadreRol = id;
-
-                        bllRol.CrearRol(nuevoRol);
-                        CargarRoles();
-                        MessageBox.Show("Rol creado exitosamente", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error al crear rol: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-        }
-
-        private void EditarRolDialog()
-        {
-            if (tvPerfiles.SelectedNode == null)
-            {
-                MessageBox.Show("Selecciona un rol", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            var rol = tvPerfiles.SelectedNode.Tag as BE_Rol;
-            if (rol == null) return;
-
-            using (Form dialog = new Form())
-            {
-                dialog.Text = "Editar Rol";
-                dialog.Width = 450;
-                dialog.Height = 350;
-                dialog.StartPosition = FormStartPosition.CenterParent;
-                dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
-                dialog.MaximizeBox = false;
-                dialog.MinimizeBox = false;
-
-                Label lblNombre = new Label() { Left = 20, Top = 20, Text = "Nombre:", Width = 400 };
-                TextBox txtNombre = new TextBox() { Left = 20, Top = 45, Width = 400, Text = rol.Nombre };
-
-                Label lblDesc = new Label() { Left = 20, Top = 75, Text = "Descripción:", Width = 400 };
-                TextBox txtDesc = new TextBox() { Left = 20, Top = 100, Width = 400, Height = 80, Multiline = true, Text = rol.Descripcion ?? "" };
-
-                Label lblPadre = new Label() { Left = 20, Top = 190, Text = "Rol Padre (opcional):", Width = 400 };
-                ComboBox cbPadre = new ComboBox() { Left = 20, Top = 215, Width = 400, DropDownStyle = ComboBoxStyle.DropDownList };
-
-                var rolesDisponibles = bllRol.ObtenerRolesPrincipales();
-                cbPadre.DataSource = rolesDisponibles;
-                cbPadre.DisplayMember = "Nombre";
-                cbPadre.ValueMember = "ID";
-
-                if (rol.IdPadreRol.HasValue)
-                    cbPadre.SelectedValue = rol.IdPadreRol.Value;
-
-                Button btnOK = new Button() { Text = "OK", Left = 250, Width = 80, Top = 260, DialogResult = DialogResult.OK };
-                Button btnCancel = new Button() { Text = "Cancelar", Left = 340, Width = 80, Top = 260, DialogResult = DialogResult.Cancel };
-
-                dialog.Controls.Add(lblNombre);
-                dialog.Controls.Add(txtNombre);
-                dialog.Controls.Add(lblDesc);
-                dialog.Controls.Add(txtDesc);
-                dialog.Controls.Add(lblPadre);
-                dialog.Controls.Add(cbPadre);
-                dialog.Controls.Add(btnOK);
-                dialog.Controls.Add(btnCancel);
-                dialog.AcceptButton = btnOK;
-                dialog.CancelButton = btnCancel;
-
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    try
-                    {
-                        rol.Nombre = txtNombre.Text;
-                        rol.Descripcion = txtDesc.Text;
-                        rol.IdPadreRol = cbPadre.SelectedValue is int id ? (int?)id : null;
-
-                        bllRol.ActualizarRol(rol);
-                        CargarRoles();
-                        MessageBox.Show("Rol actualizado", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error al editar rol: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-        }
-
-        private void EliminarRolDialog()
-        {
-            if (tvPerfiles.SelectedNode == null)
-            {
-                MessageBox.Show("Selecciona un rol", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            var rol = tvPerfiles.SelectedNode.Tag as BE_Rol;
-            if (rol == null) return;
-
-            if (MessageBox.Show($"¿Eliminar el rol '{rol.Nombre}'?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                return;
-
-            try
-            {
-                bllRol.EliminarRol(rol.ID);
-                CargarRoles();
-                MessageBox.Show("Rol eliminado", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al eliminar rol: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            return null;
         }
     }
 }

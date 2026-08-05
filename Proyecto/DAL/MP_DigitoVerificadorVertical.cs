@@ -18,9 +18,7 @@ namespace DAL
             string sql = "DVV_ALTA";
             List<SqlParameter> parametros = new List<SqlParameter>();
 
-            SqlParameter p1 = new SqlParameter("@p1", System.Data.SqlDbType.Int);
-            p1.Value = DBNull.Value;
-            parametros.Add(p1);
+            parametros.Add(acc.CrearParametro("@p1", obj.IdEntidad));
 
             parametros.Add(acc.CrearParametro("@p2", obj.TipoEntidad));
             parametros.Add(acc.CrearParametro("@p3", obj.DVUsername));

@@ -32,6 +32,11 @@ namespace GUI
         public static readonly Font FuenteTitulo = new Font("Segoe UI", 11f, FontStyle.Bold);
         public static readonly Font FuenteMenu = new Font("Segoe UI", 9f, FontStyle.Regular);
 
+        public static readonly Color AcentoRoles = Color.FromArgb(70, 100, 128);
+        public static readonly Color FondoRoles = Color.FromArgb(232, 239, 246);
+        public static readonly Color AcentoPerfiles = Color.FromArgb(46, 125, 122);
+        public static readonly Color FondoPerfiles = Color.FromArgb(230, 244, 243);
+
         public static void Aplicar(Form form)
         {
             if (form == null)
@@ -46,6 +51,111 @@ namespace GUI
 
             if (form.MainMenuStrip != null)
                 EstilizarMenu(form.MainMenuStrip);
+        }
+
+        public static void DiferenciarModulo(
+            Panel panelBotones,
+            Panel panelIzquierdo,
+            string titulo,
+            string subtitulo,
+            Color acento,
+            Color fondoSuave,
+            params Button[] botonesAccion)
+        {
+            if (panelBotones == null || panelIzquierdo == null)
+                return;
+
+            panelBotones.Height = Math.Max(panelBotones.Height, 58);
+            panelIzquierdo.BackColor = fondoSuave;
+
+            Panel acentoBarra = null;
+            foreach (Control control in panelIzquierdo.Controls)
+            {
+                if (control is Panel panel && panel.Name == "panelAcentoModulo")
+                {
+                    acentoBarra = panel;
+                    break;
+                }
+            }
+
+            if (acentoBarra == null)
+            {
+                acentoBarra = new Panel
+                {
+                    Name = "panelAcentoModulo",
+                    Dock = DockStyle.Left,
+                    Width = 8,
+                    BackColor = acento
+                };
+                panelIzquierdo.Controls.Add(acentoBarra);
+            }
+
+            acentoBarra.BackColor = acento;
+            acentoBarra.BringToFront();
+
+            Label lblTitulo = ObtenerOCrearLabel(panelBotones, "lblModuloTitulo");
+            Label lblAyuda = ObtenerOCrearLabel(panelBotones, "lblModuloAyuda");
+            lblTitulo.Text = titulo ?? "";
+            lblTitulo.ForeColor = acento;
+            lblTitulo.Font = new Font(FuenteTitulo.FontFamily, 12f, FontStyle.Bold);
+            lblAyuda.Text = subtitulo ?? "";
+            lblAyuda.ForeColor = TextoSuave;
+            lblAyuda.Font = FuenteNormal;
+
+            void Ubicar()
+            {
+                lblTitulo.Size = new Size(430, 24);
+                lblAyuda.Size = new Size(430, 18);
+                lblTitulo.Location = new Point(Math.Max(12, panelBotones.ClientSize.Width - lblTitulo.Width - 14), 8);
+                lblAyuda.Location = new Point(Math.Max(12, panelBotones.ClientSize.Width - lblAyuda.Width - 14), 32);
+
+                int x = 12;
+                int yCentro = Math.Max(8, (panelBotones.Height - 32) / 2);
+                foreach (Button boton in botonesAccion)
+                {
+                    if (boton == null)
+                        continue;
+
+                    int textoAncho = TextRenderer.MeasureText(boton.Text ?? " ", boton.Font).Width + 24;
+                    if (boton.Width < textoAncho)
+                        boton.Width = textoAncho;
+
+                    boton.Location = new Point(x, yCentro);
+                    x += boton.Width + 8;
+                }
+            }
+
+            Ubicar();
+            panelBotones.Resize -= PanelModulo_Resize;
+            panelBotones.Tag = new Action(Ubicar);
+            panelBotones.Resize += PanelModulo_Resize;
+        }
+
+        private static void PanelModulo_Resize(object sender, EventArgs e)
+        {
+            if (sender is Panel panel && panel.Tag is Action ubicar)
+                ubicar();
+        }
+
+        private static Label ObtenerOCrearLabel(Panel panel, string nombre)
+        {
+            foreach (Control control in panel.Controls)
+            {
+                if (control is Label label && label.Name == nombre)
+                    return label;
+            }
+
+            var creado = new Label
+            {
+                Name = nombre,
+                AutoSize = false,
+                TextAlign = ContentAlignment.MiddleRight,
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                BackColor = Color.Transparent
+            };
+            panel.Controls.Add(creado);
+            creado.BringToFront();
+            return creado;
         }
 
         public static void AplicarLogin(Form form)

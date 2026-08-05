@@ -91,11 +91,25 @@ namespace BE
         /// </summary>
         public void AgregarSubperfil(BE_Perfil subperfil)
         {
-            if (subperfil != null && subperfil.ID != this.ID)
+            if (subperfil != null && subperfil.ID != this.ID && !Subperfiles.Contains(subperfil))
             {
                 Subperfiles.Add(subperfil);
                 subperfil.PerfilPadre = this;
                 subperfil.IdPadrePerfil = this.ID;
+            }
+        }
+
+        public void QuitarSubperfil(BE_Perfil subperfil)
+        {
+            if (subperfil == null)
+                return;
+
+            if (Subperfiles.Remove(subperfil))
+            {
+                if (subperfil.PerfilPadre == this)
+                    subperfil.PerfilPadre = null;
+                if (subperfil.IdPadrePerfil == this.ID)
+                    subperfil.IdPadrePerfil = null;
             }
         }
 

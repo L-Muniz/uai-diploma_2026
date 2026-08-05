@@ -202,18 +202,7 @@ namespace BLL
             mpUsuario.ActualizarDVHorizontal(usuario);
 
             var dvv = BLL_IntegridadDatos.CalcularDVVUsuario(usuario);
-            dvv.TipoEntidad = "USUARIO";
-            var mpDVV = new MP_DigitoVerificadorVertical();
-            var existente = mpDVV.BuscarPorTipoEntidad("USUARIO");
-            if (existente != null)
-            {
-                dvv.ID = existente.ID;
-                mpDVV.Editar(dvv);
-            }
-            else
-            {
-                mpDVV.Alta(dvv);
-            }
+            BLL_IntegridadDatos.PersistirDVVUsuario(dvv);
         }
 
         private static (bool exito, string mensaje) RevertirCambioRol(BE_CambiosEntidad cambio, BE_USUARIO usuarioReverti)

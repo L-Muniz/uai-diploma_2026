@@ -69,6 +69,13 @@ namespace BLL
                 foreach (DataRow tablaRow in tablas.Rows)
                 {
                     string nombreTabla = tablaRow["TABLE_NAME"].ToString();
+                    scriptSQL.AppendLine($"ALTER TABLE [{nombreTabla}] NOCHECK CONSTRAINT ALL;");
+                }
+                scriptSQL.AppendLine();
+
+                foreach (DataRow tablaRow in tablas.Rows)
+                {
+                    string nombreTabla = tablaRow["TABLE_NAME"].ToString();
 
                     // No borrar TRADUCCION para preservar las traducciones cargadas
                     if (nombreTabla == "TRADUCCION")
@@ -123,6 +130,12 @@ namespace BLL
                         scriptSQL.AppendLine($"SET IDENTITY_INSERT [{nombreTabla}] OFF;");
 
                     scriptSQL.AppendLine();
+                }
+
+                foreach (DataRow tablaRow in tablas.Rows)
+                {
+                    string nombreTabla = tablaRow["TABLE_NAME"].ToString();
+                    scriptSQL.AppendLine($"ALTER TABLE [{nombreTabla}] WITH CHECK CHECK CONSTRAINT ALL;");
                 }
 
                 acc.Cerrar();
@@ -180,47 +193,52 @@ namespace BLL
 
                 string scriptSQL = SV_Encriptacion.LeerArchivoDesencriptado(rutaArchivo);
 
-                // Ejecutar el script separando por líneas para mejor control
                 SqlConnection conn = acc.GetConexion();
+                SqlTransaction tx = conn.BeginTransaction();
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = conn;
+                cmd.Transaction = tx;
                 cmd.CommandTimeout = 300;
 
                 string sentenciaActual = "";
                 int lineasEjecutadas = 0;
-                int errores = 0;
 
-                foreach (string linea in scriptSQL.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
+                try
                 {
-                    if (string.IsNullOrWhiteSpace(linea) || linea.Trim().StartsWith("--"))
-                        continue;
-
-                    sentenciaActual += " " + linea;
-
-                    if (linea.Trim().EndsWith(";"))
+                    foreach (string linea in scriptSQL.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None))
                     {
-                        try
+                        if (string.IsNullOrWhiteSpace(linea) || linea.Trim().StartsWith("--"))
+                            continue;
+
+                        sentenciaActual += " " + linea;
+
+                        if (linea.Trim().EndsWith(";"))
                         {
                             cmd.CommandText = sentenciaActual.Trim();
                             cmd.ExecuteNonQuery();
                             lineasEjecutadas++;
+                            sentenciaActual = "";
                         }
-                        catch (Exception ex)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"Error SQL: {ex.Message}");
-                            errores++;
-                        }
-                        sentenciaActual = "";
                     }
+
+                    if (!string.IsNullOrWhiteSpace(sentenciaActual))
+                    {
+                        cmd.CommandText = sentenciaActual.Trim();
+                        cmd.ExecuteNonQuery();
+                        lineasEjecutadas++;
+                    }
+
+                    tx.Commit();
+                }
+                catch (Exception ex)
+                {
+                    try { tx.Rollback(); } catch { }
+                    acc.Cerrar();
+                    return (false, $"Error en restore (se revirtió la transacción): {ex.Message}");
                 }
 
                 acc.Cerrar();
-
-                string mensaje = $"Base de datos restaurada. Sentencias ejecutadas: {lineasEjecutadas}";
-                if (errores > 0)
-                    mensaje += $" (Errores: {errores})";
-
-                return (true, mensaje);
+                return (true, $"Base de datos restaurada. Sentencias ejecutadas: {lineasEjecutadas}");
             }
             catch (Exception ex)
             {

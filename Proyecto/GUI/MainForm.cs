@@ -210,13 +210,9 @@ namespace GUI
             itemPerfiles.Tag = "PERFILES";
             menuAdmin.DropDownItems.Add(itemPerfiles);
 
-            var itemPermisoABM = new ToolStripMenuItem("&Administración de Permisos", null, (s, e) => AbrirHijoMdi(new FormPermisoABM()));
+            var itemPermisoABM = new ToolStripMenuItem("&Catálogo de Permisos", null, (s, e) => AbrirHijoMdi(new FormPermisoABM()));
             itemPermisoABM.Tag = "ADMINISTRACION_PERMISOS";
             menuAdmin.DropDownItems.Add(itemPermisoABM);
-
-            var itemPermisos = new ToolStripMenuItem("&Asignar Permisos", null, (s, e) => AbrirHijoMdi(new FormPermisos()));
-            itemPermisos.Tag = "ASIGNAR_PERMISOS";
-            menuAdmin.DropDownItems.Add(itemPermisos);
 
             var itemIntegridad = new ToolStripMenuItem("&Integridad / DV", null, (s, e) => AbrirHijoMdi(new FormIntegridad()));
             itemIntegridad.Tag = "INTEGRIDAD";

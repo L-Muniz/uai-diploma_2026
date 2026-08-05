@@ -108,9 +108,13 @@ namespace GUI
                 return;
             }
 
-            var row = dgvCambios.SelectedRows[0];
-            int idSnapshot = Convert.ToInt32(row.Cells["ID"].Value);
-            string nombre = row.Cells["Nombre"].Value?.ToString() ?? "desconocido";
+            var snapshot = dgvCambios.SelectedRows[0].DataBoundItem as BE_Snapshot;
+            int idSnapshot = snapshot != null
+                ? snapshot.ID
+                : Convert.ToInt32(dgvCambios.SelectedRows[0].Cells["ID"].Value);
+            string nombre = snapshot?.Nombre
+                ?? dgvCambios.SelectedRows[0].Cells["Nombre"].Value?.ToString()
+                ?? "desconocido";
 
             if (MessageBox.Show($"¿Deshacer a '{nombre}'?\nEsta acción es irreversible.", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
@@ -306,10 +310,10 @@ namespace GUI
                 // Limpiar columnas anteriores y crear nuevas
                 dgvCambios.Columns.Clear();
                 dgvCambios.AutoGenerateColumns = false;
-                dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "ID", DataPropertyName = "ID", Width = 50 });
-                dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Nombre", DataPropertyName = "Nombre", Width = 200 });
-                dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Descripción", DataPropertyName = "Descripcion", Width = 400 });
-                dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Fecha", DataPropertyName = "Fecha", Width = 150, DefaultCellStyle = new DataGridViewCellStyle() { Format = "dd/MM/yyyy HH:mm:ss" } });
+                dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { Name = "ID", HeaderText = "ID", DataPropertyName = "ID", Width = 50 });
+                dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Nombre", HeaderText = "Nombre", DataPropertyName = "Nombre", Width = 200 });
+                dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Descripcion", HeaderText = "Descripción", DataPropertyName = "Descripcion", Width = 400 });
+                dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Fecha", HeaderText = "Fecha", DataPropertyName = "Fecha", Width = 150, DefaultCellStyle = new DataGridViewCellStyle() { Format = "dd/MM/yyyy HH:mm:ss" } });
 
                 DataGridViewSortHelper.Bind(dgvCambios, snapshots);
 

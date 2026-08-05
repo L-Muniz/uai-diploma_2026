@@ -78,12 +78,6 @@
     <Compile Include="FormAuditoria.Designer.cs">
       <DependentUpon>FormAuditoria.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormPermisos.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormPermisos.Designer.cs">
-      <DependentUpon>FormPermisos.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormPermisoABM.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,6 +123,7 @@
     <Compile Include="FormError.cs" />
     <Compile Include="FormUnico.cs" />
     <Compile Include="SortableBindingList.cs" />
+    <Compile Include="TreeViewExpansionHelper.cs" />
     <Compile Include="DataGridViewSortHelper.cs" />
     <Compile Include="UITheme.cs" />
     <Compile Include="Program.cs" />
@@ -138,9 +133,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormBackups.resx">
       <DependentUpon>FormBackups.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormPermisos.resx">
-      <DependentUpon>FormPermisos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormPermisoABM.resx">
       <DependentUpon>FormPermisoABM.cs</DependentUpon>

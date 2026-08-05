@@ -199,6 +199,7 @@ namespace GUI
             this.dgvBackups.GridColor = System.Drawing.Color.LightGray;
             this.dgvBackups.Location = new System.Drawing.Point(0, 156);
             this.dgvBackups.Name = "dgvBackups";
+            this.dgvBackups.MultiSelect = true;
             this.dgvBackups.ReadOnly = true;
             this.dgvBackups.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvBackups.Size = new System.Drawing.Size(771, 410);

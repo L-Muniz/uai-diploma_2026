@@ -322,7 +322,7 @@ namespace GUI
                     return;
                 }
 
-                var roles = bllRol.ObtenerRolesPrincipales();
+                var roles = ObtenerRolesJerarquicosParaAsignar();
 
                 using (var dialog = new Form())
                 {
@@ -337,15 +337,15 @@ namespace GUI
                     Label lblRol = new Label() { Left = 20, Top = 20, Text = "Rol:", Width = 350 };
                     ComboBox cbRol = new ComboBox() { Left = 20, Top = 45, Width = 350, DropDownStyle = ComboBoxStyle.DropDownList };
 
-                    cbRol.DataSource = roles;
-                    cbRol.DisplayMember = "Nombre";
+                    cbRol.DisplayMember = "Etiqueta";
                     cbRol.ValueMember = "ID";
+                    cbRol.DataSource = roles;
 
                     if (!string.IsNullOrEmpty(usuario.Rol))
                     {
                         var rolActual = roles.FirstOrDefault(r => r.Nombre == usuario.Rol);
                         if (rolActual != null)
-                            cbRol.SelectedValue = rolActual.ID;
+                            cbRol.SelectedItem = rolActual;
                     }
 
                     Button btnOK = new Button() { Text = "Asignar", Left = 200, Width = 80, Top = 100, DialogResult = DialogResult.OK };
@@ -358,15 +358,11 @@ namespace GUI
                     dialog.AcceptButton = btnOK;
                     dialog.CancelButton = btnCancelar;
 
-                    if (dialog.ShowDialog() == DialogResult.OK && cbRol.SelectedValue is int idRol)
+                    if (dialog.ShowDialog() == DialogResult.OK && cbRol.SelectedItem is RolAsignacionItem rol)
                     {
-                        var rol = roles.FirstOrDefault(r => r.ID == idRol);
-                        if (rol != null)
-                        {
-                            bllUsuario.AsignarRolUsuario(usuario.ID, rol.ID, rol.Nombre);
-                            MessageBox.Show($"Rol '{rol.Nombre}' asignado a {usuario.Username}", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            CargarUsuarios();
-                        }
+                        bllUsuario.AsignarRolUsuario(usuario.ID, rol.ID, rol.Nombre);
+                        MessageBox.Show($"Rol '{rol.Nombre}' asignado a {usuario.Username}", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        CargarUsuarios();
                     }
                 }
             }
@@ -379,6 +375,56 @@ namespace GUI
         public void ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo)
         {
             ActualizarTextos();
+        }
+
+        private List<RolAsignacionItem> ObtenerRolesJerarquicosParaAsignar()
+        {
+            var todos = bllRol.ObtenerTodosLosRoles() ?? new List<BE_Rol>();
+            var hijosPorPadre = todos
+                .GroupBy(r => r.IdPadreRol ?? 0)
+                .ToDictionary(g => g.Key, g => g.OrderBy(r => r.Nombre).ToList());
+
+            var lista = new List<RolAsignacionItem>();
+            var visitados = new HashSet<int>();
+
+            foreach (var raiz in todos.Where(r => !r.IdPadreRol.HasValue).OrderBy(r => r.Nombre))
+                AgregarRolJerarquico(raiz, raiz.Nombre, hijosPorPadre, lista, visitados);
+
+            foreach (var rol in todos.Where(r => !visitados.Contains(r.ID)).OrderBy(r => r.Nombre))
+                AgregarRolJerarquico(rol, rol.Nombre, hijosPorPadre, lista, visitados);
+
+            return lista;
+        }
+
+        private void AgregarRolJerarquico(
+            BE_Rol rol,
+            string ruta,
+            Dictionary<int, List<BE_Rol>> hijosPorPadre,
+            List<RolAsignacionItem> destino,
+            HashSet<int> visitados)
+        {
+            if (rol == null || !visitados.Add(rol.ID))
+                return;
+
+            destino.Add(new RolAsignacionItem
+            {
+                ID = rol.ID,
+                Nombre = rol.Nombre,
+                Etiqueta = ruta
+            });
+
+            if (!hijosPorPadre.TryGetValue(rol.ID, out var hijos))
+                return;
+
+            foreach (var hijo in hijos)
+                AgregarRolJerarquico(hijo, ruta + " > " + hijo.Nombre, hijosPorPadre, destino, visitados);
+        }
+
+        private sealed class RolAsignacionItem
+        {
+            public int ID { get; set; }
+            public string Nombre { get; set; }
+            public string Etiqueta { get; set; }
         }
     }
 }

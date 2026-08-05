@@ -100,11 +100,10 @@ namespace DAL
 
         public SqlParameter CrearParametro(string key, string value)
         {
-            SqlParameter param = new SqlParameter();
-            param.ParameterName = key;
-            param.Value = value;
-            param.DbType = DbType.String;
-            return param;
+            return new SqlParameter(key, SqlDbType.NVarChar, -1)
+            {
+                Value = (object)value ?? DBNull.Value
+            };
         }
 
         public SqlParameter CrearParametro(string key, int value)

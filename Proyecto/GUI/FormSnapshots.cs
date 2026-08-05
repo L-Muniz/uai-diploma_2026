@@ -49,10 +49,10 @@ namespace GUI
 
                 dgvSnapshots.Columns.Clear();
                 dgvSnapshots.AutoGenerateColumns = false;
-                dgvSnapshots.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "ID", DataPropertyName = "ID", Width = 50 });
-                dgvSnapshots.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Nombre", DataPropertyName = "Nombre", Width = 200 });
-                dgvSnapshots.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Descripción", DataPropertyName = "Descripcion", Width = 350 });
-                dgvSnapshots.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Fecha", DataPropertyName = "Fecha", Width = 150, DefaultCellStyle = new DataGridViewCellStyle() { Format = "dd/MM/yyyy HH:mm:ss" } });
+                dgvSnapshots.Columns.Add(new DataGridViewTextBoxColumn() { Name = "ID", HeaderText = "ID", DataPropertyName = "ID", Width = 50 });
+                dgvSnapshots.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Nombre", HeaderText = "Nombre", DataPropertyName = "Nombre", Width = 200 });
+                dgvSnapshots.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Descripcion", HeaderText = "Descripción", DataPropertyName = "Descripcion", Width = 350 });
+                dgvSnapshots.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Fecha", HeaderText = "Fecha", DataPropertyName = "Fecha", Width = 150, DefaultCellStyle = new DataGridViewCellStyle() { Format = "dd/MM/yyyy HH:mm:ss" } });
 
                 DataGridViewSortHelper.Bind(dgvSnapshots, snapshots);
             }
@@ -72,6 +72,14 @@ namespace GUI
             EliminarSnapshot();
         }
 
+        private BE_Snapshot ObtenerSnapshotSeleccionado()
+        {
+            if (dgvSnapshots.SelectedRows.Count == 0)
+                return null;
+
+            return dgvSnapshots.SelectedRows[0].DataBoundItem as BE_Snapshot;
+        }
+
         private void RestaurarSnapshot()
         {
             if (dgvSnapshots.SelectedRows.Count == 0)
@@ -80,10 +88,9 @@ namespace GUI
                 return;
             }
 
-            var selectedRow = dgvSnapshots.SelectedRows[0];
-            if (selectedRow.DataBoundItem == null) return;
+            var snapshot = ObtenerSnapshotSeleccionado();
+            if (snapshot == null) return;
 
-            dynamic snapshot = selectedRow.DataBoundItem;
             int idSnapshot = snapshot.ID;
 
             if (MessageBox.Show($"¿Restaurar el snapshot '{snapshot.Nombre}'?\nEsta acción no se puede deshacer.", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
@@ -117,10 +124,9 @@ namespace GUI
                 return;
             }
 
-            var selectedRow = dgvSnapshots.SelectedRows[0];
-            if (selectedRow.DataBoundItem == null) return;
+            var snapshot = ObtenerSnapshotSeleccionado();
+            if (snapshot == null) return;
 
-            dynamic snapshot = selectedRow.DataBoundItem;
             int idSnapshot = snapshot.ID;
 
             if (MessageBox.Show($"¿Eliminar el snapshot '{snapshot.Nombre}'?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)

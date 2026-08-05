@@ -172,8 +172,12 @@ namespace GUI
                 return;
             }
 
-            var backup = dgvBackups.SelectedRows[0].DataBoundItem;
-            string rutaBackup = ((dynamic)backup).Ruta;
+            string rutaBackup = ObtenerRutaBackup(dgvBackups.SelectedRows[0].DataBoundItem);
+            if (string.IsNullOrWhiteSpace(rutaBackup))
+            {
+                MessageBox.Show("No se pudo obtener la ruta del backup seleccionado", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             string nombreArchivo = Path.GetFileName(rutaBackup);
 
             if (MessageBox.Show($"⚠️ ADVERTENCIA: Se restaurarán todos los datos a la fecha de este backup.\n\nArchivo: {nombreArchivo}\n\n¿Estás seguro?",
@@ -220,28 +224,64 @@ namespace GUI
 
         private void EliminarBackup()
         {
-            if (dgvBackups.SelectedRows.Count == 0)
+            var rutas = new List<string>();
+            foreach (DataGridViewRow row in dgvBackups.SelectedRows)
             {
-                MessageBox.Show("Selecciona un backup para eliminar", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                string ruta = ObtenerRutaBackup(row.DataBoundItem);
+                if (!string.IsNullOrWhiteSpace(ruta) && !rutas.Contains(ruta))
+                    rutas.Add(ruta);
+            }
+
+            if (rutas.Count == 0)
+            {
+                MessageBox.Show("Selecciona al menos un backup para eliminar", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            var backup = dgvBackups.SelectedRows[0].DataBoundItem;
-            string rutaBackup = ((dynamic)backup).Ruta;
+            string mensaje = rutas.Count == 1
+                ? $"¿Eliminar este backup?\n{Path.GetFileName(rutas[0])}"
+                : $"¿Eliminar los {rutas.Count} backups seleccionados?";
 
-            if (MessageBox.Show($"¿Eliminar este backup?\n{Path.GetFileName(rutaBackup)}", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (MessageBox.Show(mensaje, "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
-            try
+            int eliminados = 0;
+            var errores = new List<string>();
+            foreach (string ruta in rutas)
             {
-                File.Delete(rutaBackup);
-                MessageBox.Show("Backup eliminado", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                CargarBackups();
+                try
+                {
+                    File.Delete(ruta);
+                    eliminados++;
+                }
+                catch (Exception ex)
+                {
+                    errores.Add($"{Path.GetFileName(ruta)}: {ex.Message}");
+                }
             }
-            catch (Exception ex)
+
+            CargarBackups();
+
+            if (errores.Count == 0)
             {
-                MessageBox.Show($"Error al eliminar: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    eliminados == 1 ? "Backup eliminado" : $"{eliminados} backups eliminados",
+                    "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
+
+            MessageBox.Show(
+                $"Eliminados: {eliminados} de {rutas.Count}\n\nErrores:\n{string.Join("\n", errores)}",
+                "Eliminar backups", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+        private static string ObtenerRutaBackup(object item)
+        {
+            if (item == null)
+                return null;
+
+            var propiedad = item.GetType().GetProperty("Ruta");
+            return propiedad?.GetValue(item)?.ToString();
         }
 
         public void ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo)

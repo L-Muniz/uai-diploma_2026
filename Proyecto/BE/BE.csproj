@@ -44,11 +44,13 @@
   <ItemGroup>
     <Compile Include="BE_BITACORA.cs" />
     <Compile Include="BE_CambiosEntidad.cs" />
+    <Compile Include="BE_ComponenteAcceso.cs" />
     <Compile Include="BE_DigitoVerificadorVertical.cs" />
     <Compile Include="BE_Idioma.cs" />
     <Compile Include="BE_Permiso.cs" />
     <Compile Include="BE_Perfil.cs" />
     <Compile Include="BE_Rol.cs" />
+    <Compile Include="BE_Snapshot.cs" />
     <Compile Include="BE_USUARIO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -85,15 +85,33 @@ namespace BE
         }
 
         /// <summary>
-        /// Agrega un sub-rol (patrón Composite)
+        /// Agrega un sub-rol (patrón Composite). No permite auto-referencia.
+        /// La detección de ciclos A→B→A se valida en BLL al persistir.
         /// </summary>
         public void AgregarSubRol(BE_Rol subRol)
         {
-            if (subRol != null && subRol.ID != this.ID)
+            if (subRol != null && subRol.ID != this.ID && !SubRoles.Contains(subRol))
             {
                 SubRoles.Add(subRol);
                 subRol.RolPadre = this;
                 subRol.IdPadreRol = this.ID;
+            }
+        }
+
+        /// <summary>
+        /// Quita un sub-rol integrante sin eliminarlo del sistema (desasignar).
+        /// </summary>
+        public void QuitarSubRol(BE_Rol subRol)
+        {
+            if (subRol == null)
+                return;
+
+            if (SubRoles.Remove(subRol))
+            {
+                if (subRol.RolPadre == this)
+                    subRol.RolPadre = null;
+                if (subRol.IdPadreRol == this.ID)
+                    subRol.IdPadreRol = null;
             }
         }
 

@@ -43,6 +43,20 @@ namespace DAL
             parametros.Add(acc.CrearParametro("@ID_PERFIL", obj.ID));
             parametros.Add(acc.CrearParametro("@NOMBRE", obj.Nombre));
             parametros.Add(acc.CrearParametro("@DESCRIPCION", obj.Descripcion ?? ""));
+            parametros.Add(acc.CrearParametro("@ID_PERFIL_PADRE", obj.IdPadrePerfil ?? 0));
+            int filas = acc.Escribir(sql, parametros);
+            acc.Cerrar();
+            return filas;
+        }
+
+        public int AsignarPadre(int idPerfil, int? idPerfilPadre)
+        {
+            ACCESO acc = new ACCESO();
+            acc.Abrir();
+            string sql = "PERFIL_ASIGNAR_PADRE";
+            List<SqlParameter> parametros = new List<SqlParameter>();
+            parametros.Add(acc.CrearParametro("@ID_PERFIL", idPerfil));
+            parametros.Add(acc.CrearParametro("@ID_PERFIL_PADRE", idPerfilPadre ?? 0));
             int filas = acc.Escribir(sql, parametros);
             acc.Cerrar();
             return filas;
@@ -64,6 +78,38 @@ namespace DAL
             return lista;
         }
 
+        public List<BE_Perfil> ListarTodos()
+        {
+            ACCESO acc = new ACCESO();
+            acc.Abrir();
+            string sql = "PERFIL_LISTAR_TODOS";
+            DataTable dt = acc.Leer(sql);
+            acc.Cerrar();
+
+            List<BE_Perfil> lista = new List<BE_Perfil>();
+            foreach (DataRow row in dt.Rows)
+                lista.Add(MapearDatos(row));
+
+            if (lista.Count == 0)
+            {
+                var visitados = new HashSet<int>();
+                foreach (var raiz in Listar())
+                    AgregarPerfilYDescendientes(raiz, lista, visitados);
+            }
+
+            return lista;
+        }
+
+        private void AgregarPerfilYDescendientes(BE_Perfil perfil, List<BE_Perfil> destino, HashSet<int> visitados)
+        {
+            if (perfil == null || !visitados.Add(perfil.ID))
+                return;
+
+            destino.Add(perfil);
+            foreach (var hijo in ObtenerPerfilesHijos(perfil.ID))
+                AgregarPerfilYDescendientes(hijo, destino, visitados);
+        }
+
         public List<BE_Perfil> ObtenerPerfilesHijos(int idPerfilPadre)
         {
             ACCESO acc = new ACCESO();
@@ -76,10 +122,23 @@ namespace DAL
 
             List<BE_Perfil> lista = new List<BE_Perfil>();
             foreach (DataRow row in dt.Rows)
-            {
                 lista.Add(MapearDatos(row));
-            }
             return lista;
+        }
+
+        public BE_Perfil ObtenerPorId(int idPerfil)
+        {
+            ACCESO acc = new ACCESO();
+            acc.Abrir();
+            string sql = "PERFIL_OBTENER_POR_ID";
+            List<SqlParameter> parametros = new List<SqlParameter>();
+            parametros.Add(acc.CrearParametro("@ID_PERFIL", idPerfil));
+            DataTable dt = acc.Leer(sql, parametros);
+            acc.Cerrar();
+
+            if (dt.Rows.Count > 0)
+                return MapearDatos(dt.Rows[0]);
+            return null;
         }
 
         public List<BE_Permiso> ObtenerPermisos(int idPerfil)
@@ -157,8 +216,12 @@ namespace DAL
             perfil.Nombre = row["NOMBRE"].ToString();
             perfil.Descripcion = row["DESCRIPCION"].ToString();
 
-            if (row["ID_PERFIL_PADRE"] != DBNull.Value)
-                perfil.IdPadrePerfil = int.Parse(row["ID_PERFIL_PADRE"].ToString());
+            if (row.Table.Columns.Contains("ID_PERFIL_PADRE") && row["ID_PERFIL_PADRE"] != DBNull.Value)
+            {
+                int idPadre = int.Parse(row["ID_PERFIL_PADRE"].ToString());
+                if (idPadre > 0)
+                    perfil.IdPadrePerfil = idPadre;
+            }
 
             return perfil;
         }

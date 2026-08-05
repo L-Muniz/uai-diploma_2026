@@ -27,6 +27,9 @@ namespace GUI
             this.SuspendLayout();
 
             // dgvPermisos
+            this.dgvPermisos.AllowUserToAddRows = false;
+            this.dgvPermisos.AllowUserToDeleteRows = false;
+            this.dgvPermisos.AllowUserToResizeRows = false;
             this.dgvPermisos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvPermisos.Location = new System.Drawing.Point(12, 12);
             this.dgvPermisos.Name = "dgvPermisos";

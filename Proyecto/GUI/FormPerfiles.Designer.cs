@@ -67,19 +67,17 @@ namespace GUI
             this.panelBotones.Controls.Add(this.btnNuevo);
             this.panelBotones.Controls.Add(this.btnEditar);
             this.panelBotones.Controls.Add(this.btnEliminar);
-            this.panelBotones.Controls.Add(this.btnAgregarPermiso);
-            this.panelBotones.Controls.Add(this.btnEliminarPermiso);
             this.panelBotones.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelBotones.Location = new System.Drawing.Point(0, 0);
             this.panelBotones.Name = "panelBotones";
-            this.panelBotones.Size = new System.Drawing.Size(943, 52);
+            this.panelBotones.Size = new System.Drawing.Size(943, 58);
             this.panelBotones.TabIndex = 0;
             // 
             // btnNuevo
             //
-            this.btnNuevo.Location = new System.Drawing.Point(9, 13);
+            this.btnNuevo.Location = new System.Drawing.Point(12, 13);
             this.btnNuevo.Name = "btnNuevo";
-            this.btnNuevo.Size = new System.Drawing.Size(86, 26);
+            this.btnNuevo.Size = new System.Drawing.Size(120, 32);
             this.btnNuevo.TabIndex = 0;
             this.btnNuevo.Text = "Nuevo Perfil";
             this.btnNuevo.UseVisualStyleBackColor = true;
@@ -87,9 +85,9 @@ namespace GUI
             // 
             // btnEditar
             //
-            this.btnEditar.Location = new System.Drawing.Point(103, 13);
+            this.btnEditar.Location = new System.Drawing.Point(140, 13);
             this.btnEditar.Name = "btnEditar";
-            this.btnEditar.Size = new System.Drawing.Size(69, 26);
+            this.btnEditar.Size = new System.Drawing.Size(80, 32);
             this.btnEditar.TabIndex = 1;
             this.btnEditar.Text = "Editar";
             this.btnEditar.UseVisualStyleBackColor = true;
@@ -97,9 +95,9 @@ namespace GUI
             // 
             // btnEliminar
             //
-            this.btnEliminar.Location = new System.Drawing.Point(180, 13);
+            this.btnEliminar.Location = new System.Drawing.Point(228, 13);
             this.btnEliminar.Name = "btnEliminar";
-            this.btnEliminar.Size = new System.Drawing.Size(69, 26);
+            this.btnEliminar.Size = new System.Drawing.Size(80, 32);
             this.btnEliminar.TabIndex = 2;
             this.btnEliminar.Text = "Eliminar";
             this.btnEliminar.UseVisualStyleBackColor = true;
@@ -107,21 +105,21 @@ namespace GUI
             // 
             // btnAgregarPermiso
             //
-            this.btnAgregarPermiso.Location = new System.Drawing.Point(257, 13);
+            this.btnAgregarPermiso.Location = new System.Drawing.Point(350, 144);
             this.btnAgregarPermiso.Name = "btnAgregarPermiso";
-            this.btnAgregarPermiso.Size = new System.Drawing.Size(103, 26);
+            this.btnAgregarPermiso.Size = new System.Drawing.Size(90, 26);
             this.btnAgregarPermiso.TabIndex = 3;
-            this.btnAgregarPermiso.Text = "Agregar Permiso";
+            this.btnAgregarPermiso.Text = "Agregar";
             this.btnAgregarPermiso.UseVisualStyleBackColor = true;
             this.btnAgregarPermiso.Click += new System.EventHandler(this.btnAgregarPermiso_Click);
             // 
             // btnEliminarPermiso
             //
-            this.btnEliminarPermiso.Location = new System.Drawing.Point(369, 13);
+            this.btnEliminarPermiso.Location = new System.Drawing.Point(446, 144);
             this.btnEliminarPermiso.Name = "btnEliminarPermiso";
-            this.btnEliminarPermiso.Size = new System.Drawing.Size(103, 26);
+            this.btnEliminarPermiso.Size = new System.Drawing.Size(100, 26);
             this.btnEliminarPermiso.TabIndex = 4;
-            this.btnEliminarPermiso.Text = "Quitar Permiso";
+            this.btnEliminarPermiso.Text = "Desasignar";
             this.btnEliminarPermiso.UseVisualStyleBackColor = true;
             this.btnEliminarPermiso.Click += new System.EventHandler(this.btnEliminarPermiso_Click);
             // 
@@ -138,11 +136,17 @@ namespace GUI
             // 
             // tvPerfiles
             //
+            this.tvPerfiles.AllowDrop = true;
+            this.tvPerfiles.HideSelection = false;
             this.tvPerfiles.Location = new System.Drawing.Point(9, 30);
             this.tvPerfiles.Name = "tvPerfiles";
             this.tvPerfiles.Size = new System.Drawing.Size(283, 469);
             this.tvPerfiles.TabIndex = 1;
             this.tvPerfiles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvPerfiles_AfterSelect);
+            this.tvPerfiles.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.tvPerfiles_ItemDrag);
+            this.tvPerfiles.DragEnter += new System.Windows.Forms.DragEventHandler(this.tvPerfiles_DragEnter);
+            this.tvPerfiles.DragOver += new System.Windows.Forms.DragEventHandler(this.tvPerfiles_DragOver);
+            this.tvPerfiles.DragDrop += new System.Windows.Forms.DragEventHandler(this.tvPerfiles_DragDrop);
             // 
             // lblPerfiles
             // 
@@ -164,6 +168,8 @@ namespace GUI
             this.panelDerecho.Controls.Add(this.txtDescripcionPerfil);
             this.panelDerecho.Controls.Add(this.lblPermisosDisponibles);
             this.panelDerecho.Controls.Add(this.cbPermisosDisponibles);
+            this.panelDerecho.Controls.Add(this.btnAgregarPermiso);
+            this.panelDerecho.Controls.Add(this.btnEliminarPermiso);
             this.panelDerecho.Controls.Add(this.lblPermisosLabel);
             this.panelDerecho.Controls.Add(this.dgvPermisos);
             this.panelDerecho.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -196,6 +202,7 @@ namespace GUI
             // 
             this.txtNombrePerfil.Location = new System.Drawing.Point(86, 35);
             this.txtNombrePerfil.Name = "txtNombrePerfil";
+            this.txtNombrePerfil.ReadOnly = true;
             this.txtNombrePerfil.Size = new System.Drawing.Size(258, 20);
             this.txtNombrePerfil.TabIndex = 2;
             // 
@@ -220,7 +227,7 @@ namespace GUI
             // lblPermisosDisponibles
             //
             this.lblPermisosDisponibles.AutoSize = true;
-            this.lblPermisosDisponibles.Location = new System.Drawing.Point(9, 121);
+            this.lblPermisosDisponibles.Location = new System.Drawing.Point(9, 128);
             this.lblPermisosDisponibles.Name = "lblPermisosDisponibles";
             this.lblPermisosDisponibles.Size = new System.Drawing.Size(87, 13);
             this.lblPermisosDisponibles.TabIndex = 5;
@@ -230,16 +237,16 @@ namespace GUI
             //
             this.cbPermisosDisponibles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbPermisosDisponibles.FormattingEnabled = true;
-            this.cbPermisosDisponibles.Location = new System.Drawing.Point(103, 138);
+            this.cbPermisosDisponibles.Location = new System.Drawing.Point(12, 146);
             this.cbPermisosDisponibles.Name = "cbPermisosDisponibles";
-            this.cbPermisosDisponibles.Size = new System.Drawing.Size(258, 21);
+            this.cbPermisosDisponibles.Size = new System.Drawing.Size(332, 21);
             this.cbPermisosDisponibles.TabIndex = 6;
             //
             // lblPermisosLabel
             //
             this.lblPermisosLabel.AutoSize = true;
             this.lblPermisosLabel.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold);
-            this.lblPermisosLabel.Location = new System.Drawing.Point(9, 168);
+            this.lblPermisosLabel.Location = new System.Drawing.Point(9, 180);
             this.lblPermisosLabel.Name = "lblPermisosLabel";
             this.lblPermisosLabel.Size = new System.Drawing.Size(118, 15);
             this.lblPermisosLabel.TabIndex = 7;
@@ -252,7 +259,7 @@ namespace GUI
             this.dgvPermisos.AllowUserToResizeRows = false;
             this.dgvPermisos.BackgroundColor = System.Drawing.Color.White;
             this.dgvPermisos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvPermisos.Location = new System.Drawing.Point(9, 190);
+            this.dgvPermisos.Location = new System.Drawing.Point(9, 200);
             this.dgvPermisos.Name = "dgvPermisos";
             this.dgvPermisos.ReadOnly = true;
             this.dgvPermisos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;

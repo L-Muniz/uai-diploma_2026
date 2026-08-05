@@ -60,6 +60,35 @@ namespace BLL
             return dvv;
         }
 
+        public static void PersistirDVVUsuario(BE_DigitoVerificadorVertical dvv)
+        {
+            if (dvv == null)
+                return;
+
+            dvv.TipoEntidad = "USUARIO";
+            dvv.IdEntidad = 0;
+
+            MP_DigitoVerificadorVertical mpDVV = new MP_DigitoVerificadorVertical();
+            var existentes = (mpDVV.Listar() ?? new List<BE_DigitoVerificadorVertical>())
+                .Where(d => string.Equals(d.TipoEntidad, "USUARIO", StringComparison.OrdinalIgnoreCase))
+                .OrderBy(d => d.ID)
+                .ToList();
+
+            var canonico = existentes.LastOrDefault();
+            foreach (var extra in existentes.Where(d => canonico == null || d.ID != canonico.ID))
+                mpDVV.Borrar(extra);
+
+            if (canonico != null)
+            {
+                dvv.ID = canonico.ID;
+                mpDVV.Editar(dvv);
+            }
+            else
+            {
+                mpDVV.Alta(dvv);
+            }
+        }
+
         public static bool VerificarIntegridadDVVUsuario(BE_USUARIO usuario, BE_DigitoVerificadorVertical dvv)
         {
             if (dvv == null)
@@ -81,9 +110,6 @@ namespace BLL
         {
             if (usuario == null)
                 return (false, "Usuario no encontrado");
-
-            if (usuario.DVHorizontal == 0)
-                return (false, $"Error DVH: el usuario ID={usuario.ID} ({usuario.Username}) no tiene dígito horizontal calculado");
 
             if (!VerificarIntegridadDVHUsuario(usuario))
                 return (false, $"Error DVH: el usuario ID={usuario.ID} ({usuario.Username}) está comprometido (DV Horizontal no coincide)");
@@ -131,9 +157,6 @@ namespace BLL
 
             foreach (var usuario in usuarios.OrderBy(u => u.ID))
             {
-                if (usuario.DVHorizontal == 0)
-                    continue;
-
                 var resultadoDvh = VerificarSoloDVH(usuario);
                 if (!resultadoDvh.esValido)
                     return resultadoDvh;
@@ -147,26 +170,7 @@ namespace BLL
             if (usuario == null)
                 return (false, "Usuario no encontrado");
 
-            bool dvhFaltaba = false;
             bool dvvFaltaba = false;
-
-            // Si el usuario no tiene DVH calculado (es 0), lo calcula automáticamente
-            if (usuario.DVHorizontal == 0)
-            {
-                dvhFaltaba = true;
-                CalcularDVHUsuario(usuario);
-                System.Diagnostics.Debug.WriteLine($"[DVH] Calculado para {usuario.Username}: {usuario.DVHorizontal}");
-                DAL.MP_USUARIO mpUsuario = new DAL.MP_USUARIO();
-                try
-                {
-                    int filasActualizadas = mpUsuario.ActualizarDVHorizontal(usuario);
-                    System.Diagnostics.Debug.WriteLine($"[DVH] ActualizarDVHorizontal retornó: {filasActualizadas} filas");
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"[DVH] ERROR: {ex.Message}");
-                }
-            }
 
             // Si no tiene DVV, lo calcula y guarda (uno por tabla, no por usuario)
             if (dvv == null)
@@ -174,27 +178,11 @@ namespace BLL
                 dvvFaltaba = true;
                 dvv = CalcularDVVUsuario(usuario);
                 System.Diagnostics.Debug.WriteLine($"[DVV] Calculado para tabla USUARIO");
-                DAL.MP_DigitoVerificadorVertical mpDVV = new DAL.MP_DigitoVerificadorVertical();
-
-                // Buscar si ya existe DVV para la tabla
-                var dvvExistente = mpDVV.BuscarPorTipoEntidad("USUARIO");
-                if (dvvExistente != null)
-                {
-                    dvv.ID = dvvExistente.ID;
-                    mpDVV.Editar(dvv);
-                    System.Diagnostics.Debug.WriteLine($"[DVV] Actualizado en BD");
-                }
-                else
-                {
-                    dvv.TipoEntidad = "USUARIO";
-                    mpDVV.Alta(dvv);
-                    System.Diagnostics.Debug.WriteLine($"[DVV] Guardado en BD");
-                }
+                PersistirDVVUsuario(dvv);
             }
 
-            // Si DVH y DVV faltaban, no verificar (es usuario nuevo, auto-inicializado)
-            if (dvhFaltaba && dvvFaltaba)
-                return (true, "DVH/DVV inicializados automáticamente");
+            if (dvvFaltaba)
+                return (true, "DVV inicializado automáticamente");
 
             // Prioridad: si la tabla está comprometida, no culpar al usuario de la fila
             var dvvResultado = VerificarSoloDVV(dvv);
@@ -256,7 +244,6 @@ namespace BLL
             try
             {
                 MP_USUARIO mpUsuario = new MP_USUARIO();
-                MP_DigitoVerificadorVertical mpDVV = new MP_DigitoVerificadorVertical();
                 var usuarios = mpUsuario.Listar();
 
                 sb.AppendLine($"Recálculo de DV — {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
@@ -265,7 +252,7 @@ namespace BLL
                 int sumaUser = 0, sumaPass = 0, sumaBloq = 0;
                 int fila = 1;
 
-                foreach (var usuario in usuarios)
+                foreach (var usuario in usuarios.OrderBy(u => u.ID))
                 {
                     CalcularDVHUsuario(usuario);
                     mpUsuario.ActualizarDVHorizontal(usuario);
@@ -289,18 +276,8 @@ namespace BLL
                     FechaCreacion = DateTime.Now
                 };
 
-                var existente = mpDVV.BuscarPorTipoEntidad("USUARIO");
-                if (existente != null)
-                {
-                    dvv.ID = existente.ID;
-                    mpDVV.Editar(dvv);
-                    sb.AppendLine($"DVV actualizado (ID={dvv.ID})");
-                }
-                else
-                {
-                    mpDVV.Alta(dvv);
-                    sb.AppendLine($"DVV creado (ID={dvv.ID})");
-                }
+                PersistirDVVUsuario(dvv);
+                sb.AppendLine("DVV de tabla USUARIO persistido (una sola fila)");
 
                 sb.AppendLine();
                 sb.AppendLine("Recálculo completado.");

@@ -323,25 +323,7 @@ namespace BLL
         private void CalcularYGuardarDVVUsuario(BE_USUARIO usuario)
         {
             BE_DigitoVerificadorVertical dvv = BLL_IntegridadDatos.CalcularDVVUsuario(usuario);
-            dvv.TipoEntidad = "USUARIO";
-            dvv.IdEntidad = 0;
-
-            MP_DigitoVerificadorVertical mpDVV = new MP_DigitoVerificadorVertical();
-
-            // Obtener DVV existente por tipo de entidad
-            var dvvExistente = mpDVV.BuscarPorTipoEntidad("USUARIO");
-
-            if (dvvExistente != null)
-            {
-                // Actualizar si existe
-                dvv.ID = dvvExistente.ID;
-                mpDVV.Editar(dvv);
-            }
-            else
-            {
-                // Crear si no existe
-                mpDVV.Alta(dvv);
-            }
+            BLL_IntegridadDatos.PersistirDVVUsuario(dvv);
         }
 
         public List<BE_USUARIO> ListarUsuarios()

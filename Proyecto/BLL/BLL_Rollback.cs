@@ -72,9 +72,9 @@ namespace BLL
             }
         }
 
-        public static List<dynamic> ListarSnapshots()
+        public static List<BE_Snapshot> ListarSnapshots()
         {
-            List<dynamic> snapshots = new List<dynamic>();
+            var snapshots = new List<BE_Snapshot>();
             try
             {
                 ACCESO acc = new ACCESO();
@@ -88,12 +88,14 @@ namespace BLL
 
                 foreach (DataRow row in dt.Rows)
                 {
-                    snapshots.Add(new
+                    snapshots.Add(new BE_Snapshot
                     {
-                        ID = row["ID_SNAPSHOT"],
-                        Nombre = row["NOMBRE"],
-                        Descripcion = row["DESCRIPCION"],
-                        Fecha = row["FECHA_CREACION"]
+                        ID = Convert.ToInt32(row["ID_SNAPSHOT"]),
+                        Nombre = row["NOMBRE"]?.ToString() ?? "",
+                        Descripcion = row["DESCRIPCION"] == DBNull.Value ? "" : row["DESCRIPCION"].ToString(),
+                        Fecha = row["FECHA_CREACION"] == DBNull.Value
+                            ? DateTime.MinValue
+                            : Convert.ToDateTime(row["FECHA_CREACION"])
                     });
                 }
 
