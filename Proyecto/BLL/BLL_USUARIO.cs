@@ -1,4 +1,4 @@
-﻿using BE;
+using BE;
 using DAL;
 using SERVICE;
 using System;
@@ -14,11 +14,7 @@ namespace BLL
         private const int INTENTOS_MAXIMOS = 3;
         private int intentosLoginActuales = 0;
 
-        /// <summary>
-        /// Realiza el login de un usuario.
-        /// Retorna el usuario si es exitoso, null si hay error.
-        /// Lanza excepciones con mensajes informativos para cada caso.
-        /// </summary>
+        
         public BE_USUARIO Login(string username, string password)
         {
             MP_USUARIO usuarioDAL = new MP_USUARIO();
@@ -29,11 +25,9 @@ namespace BLL
             if (usuario == null)
                 throw new Exception("Usuario no encontrado.");
 
-            // Verificar si el usuario está bloqueado
             if (usuario.Bloqueado)
                 throw new Exception(SV_Mensajes.GetUsuarioBloqueadoMessage());
 
-            // PASS alterado / insertado a mano sin hash Base64 válido = integridad comprometida
             if (!BLL_GESTOR.EsHashValido(usuario.HashedPassword))
             {
                 throw new Exception(
@@ -41,10 +35,9 @@ namespace BLL
                     "No se puede autenticar hasta restaurar o recalcular los dígitos verificadores.");
             }
 
-            // Verificar contraseña
             if (!BLL_GESTOR.VerifyPassword(password, usuario.HashedPassword))
             {
-                // Registrar intento fallido y verificar bloqueo
+                
                 intentosLoginActuales++;
                 int intentosRestantes = INTENTOS_MAXIMOS - intentosLoginActuales;
 
@@ -57,10 +50,8 @@ namespace BLL
                 throw new Exception(SV_Mensajes.GetIntentoFallidoMessage(intentosLoginActuales, INTENTOS_MAXIMOS));
             }
 
-            // Login exitoso: restablecer intentos
             intentosLoginActuales = 0;
 
-            // Verificar integridad de datos (DVH/DVV) - solo avisa, no bloquea
             System.Diagnostics.Debug.WriteLine($"[LOGIN] Usuario: {usuario.Username}, DVHorizontal: {usuario.DVHorizontal}");
             BE_DigitoVerificadorVertical dvv = ObtenerDVVDelUsuario(usuario.ID);
             System.Diagnostics.Debug.WriteLine($"[LOGIN] DVV obtenido: {(dvv == null ? "NULL" : "EXISTE")}");
@@ -153,7 +144,6 @@ namespace BLL
 
                 int filas = usuarioDAL.Alta(usuario);
 
-                // Con SET NOCOUNT ON, ExecuteNonQuery puede devolver -1 aunque el INSERT haya sido exitoso.
                 usuario = usuarioDAL.BuscarPorUserName(username);
                 if (usuario == null)
                 {
@@ -184,15 +174,12 @@ namespace BLL
             }
         }
 
-        /// <summary>
-        /// Bloquea un usuario tras exceder intentos de login
-        /// </summary>
+        
         private void BloquearUsuario(BE_USUARIO usuario)
         {
             if (usuario == null)
                 return;
 
-            // Crear snapshot antes de bloquear (con contenido real)
             BLL_Rollback.GuardarSnapshotUsuario(usuario,
                 $"Snapshot antes de bloquear al usuario {usuario.Username} por intentos fallidos");
 
@@ -200,26 +187,21 @@ namespace BLL
             MP_USUARIO mpUsuario = new MP_USUARIO();
             mpUsuario.BloquearUsuario(usuario);
 
-            // Recalcular DVH y DVV después de cambiar estado
             CalcularYGuardarDVHUsuario(usuario, mpUsuario);
             CalcularYGuardarDVVUsuario(usuario);
 
-            // Registrar bloqueo en auditoría
             BLL_ControlCambios.RegistrarCambio("USUARIO", usuario.ID, "BLOQUEADO", "false", "true", usuario, "Bloqueado por intentos fallidos");
 
             BLL_BITACORA bitacoraBLL = new BLL_BITACORA();
             bitacoraBLL.IngresarRegistro(usuario, SV_Mensajes.GetUsuarioBloqueadoPorIntentosMessage());
         }
 
-        /// <summary>
-        /// Desbloquea un usuario (operación administrativa)
-        /// </summary>
+        
         public void DesbloquearUsuario(BE_USUARIO usuario)
         {
             if (usuario == null)
                 return;
 
-            // Crear snapshot antes de desbloquear (con contenido real)
             BLL_Rollback.GuardarSnapshotUsuario(usuario,
                 $"Snapshot antes de desbloquear al usuario {usuario.Username}");
 
@@ -227,11 +209,9 @@ namespace BLL
             MP_USUARIO mpUsuario = new MP_USUARIO();
             mpUsuario.DesbloquearUsuario(usuario);
 
-            // Recalcular DVH y DVV después de cambiar estado
             CalcularYGuardarDVHUsuario(usuario, mpUsuario);
             CalcularYGuardarDVVUsuario(usuario);
 
-            // Registrar desbloqueo en auditoría
             var usuarioActual = SV_Singleton.GetInstance().Usuario;
             BLL_ControlCambios.RegistrarCambio("USUARIO", usuario.ID, "BLOQUEADO", "true", "false", usuarioActual, "Desbloqueado por administrador");
 
@@ -239,9 +219,7 @@ namespace BLL
             bitacoraBLL.IngresarRegistro(usuario, "Usuario desbloqueado por administrador");
         }
 
-        /// <summary>
-        /// Actualiza el estado de un usuario (bloqueo/desbloqueo)
-        /// </summary>
+        
         public void ActualizarUsuario(BE_USUARIO usuario)
         {
             if (usuario == null)
@@ -260,7 +238,6 @@ namespace BLL
                         throw new InvalidOperationException("No se puede bloquear a un usuario administrador.");
                 }
 
-                // Guardar snapshot antes del cambio
                 string estadoNuevo = usuario.Bloqueado ? "bloqueado" : "desbloqueado";
                 BLL_Rollback.GuardarSnapshotUsuario(usuario, $"Cambio de estado antes de ser {estadoNuevo}");
 
@@ -277,7 +254,6 @@ namespace BLL
                     bitacoraBLL.IngresarRegistro(usuarioActual, $"Usuario {usuario.Username} desbloqueado por administrador");
                 }
 
-                // Recalcular DVH y DVV después del cambio
                 CalcularYGuardarDVHUsuario(usuario, mpUsuario);
                 CalcularYGuardarDVVUsuario(usuario);
             }
@@ -300,26 +276,20 @@ namespace BLL
             return normalizado == "ADMIN" || normalizado == "ADMINISTRADOR";
         }
 
-        /// <summary>
-        /// Obtiene el máximo de intentos de login permitidos
-        /// </summary>
+        
         public int ObtenerIntentosMaximos()
         {
             return INTENTOS_MAXIMOS;
         }
 
-        /// <summary>
-        /// Calcula y guarda el DVH para un usuario
-        /// </summary>
+        
         private void CalcularYGuardarDVHUsuario(BE_USUARIO usuario, MP_USUARIO mpUsuario)
         {
             BLL_IntegridadDatos.CalcularDVHUsuario(usuario);
             mpUsuario.ActualizarDVHorizontal(usuario);
         }
 
-        /// <summary>
-        /// Calcula y guarda el DVV para la tabla USUARIO (uno por tabla)
-        /// </summary>
+        
         private void CalcularYGuardarDVVUsuario(BE_USUARIO usuario)
         {
             BE_DigitoVerificadorVertical dvv = BLL_IntegridadDatos.CalcularDVVUsuario(usuario);
@@ -399,7 +369,6 @@ namespace BLL
             BLL_ControlCambios.RegistrarCambio("USUARIO", idUsuario, "ELIMINACION", usuario.Username, "", usuarioActual, "Usuario eliminado");
             bitacoraBLL.IngresarRegistro(usuarioActual ?? usuario, $"Usuario eliminado: {usuario.Username}");
 
-            // Recalcular DVV de la tabla tras eliminación
             var restantes = mpUsuario.Listar();
             if (restantes.Count > 0)
                 CalcularYGuardarDVVUsuario(restantes[0]);

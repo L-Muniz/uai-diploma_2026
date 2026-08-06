@@ -26,7 +26,6 @@ namespace GUI
             ((System.ComponentModel.ISupportInitialize)(this.dgvPermisos)).BeginInit();
             this.SuspendLayout();
 
-            // dgvPermisos
             this.dgvPermisos.AllowUserToAddRows = false;
             this.dgvPermisos.AllowUserToDeleteRows = false;
             this.dgvPermisos.AllowUserToResizeRows = false;
@@ -38,7 +37,6 @@ namespace GUI
             this.dgvPermisos.Size = new System.Drawing.Size(760, 350);
             this.dgvPermisos.TabIndex = 0;
 
-            // btnNuevo
             this.btnNuevo.Location = new System.Drawing.Point(12, 368);
             this.btnNuevo.Name = "btnNuevo";
             this.btnNuevo.Size = new System.Drawing.Size(75, 23);
@@ -47,7 +45,6 @@ namespace GUI
             this.btnNuevo.UseVisualStyleBackColor = true;
             this.btnNuevo.Click += new System.EventHandler(this.btnNuevo_Click);
 
-            // btnEditar
             this.btnEditar.Location = new System.Drawing.Point(93, 368);
             this.btnEditar.Name = "btnEditar";
             this.btnEditar.Size = new System.Drawing.Size(75, 23);
@@ -56,7 +53,6 @@ namespace GUI
             this.btnEditar.UseVisualStyleBackColor = true;
             this.btnEditar.Click += new System.EventHandler(this.btnEditar_Click);
 
-            // btnEliminar
             this.btnEliminar.Location = new System.Drawing.Point(174, 368);
             this.btnEliminar.Name = "btnEliminar";
             this.btnEliminar.Size = new System.Drawing.Size(75, 23);
@@ -65,7 +61,6 @@ namespace GUI
             this.btnEliminar.UseVisualStyleBackColor = true;
             this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
 
-            // FormPermisoABM
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 401);

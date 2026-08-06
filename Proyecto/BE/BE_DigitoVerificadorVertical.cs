@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 
 namespace BE
 {
-    /// <summary>
-    /// Entidad para almacenar D�gitos Verificadores Verticales
-    /// Relacionada 1:1 con BE_USUARIO (pero extensible a otras entidades)
-    /// </summary>
+    
     public class BE_DigitoVerificadorVertical
     {
         private int id;
@@ -20,7 +17,7 @@ namespace BE
             set { id = value; }
         }
 
-        private int idEntidad; // FK a la entidad relacionada (ej: ID_USUARIO)
+        private int idEntidad; 
 
         public int IdEntidad
         {
@@ -28,7 +25,7 @@ namespace BE
             set { idEntidad = value; }
         }
 
-        private string tipoEntidad; // Nombre de la entidad (ej: "USUARIO")
+        private string tipoEntidad; 
 
         public string TipoEntidad
         {
@@ -36,7 +33,7 @@ namespace BE
             set { tipoEntidad = value; }
         }
 
-        private int dvUsername; // DV del atributo USERNAME
+        private int dvUsername; 
 
         public int DVUsername
         {
@@ -44,7 +41,7 @@ namespace BE
             set { dvUsername = value; }
         }
 
-        private int dvHashedPassword; // DV del atributo PASS
+        private int dvHashedPassword; 
 
         public int DVHashedPassword
         {
@@ -52,7 +49,7 @@ namespace BE
             set { dvHashedPassword = value; }
         }
 
-        private int dvBloqueado; // DV del atributo BLOQUEADO
+        private int dvBloqueado; 
 
         public int DVBloqueado
         {
@@ -60,7 +57,7 @@ namespace BE
             set { dvBloqueado = value; }
         }
 
-        private DateTime fechaCalculoDV; // Cu�ndo se calcul� el DV
+        private DateTime fechaCalculoDV; 
 
         public DateTime FechaCreacion
         {

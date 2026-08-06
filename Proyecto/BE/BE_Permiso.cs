@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 
 namespace BE
 {
-    /// <summary>
-    /// Entidad que representa un permiso individual en el sistema
-    /// </summary>
     public class BE_Permiso
     {
         private int id;

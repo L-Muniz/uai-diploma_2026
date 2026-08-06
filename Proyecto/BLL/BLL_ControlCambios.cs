@@ -167,8 +167,7 @@ namespace BLL
                     case "PASS":
                     case "PASSWORD":
                     case "HASHEDPASSWORD":
-                        // No se puede restaurar el hash anterior si se registró como placeholder;
-                        // si el valor anterior parece un hash real, se restaura.
+
                         if (string.IsNullOrWhiteSpace(cambio.ValorAnterior) || cambio.ValorAnterior == "[hash]")
                             return (false, "No hay hash anterior restaurable para PASS");
                         usuario.HashedPassword = cambio.ValorAnterior;

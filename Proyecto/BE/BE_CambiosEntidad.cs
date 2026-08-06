@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 
 namespace BE
 {
-    /// <summary>
-    /// Entidad para registrar cambios en auditoría
-    /// Permite trazabilidad: quién cambió, cuándo cambió, qué cambió
-    /// </summary>
+    
     public class BE_CambiosEntidad
     {
         private int id;

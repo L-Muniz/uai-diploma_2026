@@ -45,7 +45,6 @@ namespace GUI
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
 
-            // panelFiltros
             this.panelFiltros.BackColor = System.Drawing.SystemColors.ControlLight;
             this.panelFiltros.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelFiltros.Controls.Add(this.label1);
@@ -63,13 +62,11 @@ namespace GUI
             this.panelFiltros.Name = "panelFiltros";
             this.panelFiltros.TabIndex = 0;
 
-            // label1 (Usuario)
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 15);
             this.label1.Name = "label1";
             this.label1.Text = "Usuario:";
 
-            // comboBox1
             this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(70, 12);
@@ -77,13 +74,11 @@ namespace GUI
             this.comboBox1.Size = new System.Drawing.Size(160, 21);
             this.comboBox1.TabIndex = 1;
 
-            // lblTipoEvento
             this.lblTipoEvento.AutoSize = true;
             this.lblTipoEvento.Location = new System.Drawing.Point(250, 15);
             this.lblTipoEvento.Name = "lblTipoEvento";
             this.lblTipoEvento.Text = "Tipo Evento:";
 
-            // cbTipoEvento
             this.cbTipoEvento.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbTipoEvento.FormattingEnabled = true;
             this.cbTipoEvento.Location = new System.Drawing.Point(330, 12);
@@ -91,13 +86,11 @@ namespace GUI
             this.cbTipoEvento.Size = new System.Drawing.Size(150, 21);
             this.cbTipoEvento.TabIndex = 2;
 
-            // lblFechaDesde
             this.lblFechaDesde.AutoSize = true;
             this.lblFechaDesde.Location = new System.Drawing.Point(12, 50);
             this.lblFechaDesde.Name = "lblFechaDesde";
             this.lblFechaDesde.Text = "Fecha Desde:";
 
-            // dtFechaDesde
             this.dtFechaDesde.CustomFormat = "dd/MM/yyyy HH:mm";
             this.dtFechaDesde.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtFechaDesde.Location = new System.Drawing.Point(98, 46);
@@ -105,13 +98,11 @@ namespace GUI
             this.dtFechaDesde.Size = new System.Drawing.Size(160, 20);
             this.dtFechaDesde.TabIndex = 3;
 
-            // lblFechaHasta
             this.lblFechaHasta.AutoSize = true;
             this.lblFechaHasta.Location = new System.Drawing.Point(280, 50);
             this.lblFechaHasta.Name = "lblFechaHasta";
             this.lblFechaHasta.Text = "Fecha Hasta:";
 
-            // dtFechaHasta
             this.dtFechaHasta.CustomFormat = "dd/MM/yyyy HH:mm";
             this.dtFechaHasta.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtFechaHasta.Location = new System.Drawing.Point(360, 46);
@@ -119,7 +110,6 @@ namespace GUI
             this.dtFechaHasta.Size = new System.Drawing.Size(160, 20);
             this.dtFechaHasta.TabIndex = 4;
 
-            // btnBuscar
             this.btnBuscar.Location = new System.Drawing.Point(540, 45);
             this.btnBuscar.Name = "btnBuscar";
             this.btnBuscar.Size = new System.Drawing.Size(100, 25);
@@ -128,7 +118,6 @@ namespace GUI
             this.btnBuscar.UseVisualStyleBackColor = true;
             this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
 
-            // btnLimpiar
             this.btnLimpiar.Location = new System.Drawing.Point(650, 45);
             this.btnLimpiar.Name = "btnLimpiar";
             this.btnLimpiar.Size = new System.Drawing.Size(100, 25);
@@ -137,7 +126,6 @@ namespace GUI
             this.btnLimpiar.UseVisualStyleBackColor = true;
             this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
 
-            // dataGridView1
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -148,7 +136,6 @@ namespace GUI
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.TabIndex = 1;
 
-            // Bitacora
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1000, 500);

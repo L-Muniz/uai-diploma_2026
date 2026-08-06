@@ -7,10 +7,7 @@ using SERVICE;
 
 namespace Tests
 {
-    /// <summary>
-    /// Runner de pruebas unitarias de arquitectura y servicios (sin dependencias NuGet).
-    /// Ejecutar: Tests.exe
-    /// </summary>
+    
     internal static class Program
     {
         private static int _passed;

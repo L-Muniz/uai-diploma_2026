@@ -98,7 +98,6 @@ namespace DAL
                 lista.Add(MapearDatos(row));
             }
 
-            // Fallback si el SP aún no existe: recorrer jerarquía
             if (lista.Count == 0)
             {
                 var visitados = new HashSet<int>();

@@ -3,9 +3,6 @@ using System.Collections.Generic;
 
 namespace BE
 {
-    /// <summary>
-    /// Componente del Composite: permiso (hoja), rol o perfil (composites).
-    /// </summary>
     public class BE_ComponenteAcceso
     {
         public const string TipoPermiso = "PERMISO";

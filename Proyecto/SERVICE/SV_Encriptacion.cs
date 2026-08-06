@@ -6,10 +6,7 @@ using System.Text;
 
 namespace SERVICE
 {
-    /// <summary>
-    /// Encriptación simétrica AES para datos sensibles (snapshots, backups).
-    /// Las contraseñas de usuario siguen usando hash (SV_Hash / PBKDF2).
-    /// </summary>
+    
     public static class SV_Encriptacion
     {
         private const string Prefijo = "AES:";

@@ -10,7 +10,7 @@ namespace SERVICE
     {
         string ObtenerTraduccion(string clave, string codigoIdioma);
         List<string> ObtenerIdiomasDisponibles();
-        /// <summary>Código → nombre nativo del idioma (desde BD).</summary>
+        
         Dictionary<string, string> ObtenerNombresIdiomas();
     }
 

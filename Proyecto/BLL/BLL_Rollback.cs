@@ -133,7 +133,6 @@ namespace BLL
                 if (usuario == null)
                     return (false, "Usuario nulo");
 
-                // Recargar estado actual desde BD para no guardar valores ya mutados
                 MP_USUARIO mp = new MP_USUARIO();
                 var actual = mp.BuscarPorId(usuario.ID) ?? usuario;
 

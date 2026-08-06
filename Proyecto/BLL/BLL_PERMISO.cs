@@ -28,7 +28,6 @@ namespace BLL
                 int idPermiso = mpPermiso.Alta(permiso);
                 permiso.ID = idPermiso;
 
-                // Auditoría registrada automáticamente en BD
             }
             catch (Exception ex)
             {
@@ -47,7 +46,6 @@ namespace BLL
             {
                 mpPermiso.Editar(permiso);
 
-                // Auditoría registrada automáticamente en BD
             }
             catch (Exception ex)
             {
@@ -65,7 +63,6 @@ namespace BLL
 
                 mpPermiso.Borrar(idPermiso);
 
-                // Auditoría registrada automáticamente en BD
             }
             catch (Exception ex)
             {

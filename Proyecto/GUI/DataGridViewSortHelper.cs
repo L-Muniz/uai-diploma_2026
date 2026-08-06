@@ -4,9 +4,6 @@ using System.Windows.Forms;
 
 namespace GUI
 {
-    /// <summary>
-    /// Asocia listas a DataGridView con SortableBindingList (clic en encabezado ASC/DESC).
-    /// </summary>
     public static class DataGridViewSortHelper
     {
         public static SortableBindingList<T> Bind<T>(DataGridView dgv, IEnumerable<T> data)

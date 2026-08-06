@@ -59,9 +59,7 @@ namespace GUI
             this.panelDerecho.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPermisos)).BeginInit();
             this.SuspendLayout();
-            // 
-            // panelBotones
-            // 
+
             this.panelBotones.BackColor = System.Drawing.SystemColors.ControlLight;
             this.panelBotones.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelBotones.Controls.Add(this.btnNuevo);
@@ -72,9 +70,7 @@ namespace GUI
             this.panelBotones.Name = "panelBotones";
             this.panelBotones.Size = new System.Drawing.Size(943, 58);
             this.panelBotones.TabIndex = 0;
-            // 
-            // btnNuevo
-            //
+
             this.btnNuevo.Location = new System.Drawing.Point(12, 13);
             this.btnNuevo.Name = "btnNuevo";
             this.btnNuevo.Size = new System.Drawing.Size(120, 32);
@@ -82,9 +78,7 @@ namespace GUI
             this.btnNuevo.Text = "Nuevo Perfil";
             this.btnNuevo.UseVisualStyleBackColor = true;
             this.btnNuevo.Click += new System.EventHandler(this.btnNuevo_Click);
-            // 
-            // btnEditar
-            //
+
             this.btnEditar.Location = new System.Drawing.Point(140, 13);
             this.btnEditar.Name = "btnEditar";
             this.btnEditar.Size = new System.Drawing.Size(80, 32);
@@ -92,9 +86,7 @@ namespace GUI
             this.btnEditar.Text = "Editar";
             this.btnEditar.UseVisualStyleBackColor = true;
             this.btnEditar.Click += new System.EventHandler(this.btnEditar_Click);
-            // 
-            // btnEliminar
-            //
+
             this.btnEliminar.Location = new System.Drawing.Point(228, 13);
             this.btnEliminar.Name = "btnEliminar";
             this.btnEliminar.Size = new System.Drawing.Size(80, 32);
@@ -102,9 +94,7 @@ namespace GUI
             this.btnEliminar.Text = "Eliminar";
             this.btnEliminar.UseVisualStyleBackColor = true;
             this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
-            // 
-            // btnAgregarPermiso
-            //
+
             this.btnAgregarPermiso.Location = new System.Drawing.Point(350, 144);
             this.btnAgregarPermiso.Name = "btnAgregarPermiso";
             this.btnAgregarPermiso.Size = new System.Drawing.Size(90, 26);
@@ -112,9 +102,7 @@ namespace GUI
             this.btnAgregarPermiso.Text = "Agregar";
             this.btnAgregarPermiso.UseVisualStyleBackColor = true;
             this.btnAgregarPermiso.Click += new System.EventHandler(this.btnAgregarPermiso_Click);
-            // 
-            // btnEliminarPermiso
-            //
+
             this.btnEliminarPermiso.Location = new System.Drawing.Point(446, 144);
             this.btnEliminarPermiso.Name = "btnEliminarPermiso";
             this.btnEliminarPermiso.Size = new System.Drawing.Size(100, 26);
@@ -122,9 +110,7 @@ namespace GUI
             this.btnEliminarPermiso.Text = "Desasignar";
             this.btnEliminarPermiso.UseVisualStyleBackColor = true;
             this.btnEliminarPermiso.Click += new System.EventHandler(this.btnEliminarPermiso_Click);
-            // 
-            // panelIzquierdo
-            // 
+
             this.panelIzquierdo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelIzquierdo.Controls.Add(this.tvPerfiles);
             this.panelIzquierdo.Controls.Add(this.lblPerfiles);
@@ -133,9 +119,7 @@ namespace GUI
             this.panelIzquierdo.Name = "panelIzquierdo";
             this.panelIzquierdo.Size = new System.Drawing.Size(300, 509);
             this.panelIzquierdo.TabIndex = 1;
-            // 
-            // tvPerfiles
-            //
+
             this.tvPerfiles.AllowDrop = true;
             this.tvPerfiles.HideSelection = false;
             this.tvPerfiles.Location = new System.Drawing.Point(9, 30);
@@ -147,9 +131,7 @@ namespace GUI
             this.tvPerfiles.DragEnter += new System.Windows.Forms.DragEventHandler(this.tvPerfiles_DragEnter);
             this.tvPerfiles.DragOver += new System.Windows.Forms.DragEventHandler(this.tvPerfiles_DragOver);
             this.tvPerfiles.DragDrop += new System.Windows.Forms.DragEventHandler(this.tvPerfiles_DragDrop);
-            // 
-            // lblPerfiles
-            // 
+
             this.lblPerfiles.AutoSize = true;
             this.lblPerfiles.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
             this.lblPerfiles.Location = new System.Drawing.Point(9, 9);
@@ -157,9 +139,7 @@ namespace GUI
             this.lblPerfiles.Size = new System.Drawing.Size(154, 16);
             this.lblPerfiles.TabIndex = 0;
             this.lblPerfiles.Text = "Jerarquía de Perfiles";
-            // 
-            // panelDerecho
-            //
+
             this.panelDerecho.BackColor = System.Drawing.Color.White;
             this.panelDerecho.Controls.Add(this.lblDetalles);
             this.panelDerecho.Controls.Add(this.lblNombrePerfil);
@@ -178,9 +158,7 @@ namespace GUI
             this.panelDerecho.Padding = new System.Windows.Forms.Padding(9, 9, 9, 9);
             this.panelDerecho.Size = new System.Drawing.Size(643, 509);
             this.panelDerecho.TabIndex = 2;
-            // 
-            // lblDetalles
-            // 
+
             this.lblDetalles.AutoSize = true;
             this.lblDetalles.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
             this.lblDetalles.Location = new System.Drawing.Point(9, 9);
@@ -188,62 +166,48 @@ namespace GUI
             this.lblDetalles.Size = new System.Drawing.Size(131, 16);
             this.lblDetalles.TabIndex = 0;
             this.lblDetalles.Text = "Detalles del Perfil";
-            // 
-            // lblNombrePerfil
-            // 
+
             this.lblNombrePerfil.AutoSize = true;
             this.lblNombrePerfil.Location = new System.Drawing.Point(9, 35);
             this.lblNombrePerfil.Name = "lblNombrePerfil";
             this.lblNombrePerfil.Size = new System.Drawing.Size(47, 13);
             this.lblNombrePerfil.TabIndex = 1;
             this.lblNombrePerfil.Text = "Nombre:";
-            // 
-            // txtNombrePerfil
-            // 
+
             this.txtNombrePerfil.Location = new System.Drawing.Point(86, 35);
             this.txtNombrePerfil.Name = "txtNombrePerfil";
             this.txtNombrePerfil.ReadOnly = true;
             this.txtNombrePerfil.Size = new System.Drawing.Size(258, 20);
             this.txtNombrePerfil.TabIndex = 2;
-            // 
-            // lblDescripcionPerfil
-            // 
+
             this.lblDescripcionPerfil.AutoSize = true;
             this.lblDescripcionPerfil.Location = new System.Drawing.Point(9, 61);
             this.lblDescripcionPerfil.Name = "lblDescripcionPerfil";
             this.lblDescripcionPerfil.Size = new System.Drawing.Size(66, 13);
             this.lblDescripcionPerfil.TabIndex = 3;
             this.lblDescripcionPerfil.Text = "Descripción:";
-            // 
-            // txtDescripcionPerfil
-            // 
+
             this.txtDescripcionPerfil.Location = new System.Drawing.Point(86, 61);
             this.txtDescripcionPerfil.Multiline = true;
             this.txtDescripcionPerfil.Name = "txtDescripcionPerfil";
             this.txtDescripcionPerfil.ReadOnly = true;
             this.txtDescripcionPerfil.Size = new System.Drawing.Size(258, 53);
             this.txtDescripcionPerfil.TabIndex = 4;
-            // 
-            // lblPermisosDisponibles
-            //
+
             this.lblPermisosDisponibles.AutoSize = true;
             this.lblPermisosDisponibles.Location = new System.Drawing.Point(9, 128);
             this.lblPermisosDisponibles.Name = "lblPermisosDisponibles";
             this.lblPermisosDisponibles.Size = new System.Drawing.Size(87, 13);
             this.lblPermisosDisponibles.TabIndex = 5;
             this.lblPermisosDisponibles.Text = "Agregar Permiso:";
-            //
-            // cbPermisosDisponibles
-            //
+
             this.cbPermisosDisponibles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbPermisosDisponibles.FormattingEnabled = true;
             this.cbPermisosDisponibles.Location = new System.Drawing.Point(12, 146);
             this.cbPermisosDisponibles.Name = "cbPermisosDisponibles";
             this.cbPermisosDisponibles.Size = new System.Drawing.Size(332, 21);
             this.cbPermisosDisponibles.TabIndex = 6;
-            //
-            // lblPermisosLabel
-            //
+
             this.lblPermisosLabel.AutoSize = true;
             this.lblPermisosLabel.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold);
             this.lblPermisosLabel.Location = new System.Drawing.Point(9, 180);
@@ -251,9 +215,7 @@ namespace GUI
             this.lblPermisosLabel.Size = new System.Drawing.Size(118, 15);
             this.lblPermisosLabel.TabIndex = 7;
             this.lblPermisosLabel.Text = "Permisos del Perfil:";
-            //
-            // dgvPermisos
-            //
+
             this.dgvPermisos.AllowUserToAddRows = false;
             this.dgvPermisos.AllowUserToDeleteRows = false;
             this.dgvPermisos.AllowUserToResizeRows = false;
@@ -265,9 +227,7 @@ namespace GUI
             this.dgvPermisos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvPermisos.Size = new System.Drawing.Size(617, 290);
             this.dgvPermisos.TabIndex = 8;
-            // 
-            // FormPerfiles
-            // 
+
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;

@@ -1,4 +1,4 @@
-﻿using BE;
+using BE;
 using BLL;
 using SERVICE;
 using System;
@@ -30,7 +30,6 @@ namespace GUI
                 System.Diagnostics.Debug.WriteLine($"  - {idioma}");
             }
 
-            // Si no hay idiomas, crear el idioma ES por defecto
             if (idiomasDisponibles.Count == 0)
             {
                 System.Diagnostics.Debug.WriteLine("Creando idioma ES por defecto...");
@@ -55,7 +54,6 @@ namespace GUI
             VerificarIntegridadAlInicio();
             UITheme.AplicarLogin(this);
 
-            // Close app when this form closes
             this.FormClosed += (s, e) => Application.Exit();
         }
 
@@ -95,7 +93,7 @@ namespace GUI
 
         private void VerificarIntegridadAlInicio()
         {
-            // Verificacion de integridad de datos - opcional
+            
         }
 
         private void btnIngresar_Click(object sender, EventArgs e)

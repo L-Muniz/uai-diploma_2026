@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 
 namespace BE
 {
-    /// <summary>
-    /// Entidad que implementa patrón Composite para jerarquía de perfiles
-    /// Un perfil puede contener permisos y otros perfiles (subperfiles)
-    /// </summary>
+    
     public class BE_Perfil
     {
         private int id;
@@ -75,9 +72,7 @@ namespace BE
             this.IdPadrePerfil = idPadrePerfil;
         }
 
-        /// <summary>
-        /// Agrega un permiso a este perfil
-        /// </summary>
+        
         public void AgregarPermiso(BE_Permiso permiso)
         {
             if (permiso != null && !Permisos.Contains(permiso))
@@ -86,9 +81,7 @@ namespace BE
             }
         }
 
-        /// <summary>
-        /// Agrega un subperfil (patrón Composite)
-        /// </summary>
+        
         public void AgregarSubperfil(BE_Perfil subperfil)
         {
             if (subperfil != null && subperfil.ID != this.ID && !Subperfiles.Contains(subperfil))
@@ -113,20 +106,16 @@ namespace BE
             }
         }
 
-        /// <summary>
-        /// Obtiene todos los permisos incluyendo los heredados de perfiles padres
-        /// </summary>
+        
         public HashSet<BE_Permiso> ObtenerPermisosHeredados()
         {
             HashSet<BE_Permiso> permisosTotal = new HashSet<BE_Permiso>();
 
-            // Agregar permisos propios
             foreach (var permiso in Permisos)
             {
                 permisosTotal.Add(permiso);
             }
 
-            // Agregar permisos del perfil padre
             if (PerfilPadre != null)
             {
                 var permisosHeredados = PerfilPadre.ObtenerPermisosHeredados();
@@ -139,20 +128,16 @@ namespace BE
             return permisosTotal;
         }
 
-        /// <summary>
-        /// Obtiene todos los permisos incluyendo subperfiles (recursivo)
-        /// </summary>
+        
         public HashSet<BE_Permiso> ObtenerTodosLosPermisos()
         {
             HashSet<BE_Permiso> permisosTotal = new HashSet<BE_Permiso>();
 
-            // Agregar permisos propios
             foreach (var permiso in Permisos)
             {
                 permisosTotal.Add(permiso);
             }
 
-            // Agregar permisos heredados del padre
             if (PerfilPadre != null)
             {
                 var permisosHeredados = PerfilPadre.ObtenerPermisosHeredados();
@@ -162,7 +147,6 @@ namespace BE
                 }
             }
 
-            // Agregar permisos de subperfiles
             foreach (var subperfil in Subperfiles)
             {
                 var permisosSubperfil = subperfil.ObtenerTodosLosPermisos();
@@ -175,25 +159,19 @@ namespace BE
             return permisosTotal;
         }
 
-        /// <summary>
-        /// Verifica si tiene un permiso específico
-        /// </summary>
+        
         public bool TienePermiso(BE_Permiso permiso)
         {
             return ObtenerTodosLosPermisos().Contains(permiso);
         }
 
-        /// <summary>
-        /// Verifica si tiene permiso por código
-        /// </summary>
+        
         public bool TienePermisoPorCodigo(string codigo)
         {
             return ObtenerTodosLosPermisos().Any(p => p.Codigo == codigo);
         }
 
-        /// <summary>
-        /// Obtiene la profundidad en la jerarquía
-        /// </summary>
+        
         public int ObtenerProfundidad()
         {
             if (PerfilPadre == null)
@@ -201,9 +179,7 @@ namespace BE
             return PerfilPadre.ObtenerProfundidad() + 1;
         }
 
-        /// <summary>
-        /// Cuenta total de permisos (incluyendo heredados)
-        /// </summary>
+        
         public int ContarPermisosTotal()
         {
             return ObtenerTodosLosPermisos().Count;

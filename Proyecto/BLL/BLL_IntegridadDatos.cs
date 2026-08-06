@@ -31,7 +31,7 @@ namespace BLL
 
         public static BE_DigitoVerificadorVertical CalcularDVVUsuario(BE_USUARIO usuario)
         {
-            // DVV de tabla: acumula aporte de todos los registros (contenido + posición de fila)
+            
             MP_USUARIO mpUsuario = new MP_USUARIO();
             var usuarios = mpUsuario.Listar();
             if (usuarios == null || usuarios.Count == 0)
@@ -103,9 +103,7 @@ namespace BLL
                 && calculado.DVBloqueado == dvv.DVBloqueado;
         }
 
-        /// <summary>
-        /// Verifica solo el DVH del usuario (fila). No toca el DVV de tabla.
-        /// </summary>
+        
         public static (bool esValido, string mensaje) VerificarSoloDVH(BE_USUARIO usuario)
         {
             if (usuario == null)
@@ -117,9 +115,7 @@ namespace BLL
             return (true, "DVH OK");
         }
 
-        /// <summary>
-        /// Verifica el DVV de la tabla USUARIO (una sola vez, no por fila).
-        /// </summary>
+        
         public static (bool esValido, string mensaje) VerificarSoloDVV(BE_DigitoVerificadorVertical dvv)
         {
             if (dvv == null)
@@ -139,11 +135,7 @@ namespace BLL
             return (true, "DVV OK");
         }
 
-        /// <summary>
-        /// Detecta el fallo de integridad prioritario:
-        /// 1) DVV de tabla → mensaje de tabla comprometida
-        /// 2) Si la tabla está OK, DVH del primer usuario alterado → apunta al ID
-        /// </summary>
+        
         public static (bool esValido, string mensaje) DetectarFalloIntegridadPrioritario()
         {
             MP_USUARIO mpUsuario = new MP_USUARIO();
@@ -172,7 +164,6 @@ namespace BLL
 
             bool dvvFaltaba = false;
 
-            // Si no tiene DVV, lo calcula y guarda (uno por tabla, no por usuario)
             if (dvv == null)
             {
                 dvvFaltaba = true;
@@ -184,7 +175,6 @@ namespace BLL
             if (dvvFaltaba)
                 return (true, "DVV inicializado automáticamente");
 
-            // Prioridad: si la tabla está comprometida, no culpar al usuario de la fila
             var dvvResultado = VerificarSoloDVV(dvv);
             if (!dvvResultado.esValido)
                 return (false, dvvResultado.mensaje);
@@ -196,10 +186,6 @@ namespace BLL
             return (true, "Integridad verificada correctamente");
         }
 
-        /// <summary>
-        /// Verifica integridad de todos los usuarios y genera un detalle por entidad.
-        /// DVH se reporta por fila; DVV se reporta una sola vez a nivel tabla.
-        /// </summary>
         public static (bool esValido, string detalle) VerificarTodasLasEntidades()
         {
             var sb = new StringBuilder();
@@ -235,9 +221,7 @@ namespace BLL
             return (okGlobal, sb.ToString());
         }
 
-        /// <summary>
-        /// Recalcula DVH de todos los usuarios y el DVV de la tabla USUARIO, persistiendo los valores.
-        /// </summary>
+        
         public static (bool exito, string mensaje, string detalle) RecalcularTodosLosDV()
         {
             var sb = new StringBuilder();
@@ -257,7 +241,6 @@ namespace BLL
                     CalcularDVHUsuario(usuario);
                     mpUsuario.ActualizarDVHorizontal(usuario);
 
-                    // DVV vertical: acumula aporte por fila (contenido + posición)
                     sumaUser = (sumaUser + SV_DigitoVerificadorVertical.CalcularDVAtributo(usuario.Username, fila)) % 11;
                     sumaPass = (sumaPass + SV_DigitoVerificadorVertical.CalcularDVAtributo(usuario.HashedPassword, fila)) % 11;
                     sumaBloq = (sumaBloq + SV_DigitoVerificadorVertical.CalcularDVAtributo(usuario.Bloqueado.ToString(), fila)) % 11;
@@ -297,7 +280,7 @@ namespace BLL
 
             string datosRol = rol.Nombre + rol.Descripcion;
             int dv = SV_DigitoVerificadorHorizontal.CalcularDV(datosRol);
-            rol.ToString(); // El rol también podría guardar DVH
+            rol.ToString(); 
         }
 
         public static bool VerificarIntegridadDVHRol(BE_Rol rol)
@@ -306,7 +289,7 @@ namespace BLL
                 return false;
 
             string datosRol = rol.Nombre + rol.Descripcion;
-            // Aquí va la comparación cuando se implemente almacenamiento de DVH en Rol
+            
             return true;
         }
     }

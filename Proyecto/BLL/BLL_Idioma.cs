@@ -149,7 +149,7 @@ namespace BLL
 
                 if (filas > 0 && codigo.ToUpper() == "ES")
                 {
-                    // Si es ES, agregar traducciones básicas
+                    
                     AgregarTraduccionesBasicas(codigo);
 
                     try

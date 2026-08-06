@@ -128,7 +128,6 @@ namespace DAL
             cambio.FechaCambio = DateTime.Parse(row["FECHA_CAMBIO"].ToString());
             cambio.Descripcion = row["DESCRIPCION"].ToString();
 
-            // Obtener usuario que realizó el cambio
             int idUsuario = int.Parse(row["ID_USUARIO_MODIFICO"].ToString());
             if (idUsuario > 0)
             {

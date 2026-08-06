@@ -4,9 +4,6 @@ using System.ComponentModel;
 
 namespace GUI
 {
-    /// <summary>
-    /// BindingList con soporte de ordenamiento para DataGridView (clic en encabezados).
-    /// </summary>
     public class SortableBindingList<T> : BindingList<T>
     {
         private bool isSorted;

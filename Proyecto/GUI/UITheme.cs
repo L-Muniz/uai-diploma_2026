@@ -4,9 +4,6 @@ using System.Windows.Forms;
 
 namespace GUI
 {
-    /// <summary>
-    /// Tema visual de oficina suave (azules/grises fríos) para WinForms.
-    /// </summary>
     public static class UITheme
     {
         public static readonly Color FondoApp = Color.FromArgb(244, 246, 249);
@@ -281,7 +278,7 @@ namespace GUI
             }
             else if (control is ProgressBar)
             {
-                // deja el estilo del sistema
+                
             }
             else if (control is LinkLabel link)
             {
@@ -301,7 +298,6 @@ namespace GUI
             button.TextAlign = ContentAlignment.MiddleCenter;
             button.Padding = new Padding(4, 2, 4, 2);
 
-            // Evita texto cortado con Segoe UI en botones de altura chica.
             const int minAlto = 32;
             if (button.Height < minAlto)
                 button.Height = minAlto;

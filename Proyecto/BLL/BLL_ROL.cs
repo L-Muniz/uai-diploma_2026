@@ -103,9 +103,7 @@ namespace BLL
                 AgregarPermisosDelPaquetePerfil(hijo.ID, destino, visitados);
         }
 
-        /// <summary>
-        /// Componentes del composite asignados al rol: permisos, perfiles y roles integrantes.
-        /// </summary>
+        
         public List<BE_ComponenteAcceso> ObtenerComponentesDelRol(int idRol)
         {
             var componentes = new List<BE_ComponenteAcceso>();
@@ -199,9 +197,7 @@ namespace BLL
             return componentes;
         }
 
-        /// <summary>
-        /// Permisos, perfiles y roles que se pueden agregar al rol sin formar ciclos.
-        /// </summary>
+        
         public List<BE_ComponenteAcceso> ObtenerComponentesDisponiblesParaAsignar(int idRol)
         {
             var disponibles = new List<BE_ComponenteAcceso>();
@@ -264,9 +260,7 @@ namespace BLL
             return mp.ObtenerTodosLosPermisos();
         }
 
-        /// <summary>
-        /// True si asignar idNuevoPadre como padre de idRol crearía un ciclo.
-        /// </summary>
+        
         public bool FormariaReferenciaCircular(int idRol, int? idNuevoPadre)
         {
             if (!idNuevoPadre.HasValue || idNuevoPadre.Value <= 0)
@@ -284,7 +278,7 @@ namespace BLL
                     return true;
 
                 if (!visitados.Add(actual.Value))
-                    return true; // ciclo ya existente en BD
+                    return true; 
 
                 var nodo = mp.ObtenerPorId(actual.Value);
                 actual = nodo?.IdPadreRol;
@@ -510,9 +504,7 @@ namespace BLL
             return mp.ObtenerPorID(idRol);
         }
 
-        /// <summary>
-        /// Roles que pueden usarse como padre de idRolHijo (sin ciclos).
-        /// </summary>
+        
         public List<BE_Rol> ObtenerRolesCandidatosComoPadre(int idRolHijo)
         {
             return ObtenerTodosLosRoles()

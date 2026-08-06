@@ -48,9 +48,7 @@ namespace GUI
             this.panelInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBackups)).BeginInit();
             this.SuspendLayout();
-            // 
-            // panelBotones
-            // 
+
             this.panelBotones.BackColor = System.Drawing.SystemColors.ControlLight;
             this.panelBotones.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelBotones.Controls.Add(this.btnBackupAhora);
@@ -62,9 +60,7 @@ namespace GUI
             this.panelBotones.Name = "panelBotones";
             this.panelBotones.Size = new System.Drawing.Size(771, 52);
             this.panelBotones.TabIndex = 0;
-            // 
-            // btnBackupAhora
-            // 
+
             this.btnBackupAhora.Location = new System.Drawing.Point(9, 13);
             this.btnBackupAhora.Name = "btnBackupAhora";
             this.btnBackupAhora.Size = new System.Drawing.Size(86, 26);
@@ -72,9 +68,7 @@ namespace GUI
             this.btnBackupAhora.Text = "Backup Ahora";
             this.btnBackupAhora.UseVisualStyleBackColor = true;
             this.btnBackupAhora.Click += new System.EventHandler(this.btnBackupAhora_Click);
-            // 
-            // btnRestaurar
-            // 
+
             this.btnRestaurar.Location = new System.Drawing.Point(103, 13);
             this.btnRestaurar.Name = "btnRestaurar";
             this.btnRestaurar.Size = new System.Drawing.Size(86, 26);
@@ -82,9 +76,7 @@ namespace GUI
             this.btnRestaurar.Text = "Restaurar";
             this.btnRestaurar.UseVisualStyleBackColor = true;
             this.btnRestaurar.Click += new System.EventHandler(this.btnRestaurar_Click);
-            //
-            // btnEliminar
-            //
+
             this.btnEliminar.Location = new System.Drawing.Point(197, 13);
             this.btnEliminar.Name = "btnEliminar";
             this.btnEliminar.Size = new System.Drawing.Size(86, 26);
@@ -92,9 +84,7 @@ namespace GUI
             this.btnEliminar.Text = "Eliminar";
             this.btnEliminar.UseVisualStyleBackColor = true;
             this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
-            //
-            // btnRefrescar
-            //
+
             this.btnRefrescar.Location = new System.Drawing.Point(291, 13);
             this.btnRefrescar.Name = "btnRefrescar";
             this.btnRefrescar.Size = new System.Drawing.Size(86, 26);
@@ -102,9 +92,7 @@ namespace GUI
             this.btnRefrescar.Text = "Refrescar";
             this.btnRefrescar.UseVisualStyleBackColor = true;
             this.btnRefrescar.Click += new System.EventHandler(this.btnRefrescar_Click);
-            // 
-            // panelInfo
-            // 
+
             this.panelInfo.BackColor = System.Drawing.SystemColors.ControlLight;
             this.panelInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelInfo.Controls.Add(this.lblInfo);
@@ -119,9 +107,7 @@ namespace GUI
             this.panelInfo.Name = "panelInfo";
             this.panelInfo.Size = new System.Drawing.Size(771, 104);
             this.panelInfo.TabIndex = 1;
-            // 
-            // lblInfo
-            // 
+
             this.lblInfo.AutoSize = true;
             this.lblInfo.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
             this.lblInfo.Location = new System.Drawing.Point(9, 9);
@@ -129,9 +115,7 @@ namespace GUI
             this.lblInfo.Size = new System.Drawing.Size(176, 16);
             this.lblInfo.TabIndex = 0;
             this.lblInfo.Text = "Información de Backups";
-            // 
-            // lblTotal
-            // 
+
             this.lblTotal.AutoSize = true;
             this.lblTotal.Font = new System.Drawing.Font("Arial", 9F);
             this.lblTotal.Location = new System.Drawing.Point(9, 30);
@@ -139,9 +123,7 @@ namespace GUI
             this.lblTotal.Size = new System.Drawing.Size(104, 15);
             this.lblTotal.TabIndex = 1;
             this.lblTotal.Text = "Total de Backups:";
-            // 
-            // lblTotalBackups
-            // 
+
             this.lblTotalBackups.AutoSize = true;
             this.lblTotalBackups.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold);
             this.lblTotalBackups.Location = new System.Drawing.Point(129, 30);
@@ -149,9 +131,7 @@ namespace GUI
             this.lblTotalBackups.Size = new System.Drawing.Size(14, 15);
             this.lblTotalBackups.TabIndex = 2;
             this.lblTotalBackups.Text = "0";
-            // 
-            // lblUltimo
-            // 
+
             this.lblUltimo.AutoSize = true;
             this.lblUltimo.Font = new System.Drawing.Font("Arial", 9F);
             this.lblUltimo.Location = new System.Drawing.Point(9, 48);
@@ -159,9 +139,7 @@ namespace GUI
             this.lblUltimo.Size = new System.Drawing.Size(90, 15);
             this.lblUltimo.TabIndex = 3;
             this.lblUltimo.Text = "Último Backup:";
-            // 
-            // lblUltimoBackup
-            // 
+
             this.lblUltimoBackup.AutoSize = true;
             this.lblUltimoBackup.Font = new System.Drawing.Font("Arial", 9F);
             this.lblUltimoBackup.Location = new System.Drawing.Point(129, 48);
@@ -169,9 +147,7 @@ namespace GUI
             this.lblUltimoBackup.Size = new System.Drawing.Size(26, 15);
             this.lblUltimoBackup.TabIndex = 4;
             this.lblUltimoBackup.Text = "N/A";
-            // 
-            // lblUbicacionLabel
-            // 
+
             this.lblUbicacionLabel.AutoSize = true;
             this.lblUbicacionLabel.Font = new System.Drawing.Font("Arial", 9F);
             this.lblUbicacionLabel.Location = new System.Drawing.Point(9, 65);
@@ -179,17 +155,13 @@ namespace GUI
             this.lblUbicacionLabel.Size = new System.Drawing.Size(65, 15);
             this.lblUbicacionLabel.TabIndex = 5;
             this.lblUbicacionLabel.Text = "Ubicación:";
-            // 
-            // txtUbicacion
-            // 
+
             this.txtUbicacion.Location = new System.Drawing.Point(129, 65);
             this.txtUbicacion.Name = "txtUbicacion";
             this.txtUbicacion.ReadOnly = true;
             this.txtUbicacion.Size = new System.Drawing.Size(558, 20);
             this.txtUbicacion.TabIndex = 6;
-            // 
-            // dgvBackups
-            // 
+
             this.dgvBackups.AllowUserToAddRows = false;
             this.dgvBackups.AllowUserToDeleteRows = false;
             this.dgvBackups.AllowUserToResizeRows = false;
@@ -204,9 +176,7 @@ namespace GUI
             this.dgvBackups.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvBackups.Size = new System.Drawing.Size(771, 410);
             this.dgvBackups.TabIndex = 2;
-            // 
-            // FormBackups
-            // 
+
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;

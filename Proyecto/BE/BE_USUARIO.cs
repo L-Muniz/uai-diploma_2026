@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 
 namespace BE
 {
@@ -41,7 +40,7 @@ namespace BE
             set { bloqueado = value; }
         }
 
-        private int dvHorizontal; // Dígito verificador horizontal
+        private int dvHorizontal; 
 
         public int DVHorizontal
         {

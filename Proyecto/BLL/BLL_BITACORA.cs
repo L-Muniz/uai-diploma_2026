@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -58,7 +58,6 @@ namespace BLL
             if (string.IsNullOrWhiteSpace(descripcion))
                 descripcion = "(sin descripción)";
 
-            // La columna DESCRIPCION admite hasta 500 caracteres (entrega final).
             if (descripcion.Length > 500)
                 descripcion = descripcion.Substring(0, 497) + "...";
 
@@ -71,7 +70,6 @@ namespace BLL
             MP_BITACORA mpBitacora = new MP_BITACORA();
             int filas = mpBitacora.Alta(bitacora);
 
-            // Con algunos SP, ExecuteNonQuery puede devolver -1 aunque el INSERT haya sido exitoso.
             if (filas != 1 && filas != -1)
             {
                 throw new InvalidOperationException("Error del sistema al ingresar el registro en la bitácora.");
@@ -165,7 +163,6 @@ namespace BLL
             if (string.IsNullOrEmpty(descripcion))
                 return TipoEvento.Otros;
 
-            // Orden: desbloqueado antes que bloqueado (contiene la misma subcadena).
             if (descripcion.IndexOf("desbloqueado", StringComparison.OrdinalIgnoreCase) >= 0)
                 return TipoEvento.DesbloqueUsuario;
             if (descripcion.IndexOf(SV_Mensajes.GetLoginMessage(), StringComparison.OrdinalIgnoreCase) >= 0)

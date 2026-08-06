@@ -77,14 +77,12 @@ namespace BLL
                 {
                     string nombreTabla = tablaRow["TABLE_NAME"].ToString();
 
-                    // No borrar TRADUCCION para preservar las traducciones cargadas
                     if (nombreTabla == "TRADUCCION")
                         continue;
 
                     scriptSQL.AppendLine($"-- Tabla: [{nombreTabla}]");
                     scriptSQL.AppendLine($"DELETE FROM [{nombreTabla}];");
 
-                    // Verificar si la tabla tiene una columna de identidad
                     string queryIdentidad = $"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{nombreTabla}' AND COLUMNPROPERTY(OBJECT_ID(TABLE_SCHEMA+'.'+TABLE_NAME), COLUMN_NAME, 'IsIdentity') = 1";
                     SqlCommand cmdIdentidad = new SqlCommand(queryIdentidad, conn);
                     object columnaIdentidad = cmdIdentidad.ExecuteScalar();

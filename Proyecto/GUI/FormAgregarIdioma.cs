@@ -41,21 +41,17 @@ namespace GUI
             this.Size = new Size(800, 650);
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            // Instrucciones
             lblInstruccion = new Label() { Location = new Point(10, 10), AutoSize = true, Text = "Instrucciones" };
 
-            // Código y Nombre
             lblCodigo = new Label() { Location = new Point(10, 45), AutoSize = true, Text = "Código (ej: FR):" };
             TextBox txtCodigo = new TextBox() { Name = "txtCodigo", Location = new Point(150, 45), Width = 80 };
 
             lblNombre = new Label() { Location = new Point(10, 75), AutoSize = true, Text = "Nombre:" };
             TextBox txtNombre = new TextBox() { Name = "txtNombre", Location = new Point(150, 75), Width = 150 };
 
-            // Botón Cargar Claves
             btnCargarClaves = new Button() { Location = new Point(10, 105), Width = 230, Height = 30, Text = "CARGAR CLAVES" };
             btnCargarClaves.Click += (s, e) => CargarClavesPendientes(dgv, txtCodigo.Text);
 
-            // Grilla para traducciones
             lblTraduccion = new Label() { Location = new Point(10, 145), AutoSize = true };
             dgv = new DataGridView()
             {
@@ -69,7 +65,6 @@ namespace GUI
             dgv.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Traducción", DataPropertyName = "Traduccion", Width = 450 });
             DataGridViewSortHelper.HabilitarOrdenamiento(dgv);
 
-            // Botones
             btnGuardar = new Button() { Location = new Point(10, 520), Width = 200, Height = 35, Text = "GUARDAR IDIOMA" };
             btnGuardar.Click += (s, e) => GuardarIdioma(txtCodigo.Text, txtNombre.Text, dgv);
 
@@ -142,7 +137,6 @@ namespace GUI
                     return;
                 }
 
-                // Deshabilitar botón mientras se guarda
                 btnGuardar.Enabled = false;
                 btnGuardar.Text = "Guardando...";
 
@@ -162,7 +156,6 @@ namespace GUI
                         if (string.IsNullOrWhiteSpace(clave))
                             continue;
 
-                        // Si no hay traducción, usar [clave] para indicar que no fue traducida
                         if (string.IsNullOrWhiteSpace(traduccion))
                         {
                             traduccion = $"[{clave}]";
@@ -200,8 +193,6 @@ namespace GUI
                     IdiomaAgregado = true;
                     MessageBox.Show(mensaje, "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    // No cerrar la ventana, permitir agregar más idiomas
-                    // Limpiar campos para nuevo idioma
                     var txtCodigo = this.Controls.Cast<Control>().FirstOrDefault(c => c.Name == "txtCodigo") as TextBox;
                     var txtNombre = this.Controls.Cast<Control>().FirstOrDefault(c => c.Name == "txtNombre") as TextBox;
                     if (txtCodigo != null) txtCodigo.Clear();

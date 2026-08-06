@@ -1,4 +1,4 @@
-﻿using BLL;
+using BLL;
 using BE;
 using SERVICE;
 using System;
@@ -175,7 +175,7 @@ namespace GUI
 
         private void ActualizarItemMenu(ToolStripMenuItem item)
         {
-            // Tags de 1-2 chars son códigos de idioma (ES, EN, FR...); no se traducen.
+            
             if (item.Tag is string clave && clave.Length > 2)
             {
                 string texto = idiomaManager.Obtener(clave);

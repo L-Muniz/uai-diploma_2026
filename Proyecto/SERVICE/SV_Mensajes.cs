@@ -6,15 +6,11 @@ using System.Threading.Tasks;
 
 namespace SERVICE
 {
-    /// <summary>
-    /// Catálogo centralizado de mensajes del sistema
-    /// Usa SV_IdiomaManager para soporte multiidioma
-    /// </summary>
+    
     public class SV_Mensajes
     {
         private static SV_IdiomaManager idiomaManager = SV_IdiomaManager.GetInstance();
 
-        // Mensajes de autenticación
         public static string GetLoginMessage()
         {
             return "Inicio de sesión";
@@ -45,7 +41,6 @@ namespace SERVICE
             return "Ha excedido el número máximo de intentos. El usuario ha sido bloqueado.";
         }
 
-        // Mensajes de integridad
         public static string GetErrorIntegridadDatos()
         {
             return idiomaManager.Obtener("error.integridad", "ALERTA CRÍTICA: Se ha detectado una alteración en la integridad de datos.");
@@ -66,7 +61,6 @@ namespace SERVICE
             return "Verificación de integridad completada exitosamente.";
         }
 
-        // Método para obtener mensajes dinámicos
         public static string Obtener(string clave)
         {
             return idiomaManager.Obtener(clave);

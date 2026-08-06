@@ -307,7 +307,6 @@ namespace GUI
                 var snapshots = BLL_Rollback.ListarSnapshots();
                 dgvCambios.DataSource = null;
 
-                // Limpiar columnas anteriores y crear nuevas
                 dgvCambios.Columns.Clear();
                 dgvCambios.AutoGenerateColumns = false;
                 dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { Name = "ID", HeaderText = "ID", DataPropertyName = "ID", Width = 50 });

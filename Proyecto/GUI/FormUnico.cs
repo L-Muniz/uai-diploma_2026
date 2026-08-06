@@ -4,9 +4,6 @@ using System.Windows.Forms;
 
 namespace GUI
 {
-    /// <summary>
-    /// Abre formularios de forma única: si ya existe una instancia del mismo tipo, la activa.
-    /// </summary>
     public static class FormUnico
     {
         public static T Abrir<T>(Func<T> factory = null) where T : Form, new()

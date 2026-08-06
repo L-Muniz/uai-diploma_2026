@@ -4,10 +4,7 @@ using System.Linq;
 
 namespace BE
 {
-    /// <summary>
-    /// Entidad que implementa patrón Composite para jerarquía de roles
-    /// Un rol puede contener permisos y otros roles (sub-roles)
-    /// </summary>
+    
     public class BE_Rol
     {
         private int id;
@@ -73,9 +70,7 @@ namespace BE
             this.IdPadreRol = idPadreRol;
         }
 
-        /// <summary>
-        /// Agrega un permiso a este rol
-        /// </summary>
+        
         public void AgregarPermiso(BE_Permiso permiso)
         {
             if (permiso != null && !Permisos.Contains(permiso))
@@ -84,10 +79,6 @@ namespace BE
             }
         }
 
-        /// <summary>
-        /// Agrega un sub-rol (patrón Composite). No permite auto-referencia.
-        /// La detección de ciclos A→B→A se valida en BLL al persistir.
-        /// </summary>
         public void AgregarSubRol(BE_Rol subRol)
         {
             if (subRol != null && subRol.ID != this.ID && !SubRoles.Contains(subRol))
@@ -98,9 +89,7 @@ namespace BE
             }
         }
 
-        /// <summary>
-        /// Quita un sub-rol integrante sin eliminarlo del sistema (desasignar).
-        /// </summary>
+        
         public void QuitarSubRol(BE_Rol subRol)
         {
             if (subRol == null)
@@ -115,20 +104,16 @@ namespace BE
             }
         }
 
-        /// <summary>
-        /// Obtiene todos los permisos incluyendo los heredados de roles padres
-        /// </summary>
+        
         public HashSet<BE_Permiso> ObtenerPermisosHeredados()
         {
             HashSet<BE_Permiso> permisosTotal = new HashSet<BE_Permiso>();
 
-            // Agregar permisos propios
             foreach (var permiso in Permisos)
             {
                 permisosTotal.Add(permiso);
             }
 
-            // Agregar permisos del rol padre
             if (RolPadre != null)
             {
                 var permisosHeredados = RolPadre.ObtenerPermisosHeredados();
@@ -141,20 +126,16 @@ namespace BE
             return permisosTotal;
         }
 
-        /// <summary>
-        /// Obtiene todos los permisos incluyendo sub-roles (recursivo)
-        /// </summary>
+        
         public HashSet<BE_Permiso> ObtenerTodosLosPermisos()
         {
             HashSet<BE_Permiso> permisosTotal = new HashSet<BE_Permiso>();
 
-            // Agregar permisos propios
             foreach (var permiso in Permisos)
             {
                 permisosTotal.Add(permiso);
             }
 
-            // Agregar permisos heredados del padre
             if (RolPadre != null)
             {
                 var permisosHeredados = RolPadre.ObtenerPermisosHeredados();
@@ -164,7 +145,6 @@ namespace BE
                 }
             }
 
-            // Agregar permisos de sub-roles
             foreach (var subRol in SubRoles)
             {
                 var permisosSubRol = subRol.ObtenerTodosLosPermisos();
@@ -177,25 +157,19 @@ namespace BE
             return permisosTotal;
         }
 
-        /// <summary>
-        /// Verifica si tiene un permiso específico
-        /// </summary>
+        
         public bool TienePermiso(BE_Permiso permiso)
         {
             return ObtenerTodosLosPermisos().Contains(permiso);
         }
 
-        /// <summary>
-        /// Verifica si tiene permiso por código
-        /// </summary>
+        
         public bool TienePermisoPorCodigo(string codigo)
         {
             return ObtenerTodosLosPermisos().Any(p => p.Codigo == codigo);
         }
 
-        /// <summary>
-        /// Obtiene la profundidad en la jerarquía
-        /// </summary>
+        
         public int ObtenerProfundidad()
         {
             if (RolPadre == null)
@@ -203,9 +177,7 @@ namespace BE
             return RolPadre.ObtenerProfundidad() + 1;
         }
 
-        /// <summary>
-        /// Cuenta total de permisos (incluyendo heredados)
-        /// </summary>
+        
         public int ContarPermisosTotal()
         {
             return ObtenerTodosLosPermisos().Count;

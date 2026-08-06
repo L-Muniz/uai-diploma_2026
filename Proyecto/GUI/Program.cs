@@ -41,7 +41,6 @@ namespace GUI
 
                 BLL_BackupRestore.ConfigurarBackupAutomatico(intervalo);
 
-                // LogInOut establece el idioma en su constructor
                 Application.Run(new LogInOut());
             }
             catch (Exception ex)
