@@ -336,7 +336,7 @@ namespace BLL
 
             CalcularYGuardarDVHUsuario(usuario, mpUsuario);
             int filas = mpUsuario.Editar(usuario);
-            if (filas < 1)
+            if (filas == 0)
                 throw new Exception("Error al editar el usuario.");
 
             CalcularYGuardarDVVUsuario(usuario);
@@ -363,7 +363,7 @@ namespace BLL
             BLL_Rollback.GuardarSnapshotUsuario(usuario, $"Antes de eliminar usuario {usuario.Username}");
 
             int filas = mpUsuario.Borrar(usuario);
-            if (filas < 1)
+            if (filas == 0)
                 throw new Exception("Error al eliminar el usuario (puede tener dependencias).");
 
             BLL_ControlCambios.RegistrarCambio("USUARIO", idUsuario, "ELIMINACION", usuario.Username, "", usuarioActual, "Usuario eliminado");

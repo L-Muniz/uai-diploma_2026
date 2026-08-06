@@ -192,7 +192,7 @@ namespace BLL
             ValidarAsignacionPadre(perfil.ID, perfil.IdPadrePerfil);
 
             int filas = mp.Alta(perfil);
-            if (filas < 1)
+            if (filas == 0)
                 throw new Exception("Error al crear el perfil.");
 
             var usuario = ObtenerUsuarioActual();
