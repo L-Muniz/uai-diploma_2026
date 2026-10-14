@@ -40,9 +40,12 @@ namespace GUI
             idiomaManager = SV_IdiomaManager.GetInstance();
             idiomaManager.EstablecerProveedorTraduccion(this);
 
+            CargarIdiomasEnComboBox(idiomasDisponibles);
+
             if (idiomasDisponibles.Count > 0)
             {
                 idiomaManager.CambiarIdioma("ES");
+                cmbIdioma.SelectedIndex = 0;
             }
             else
             {
@@ -55,6 +58,29 @@ namespace GUI
             UITheme.AplicarLogin(this);
 
             this.FormClosed += (s, e) => Application.Exit();
+        }
+
+        private void CargarIdiomasEnComboBox(List<string> idiomas)
+        {
+            cmbIdioma.Items.Clear();
+            var nombresIdiomas = idiomaManager.ObtenerNombresIdiomas();
+            foreach (var codigo in idiomas.OrderBy(i => i))
+            {
+                if (nombresIdiomas.TryGetValue(codigo, out var nombre))
+                {
+                    cmbIdioma.Items.Add(new KeyValuePair<string, string>(codigo, nombre));
+                }
+            }
+            cmbIdioma.DisplayMember = "Value";
+            cmbIdioma.ValueMember = "Key";
+        }
+
+        private void cmbIdioma_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbIdioma.SelectedItem is KeyValuePair<string, string> seleccionado)
+            {
+                idiomaManager.CambiarIdioma(seleccionado.Key);
+            }
         }
 
         public string ObtenerTraduccion(string clave, string codigoIdioma)
@@ -76,6 +102,7 @@ namespace GUI
         public void ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo)
         {
             ActualizarTextos();
+            ActualizarComboBoxIdiomas();
         }
 
         private void ActualizarTextos()
@@ -89,6 +116,13 @@ namespace GUI
             label2.Text = idiomaManager.Obtener("LOGIN_CONTRASENA");
             btnIngresar.Text = idiomaManager.Obtener("LOGIN_INGRESAR");
             lblRegistrarse.Text = idiomaManager.Obtener("LOGIN_REGISTRARSE");
+            lblIdioma.Text = idiomaManager.Obtener("IDIOMA");
+        }
+
+        private void ActualizarComboBoxIdiomas()
+        {
+            cmbIdioma.DisplayMember = "Value";
+            cmbIdioma.ValueMember = "Key";
         }
 
         private void VerificarIntegridadAlInicio()

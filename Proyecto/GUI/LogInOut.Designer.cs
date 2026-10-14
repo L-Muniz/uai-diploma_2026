@@ -25,6 +25,8 @@ namespace GUI
             this.txtUser = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.cmbIdioma = new System.Windows.Forms.ComboBox();
+            this.lblIdioma = new System.Windows.Forms.Label();
             this.grpLogin.SuspendLayout();
             this.SuspendLayout();
 
@@ -34,12 +36,27 @@ namespace GUI
             this.grpLogin.Controls.Add(this.txtUser);
             this.grpLogin.Controls.Add(this.label2);
             this.grpLogin.Controls.Add(this.label1);
-            this.grpLogin.Location = new System.Drawing.Point(12, 12);
+            this.grpLogin.Location = new System.Drawing.Point(12, 40);
             this.grpLogin.Name = "grpLogin";
             this.grpLogin.Size = new System.Drawing.Size(508, 82);
             this.grpLogin.TabIndex = 22;
             this.grpLogin.TabStop = false;
             this.grpLogin.Text = "Inicio de Sesion";
+
+            this.lblIdioma.AutoSize = true;
+            this.lblIdioma.Location = new System.Drawing.Point(12, 9);
+            this.lblIdioma.Name = "lblIdioma";
+            this.lblIdioma.Size = new System.Drawing.Size(47, 13);
+            this.lblIdioma.TabIndex = 23;
+            this.lblIdioma.Text = "Idioma:";
+
+            this.cmbIdioma.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbIdioma.FormattingEnabled = true;
+            this.cmbIdioma.Location = new System.Drawing.Point(65, 6);
+            this.cmbIdioma.Name = "cmbIdioma";
+            this.cmbIdioma.Size = new System.Drawing.Size(150, 21);
+            this.cmbIdioma.TabIndex = 1;
+            this.cmbIdioma.SelectedIndexChanged += new System.EventHandler(this.cmbIdioma_SelectedIndexChanged);
 
             this.lblRegistrarse.AutoSize = true;
             this.lblRegistrarse.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -86,13 +103,16 @@ namespace GUI
 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(528, 103);
+            this.ClientSize = new System.Drawing.Size(528, 135);
+            this.Controls.Add(this.cmbIdioma);
+            this.Controls.Add(this.lblIdioma);
             this.Controls.Add(this.grpLogin);
             this.Name = "LogInOut";
             this.Text = "Iniciar Sesión";
             this.grpLogin.ResumeLayout(false);
             this.grpLogin.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -105,6 +125,8 @@ namespace GUI
         private System.Windows.Forms.TextBox txtUser;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox cmbIdioma;
+        private System.Windows.Forms.Label lblIdioma;
     }
 }
 

@@ -49,9 +49,12 @@
     <Compile Include="BE_Idioma.cs" />
     <Compile Include="BE_Permiso.cs" />
     <Compile Include="BE_Perfil.cs" />
+    <Compile Include="BE_PermisoCompuesto.cs" />
+    <Compile Include="BE_PermisoSimple.cs" />
     <Compile Include="BE_Rol.cs" />
     <Compile Include="BE_Snapshot.cs" />
     <Compile Include="BE_USUARIO.cs" />
+    <Compile Include="I_ComponenteAcceso.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

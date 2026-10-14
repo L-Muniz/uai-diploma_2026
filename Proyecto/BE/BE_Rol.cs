@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace BE
 {
-    
     public class BE_Rol
     {
         private int id;
@@ -42,11 +41,11 @@ namespace BE
             set { rolPadre = value; }
         }
 
-        private List<BE_Permiso> permisos;
-        public List<BE_Permiso> Permisos
+        private List<I_ComponenteAcceso> componentes;
+        public List<I_ComponenteAcceso> Componentes
         {
-            get { return permisos; }
-            set { permisos = value; }
+            get { return componentes; }
+            set { componentes = value; }
         }
 
         private List<BE_Rol> subRoles;
@@ -58,7 +57,7 @@ namespace BE
 
         public BE_Rol()
         {
-            permisos = new List<BE_Permiso>();
+            componentes = new List<I_ComponenteAcceso>();
             subRoles = new List<BE_Rol>();
         }
 
@@ -70,12 +69,19 @@ namespace BE
             this.IdPadreRol = idPadreRol;
         }
 
-        
-        public void AgregarPermiso(BE_Permiso permiso)
+        public void AgregarComponente(I_ComponenteAcceso componente)
         {
-            if (permiso != null && !Permisos.Contains(permiso))
+            if (componente != null && !Componentes.Contains(componente))
             {
-                Permisos.Add(permiso);
+                Componentes.Add(componente);
+            }
+        }
+
+        public void QuitarComponente(I_ComponenteAcceso componente)
+        {
+            if (componente != null)
+            {
+                Componentes.Remove(componente);
             }
         }
 
@@ -89,7 +95,6 @@ namespace BE
             }
         }
 
-        
         public void QuitarSubRol(BE_Rol subRol)
         {
             if (subRol == null)
@@ -104,14 +109,17 @@ namespace BE
             }
         }
 
-        
-        public HashSet<BE_Permiso> ObtenerPermisosHeredados()
+        public HashSet<BE_PermisoSimple> ObtenerPermisosHeredados()
         {
-            HashSet<BE_Permiso> permisosTotal = new HashSet<BE_Permiso>();
+            HashSet<BE_PermisoSimple> permisosTotal = new HashSet<BE_PermisoSimple>();
 
-            foreach (var permiso in Permisos)
+            foreach (var componente in Componentes)
             {
-                permisosTotal.Add(permiso);
+                var permisos = componente.ObtenerTodosLosPermisos();
+                foreach (var permiso in permisos)
+                {
+                    permisosTotal.Add(permiso);
+                }
             }
 
             if (RolPadre != null)
@@ -126,14 +134,17 @@ namespace BE
             return permisosTotal;
         }
 
-        
-        public HashSet<BE_Permiso> ObtenerTodosLosPermisos()
+        public HashSet<BE_PermisoSimple> ObtenerTodosLosPermisos()
         {
-            HashSet<BE_Permiso> permisosTotal = new HashSet<BE_Permiso>();
+            HashSet<BE_PermisoSimple> permisosTotal = new HashSet<BE_PermisoSimple>();
 
-            foreach (var permiso in Permisos)
+            foreach (var componente in Componentes)
             {
-                permisosTotal.Add(permiso);
+                var permisos = componente.ObtenerTodosLosPermisos();
+                foreach (var permiso in permisos)
+                {
+                    permisosTotal.Add(permiso);
+                }
             }
 
             if (RolPadre != null)
@@ -157,19 +168,16 @@ namespace BE
             return permisosTotal;
         }
 
-        
-        public bool TienePermiso(BE_Permiso permiso)
+        public bool TienePermiso(BE_PermisoSimple permiso)
         {
             return ObtenerTodosLosPermisos().Contains(permiso);
         }
 
-        
         public bool TienePermisoPorCodigo(string codigo)
         {
             return ObtenerTodosLosPermisos().Any(p => p.Codigo == codigo);
         }
 
-        
         public int ObtenerProfundidad()
         {
             if (RolPadre == null)
@@ -177,7 +185,6 @@ namespace BE
             return RolPadre.ObtenerProfundidad() + 1;
         }
 
-        
         public int ContarPermisosTotal()
         {
             return ObtenerTodosLosPermisos().Count;

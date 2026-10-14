@@ -147,10 +147,16 @@ namespace BLL
                 System.Diagnostics.Debug.WriteLine($"[IDIOMA] Filas insertadas: {filas}");
                 acc.Cerrar();
 
-                if (filas > 0 && codigo.ToUpper() == "ES")
+                if (filas > 0)
                 {
-                    
-                    AgregarTraduccionesBasicas(codigo);
+                    if (codigo.ToUpper() == "ES")
+                    {
+                        AgregarTraduccionesBasicas(codigo);
+                    }
+                    else
+                    {
+                        AgregarTodasLasClavesFaltantes(codigo);
+                    }
 
                     try
                     {
@@ -284,6 +290,22 @@ namespace BLL
             {
                 System.Diagnostics.Debug.WriteLine($"Error AgregarTraduccion: {ex.Message}");
                 return false;
+            }
+        }
+
+        private void AgregarTodasLasClavesFaltantes(string codigoIdioma)
+        {
+            try
+            {
+                var claves = ObtenerTodasLasClaves();
+                foreach (var clave in claves)
+                {
+                    AgregarTraduccion(clave, codigoIdioma, $"[{clave}]");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al agregar claves faltantes: {ex.Message}");
             }
         }
     }

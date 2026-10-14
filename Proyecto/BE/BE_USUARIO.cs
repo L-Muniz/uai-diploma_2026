@@ -40,7 +40,7 @@ namespace BE
             set { bloqueado = value; }
         }
 
-        private int dvHorizontal; 
+        private int dvHorizontal;
 
         public int DVHorizontal
         {
@@ -72,6 +72,6 @@ namespace BE
         public override string ToString()
         {
             return Username;
-        }   
+        }
     }
 }

@@ -91,14 +91,14 @@ namespace GUI
 
                     if (esAuditor)
                     {
-                        if (clave == "PERFILES" || clave == "BACKUPS" || clave == "ADMINISTRACION" ||
+                        if (clave == "BACKUPS" || clave == "ADMINISTRACION" ||
                             clave == "GESTION_USUARIOS" || clave == "ROLES" || clave == "ADMINISTRACION_PERMISOS" ||
                             clave == "ASIGNAR_PERMISOS" || clave == "INTEGRIDAD")
                             subMenu.Visible = false;
                     }
                     else if (rol == "USUARIO")
                     {
-                        if (clave == "AUDITORIA" || clave == "PERFILES" || clave == "BACKUPS" ||
+                        if (clave == "AUDITORIA" || clave == "BACKUPS" ||
                             clave == "ADMINISTRACION" || clave == "GESTION_USUARIOS" || clave == "ROLES" ||
                             clave == "ADMINISTRACION_PERMISOS" || clave == "ASIGNAR_PERMISOS" ||
                             clave == "SNAPSHOTS" || clave == "INTEGRIDAD")
@@ -175,11 +175,10 @@ namespace GUI
 
         private void ActualizarItemMenu(ToolStripMenuItem item)
         {
-            
             if (item.Tag is string clave && clave.Length > 2)
             {
                 string texto = idiomaManager.Obtener(clave);
-                if (!string.IsNullOrEmpty(texto) && !texto.StartsWith("["))
+                if (!string.IsNullOrEmpty(texto))
                     item.Text = "&" + texto;
             }
 
@@ -205,10 +204,6 @@ namespace GUI
             var itemRoles = new ToolStripMenuItem("&Roles", null, (s, e) => AbrirHijoMdi(new FormRoles()));
             itemRoles.Tag = "ROLES";
             menuAdmin.DropDownItems.Add(itemRoles);
-
-            var itemPerfiles = new ToolStripMenuItem("&Perfiles", null, (s, e) => AbrirHijoMdi(new FormPerfiles()));
-            itemPerfiles.Tag = "PERFILES";
-            menuAdmin.DropDownItems.Add(itemPerfiles);
 
             var itemPermisoABM = new ToolStripMenuItem("&Catálogo de Permisos", null, (s, e) => AbrirHijoMdi(new FormPermisoABM()));
             itemPermisoABM.Tag = "ADMINISTRACION_PERMISOS";
