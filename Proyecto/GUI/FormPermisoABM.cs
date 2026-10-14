@@ -62,9 +62,9 @@ namespace GUI
                 tvPermisos.Nodes.Clear();
                 var permisos = bllPermiso.ObtenerTodosLosPermisos();
 
-                // Separar simples y compuestos
-                var simples = permisos.Where(p => bllPermiso.ObtenerComponentes(p.ID).Count == 0).OrderBy(p => p.Nombre);
-                var compuestos = permisos.Where(p => bllPermiso.ObtenerComponentes(p.ID).Count > 0).OrderBy(p => p.Nombre);
+                // Separar simples y compuestos basándose en EsCompuesto
+                var simples = permisos.Where(p => !p.EsCompuesto).OrderBy(p => p.Nombre).ToList();
+                var compuestos = permisos.Where(p => p.EsCompuesto).OrderBy(p => p.Nombre).ToList();
 
                 // Nodo: Permisos Simples
                 var nodoSimples = new TreeNode("📄 PERMISOS SIMPLES");
@@ -82,9 +82,22 @@ namespace GUI
                 nodoCompuestos.ForeColor = Color.DarkGreen;
                 tvPermisos.Nodes.Add(nodoCompuestos);
 
+                // Obtener IDs de todos los permisos que son componentes de otros
+                var idsComponentes = new HashSet<int>();
                 foreach (var permiso in compuestos)
                 {
+                    var componentes = bllPermiso.ObtenerComponentes(permiso.ID);
+                    foreach (var comp in componentes)
+                    {
+                        idsComponentes.Add(comp.ID);
+                    }
+                }
+
+                // Mostrar solo los compuestos que no son componentes de otros (raíces)
+                foreach (var permiso in compuestos.Where(p => !idsComponentes.Contains(p.ID)))
+                {
                     var nodo = new TreeNode(permiso.Nombre) { Tag = permiso };
+                    AgregarComponentesAlNodo(nodo, permiso.ID, permisos);
                     nodoCompuestos.Nodes.Add(nodo);
                 }
 
@@ -94,6 +107,43 @@ namespace GUI
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar permisos: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private TreeNode BuscarPermisoEnArbol(TreeNode nodo, int idPermiso)
+        {
+            if (nodo.Tag is BE_Permiso p && p.ID == idPermiso)
+                return nodo;
+
+            foreach (TreeNode nodoHijo in nodo.Nodes)
+            {
+                TreeNode resultado = BuscarPermisoEnArbol(nodoHijo, idPermiso);
+                if (resultado != null)
+                    return resultado;
+            }
+
+            return null;
+        }
+
+        private void AgregarComponentesAlNodo(TreeNode nodo, int idPermiso, List<BE_Permiso> todosLosPermisos)
+        {
+            var componentes = bllPermiso.ObtenerComponentes(idPermiso);
+            foreach (var componente in componentes.OrderBy(c => c.Nombre))
+            {
+                var permisoComponente = todosLosPermisos.FirstOrDefault(p => p.ID == componente.ID);
+                if (permisoComponente != null)
+                {
+                    string icono = permisoComponente.EsCompuesto ? "📦" : "📄";
+                    var nodoComponente = new TreeNode($"{icono} {componente.Nombre}") { Tag = permisoComponente };
+
+                    // Recursivamente agregar componentes si es compuesto
+                    if (permisoComponente.EsCompuesto)
+                    {
+                        AgregarComponentesAlNodo(nodoComponente, componente.ID, todosLosPermisos);
+                    }
+
+                    nodo.Nodes.Add(nodoComponente);
+                }
             }
         }
 
@@ -107,8 +157,7 @@ namespace GUI
                 txtNombre.Text = permiso.Nombre;
                 txtDescripcion.Text = permiso.Descripcion ?? "";
 
-                var componentes = bllPermiso.ObtenerComponentes(permiso.ID);
-                bool esCompuesto = componentes.Count > 0;
+                bool esCompuesto = permiso.EsCompuesto;
 
                 chkCompuesto.Checked = esCompuesto;
                 btnEliminar.Enabled = true;
@@ -128,10 +177,23 @@ namespace GUI
             {
                 var componentes = bllPermiso.ObtenerComponentes(idPermisoCompuesto);
                 DataGridViewSortHelper.Bind(dgvComponentes, componentes);
+
+                // Seleccionar la primera fila si hay componentes
+                if (dgvComponentes.Rows.Count > 0)
+                {
+                    dgvComponentes.ClearSelection();
+                    dgvComponentes.Rows[0].Selected = true;
+                    btnQuitarComponente.Enabled = true;
+                }
+                else
+                {
+                    btnQuitarComponente.Enabled = false;
+                }
             }
             catch
             {
                 dgvComponentes.DataSource = null;
+                btnQuitarComponente.Enabled = false;
             }
         }
 
@@ -188,6 +250,7 @@ namespace GUI
                             txtDesc.Text
                         );
                         bllPermiso.CrearPermiso(nuevoPermiso);
+                        bllPermiso.MarcarComoCompuesto(nuevoPermiso.ID);
                         CargarPermisos();
                         MessageBox.Show("Permiso compuesto creado. Ahora puedes agregar componentes.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -246,8 +309,21 @@ namespace GUI
                 {
                     try
                     {
+                        int idPermisoActual = this.permisoSeleccionado.ID;
                         bllPermiso.AgregarComponente(this.permisoSeleccionado.ID, permisoSeleccionado.ID);
-                        CargarComponentes(this.permisoSeleccionado.ID);
+                        CargarPermisos();
+
+                        // Reseleccionar el permiso después de recargar el árbol
+                        foreach (TreeNode nodo in tvPermisos.Nodes)
+                        {
+                            TreeNode nodoEncontrado = BuscarPermisoEnArbol(nodo, idPermisoActual);
+                            if (nodoEncontrado != null)
+                            {
+                                tvPermisos.SelectedNode = nodoEncontrado;
+                                break;
+                            }
+                        }
+
                         MessageBox.Show("Componente agregado", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
@@ -271,8 +347,21 @@ namespace GUI
 
             try
             {
+                int idPermisoActual = permisoSeleccionado.ID;
                 bllPermiso.QuitarComponente(permisoSeleccionado.ID, componente.ID);
-                CargarComponentes(permisoSeleccionado.ID);
+                CargarPermisos();
+
+                // Reseleccionar el permiso después de recargar el árbol
+                foreach (TreeNode nodo in tvPermisos.Nodes)
+                {
+                    TreeNode nodoEncontrado = BuscarPermisoEnArbol(nodo, idPermisoActual);
+                    if (nodoEncontrado != null)
+                    {
+                        tvPermisos.SelectedNode = nodoEncontrado;
+                        break;
+                    }
+                }
+
                 MessageBox.Show("Componente removido", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)

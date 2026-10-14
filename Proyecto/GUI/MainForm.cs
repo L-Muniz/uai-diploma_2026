@@ -40,6 +40,7 @@ namespace GUI
             AplicarControlesDeAcceso();
             UITheme.Aplicar(this);
             this.Load += (s, e) => UITheme.Aplicar(this);
+            this.FormClosed += (s, e) => Application.Exit();
         }
 
         private void AbrirHijoMdi(Form form)

@@ -72,6 +72,7 @@ namespace GUI
             this.panelDetalles.Name = "panelDetalles";
             this.panelDetalles.Size = new System.Drawing.Size(696, 600);
             this.panelDetalles.TabIndex = 1;
+            this.panelDetalles.BackColor = System.Drawing.SystemColors.Control;
             this.splitContainer.Panel2.Controls.Add(this.panelDetalles);
 
             this.lblNombre.AutoSize = true;

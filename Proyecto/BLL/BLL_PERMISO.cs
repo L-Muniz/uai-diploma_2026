@@ -133,6 +133,18 @@ namespace BLL
             }
         }
 
+        public void MarcarComoCompuesto(int idPermiso)
+        {
+            try
+            {
+                mpPermiso.MarcarComoCompuesto(idPermiso);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al marcar permiso como compuesto: " + ex.Message);
+            }
+        }
+
         private void ValidarPermiso(BE_Permiso permiso)
         {
             if (permiso == null)

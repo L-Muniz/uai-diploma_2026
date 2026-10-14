@@ -72,9 +72,10 @@ namespace GUI
             this.panelIzquierdo.Name = "panelIzquierdo";
             this.panelIzquierdo.Size = new System.Drawing.Size(350, 600);
             this.panelIzquierdo.TabIndex = 0;
+            this.panelIzquierdo.BackColor = System.Drawing.SystemColors.Control;
 
             this.lblRoles.AutoSize = true;
-            this.lblRoles.Location = new System.Drawing.Point(12, 12);
+            this.lblRoles.Location = new System.Drawing.Point(12, 10);
             this.lblRoles.Name = "lblRoles";
             this.lblRoles.Size = new System.Drawing.Size(37, 13);
             this.lblRoles.TabIndex = 0;
@@ -83,22 +84,23 @@ namespace GUI
             this.dgvRoles.AllowUserToAddRows = false;
             this.dgvRoles.AllowUserToDeleteRows = false;
             this.dgvRoles.AutoGenerateColumns = false;
-            this.dgvRoles.Location = new System.Drawing.Point(12, 30);
+            this.dgvRoles.Location = new System.Drawing.Point(12, 28);
             this.dgvRoles.Name = "dgvRoles";
             this.dgvRoles.ReadOnly = true;
             this.dgvRoles.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvRoles.Size = new System.Drawing.Size(326, 390);
+            this.dgvRoles.Size = new System.Drawing.Size(326, 350);
             this.dgvRoles.TabIndex = 1;
             this.dgvRoles.SelectionChanged += new System.EventHandler(this.dgvRoles_SelectionChanged);
 
-            this.panelBotones.Location = new System.Drawing.Point(12, 430);
+            this.panelBotones.Location = new System.Drawing.Point(12, 390);
             this.panelBotones.Name = "panelBotones";
-            this.panelBotones.Size = new System.Drawing.Size(326, 40);
+            this.panelBotones.Size = new System.Drawing.Size(326, 65);
             this.panelBotones.TabIndex = 2;
+            this.panelBotones.BackColor = System.Drawing.SystemColors.Control;
 
             this.btnNuevo.Location = new System.Drawing.Point(0, 0);
             this.btnNuevo.Name = "btnNuevo";
-            this.btnNuevo.Size = new System.Drawing.Size(100, 35);
+            this.btnNuevo.Size = new System.Drawing.Size(100, 50);
             this.btnNuevo.TabIndex = 0;
             this.btnNuevo.Text = "Nuevo";
             this.btnNuevo.UseVisualStyleBackColor = true;
@@ -106,7 +108,7 @@ namespace GUI
 
             this.btnEditar.Location = new System.Drawing.Point(110, 0);
             this.btnEditar.Name = "btnEditar";
-            this.btnEditar.Size = new System.Drawing.Size(100, 35);
+            this.btnEditar.Size = new System.Drawing.Size(100, 50);
             this.btnEditar.TabIndex = 1;
             this.btnEditar.Text = "Editar";
             this.btnEditar.UseVisualStyleBackColor = true;
@@ -114,7 +116,7 @@ namespace GUI
 
             this.btnEliminar.Location = new System.Drawing.Point(220, 0);
             this.btnEliminar.Name = "btnEliminar";
-            this.btnEliminar.Size = new System.Drawing.Size(100, 35);
+            this.btnEliminar.Size = new System.Drawing.Size(100, 50);
             this.btnEliminar.TabIndex = 2;
             this.btnEliminar.Text = "Eliminar";
             this.btnEliminar.UseVisualStyleBackColor = true;

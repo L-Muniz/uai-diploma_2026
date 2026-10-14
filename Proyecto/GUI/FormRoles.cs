@@ -31,6 +31,9 @@ namespace GUI
 
         private void AplicarIdentidadVisual()
         {
+            // TODO: UITheme.DiferenciarModulo interfiere con la visualización de botones
+            // Pendiente revisar cómo aplicar tema sin afectar el layout
+            /*
             UITheme.DiferenciarModulo(
                 panelBotones,
                 panelIzquierdo,
@@ -39,10 +42,20 @@ namespace GUI
                 UITheme.AcentoRoles,
                 UITheme.FondoRoles,
                 btnNuevo, btnEditar, btnEliminar);
+            */
         }
 
         private void CrearColumnasDataGrid()
         {
+            // Columnas para dgvRoles
+            dgvRoles.Columns.Clear();
+            dgvRoles.Columns.Add(new DataGridViewTextBoxColumn() { Name = "ID", HeaderText = "ID", DataPropertyName = "ID", Width = 50 });
+            dgvRoles.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Nombre", HeaderText = "Nombre", DataPropertyName = "Nombre", Width = 150 });
+            dgvRoles.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Descripcion", HeaderText = "Descripción", DataPropertyName = "Descripcion", Width = 150 });
+            dgvRoles.AutoGenerateColumns = false;
+            DataGridViewSortHelper.HabilitarOrdenamiento(dgvRoles);
+
+            // Columnas para dgvComponentes
             dgvComponentes.Columns.Clear();
             dgvComponentes.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Tipo", HeaderText = "Tipo", DataPropertyName = "Tipo", Width = 80 });
             dgvComponentes.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Nombre", HeaderText = "Nombre", DataPropertyName = "Nombre", Width = 200 });
@@ -153,11 +166,26 @@ namespace GUI
             if (cbComponentesDisponibles.SelectedItem == null) return;
 
             var componente = cbComponentesDisponibles.SelectedItem as BE_ComponenteAcceso;
+            int idRolActual = rolSeleccionado.ID;
 
             try
             {
                 bllRol.AsignarComponente(rolSeleccionado.ID, componente);
                 CargarRoles();
+
+                // Reseleccionar el rol después de recargar
+                foreach (DataGridViewRow row in dgvRoles.Rows)
+                {
+                    var rol = row.DataBoundItem as BE_Rol;
+                    if (rol != null && rol.ID == idRolActual)
+                    {
+                        dgvRoles.ClearSelection();
+                        row.Selected = true;
+                        dgvRoles.CurrentCell = row.Cells[0];
+                        break;
+                    }
+                }
+
                 MostrarDetallesRol();
                 MessageBox.Show("Permiso agregado al rol", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -178,10 +206,26 @@ namespace GUI
             var componente = dgvComponentes.SelectedRows[0].DataBoundItem as BE_ComponenteAcceso;
             if (componente == null) return;
 
+            int idRolActual = rolSeleccionado.ID;
+
             try
             {
                 bllRol.DesasignarComponente(rolSeleccionado.ID, componente);
                 CargarRoles();
+
+                // Reseleccionar el rol después de recargar
+                foreach (DataGridViewRow row in dgvRoles.Rows)
+                {
+                    var rol = row.DataBoundItem as BE_Rol;
+                    if (rol != null && rol.ID == idRolActual)
+                    {
+                        dgvRoles.ClearSelection();
+                        row.Selected = true;
+                        dgvRoles.CurrentCell = row.Cells[0];
+                        break;
+                    }
+                }
+
                 MostrarDetallesRol();
                 MessageBox.Show("Permiso removido del rol", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -197,7 +241,7 @@ namespace GUI
             {
                 dialog.Text = "Nuevo Rol";
                 dialog.Width = 400;
-                dialog.Height = 200;
+                dialog.Height = 280;
                 dialog.StartPosition = FormStartPosition.CenterParent;
                 dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
                 dialog.MaximizeBox = false;
@@ -208,8 +252,8 @@ namespace GUI
                 Label lblDesc = new Label() { Left = 20, Top = 75, Text = "Descripción:", Width = 350 };
                 TextBox txtDesc = new TextBox() { Left = 20, Top = 100, Width = 350, Height = 50, Multiline = true };
 
-                Button btnOK = new Button() { Text = "Crear", Left = 200, Width = 80, Top = 160, DialogResult = DialogResult.OK };
-                Button btnCancel = new Button() { Text = "Cancelar", Left = 290, Width = 80, Top = 160, DialogResult = DialogResult.Cancel };
+                Button btnOK = new Button() { Text = "Crear", Left = 170, Width = 100, Height = 35, Top = 210, DialogResult = DialogResult.OK };
+                Button btnCancel = new Button() { Text = "Cancelar", Left = 280, Width = 100, Height = 35, Top = 210, DialogResult = DialogResult.Cancel };
                 dialog.Controls.AddRange(new Control[] { lblNombre, txtNombre, lblDesc, txtDesc, btnOK, btnCancel });
                 dialog.AcceptButton = btnOK;
                 dialog.CancelButton = btnCancel;

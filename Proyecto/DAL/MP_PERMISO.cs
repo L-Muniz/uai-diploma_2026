@@ -213,6 +213,17 @@ namespace DAL
             return componentes;
         }
 
+        public void MarcarComoCompuesto(int idPermiso)
+        {
+            ACCESO acc = new ACCESO();
+            acc.Abrir();
+            string sql = "PERMISO_MARCAR_COMPUESTO";
+            List<SqlParameter> parametros = new List<SqlParameter>();
+            parametros.Add(acc.CrearParametro("@ID_PERMISO", idPermiso));
+            acc.Escribir(sql, parametros);
+            acc.Cerrar();
+        }
+
         private BE_Permiso MapearDatos(DataRow row)
         {
             BE_Permiso permiso = new BE_Permiso();
@@ -220,6 +231,8 @@ namespace DAL
             permiso.Codigo = row["CODIGO"].ToString();
             permiso.Nombre = row["NOMBRE"].ToString();
             permiso.Descripcion = row["DESCRIPCION"] != DBNull.Value ? row["DESCRIPCION"].ToString() : "";
+            if (row.Table.Columns.Contains("ES_COMPUESTO") && row["ES_COMPUESTO"] != DBNull.Value)
+                permiso.EsCompuesto = Convert.ToBoolean(row["ES_COMPUESTO"]);
             return permiso;
         }
     }

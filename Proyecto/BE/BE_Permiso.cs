@@ -36,6 +36,13 @@ namespace BE
             set { codigo = value; }
         }
 
+        private bool esCompuesto;
+        public bool EsCompuesto
+        {
+            get { return esCompuesto; }
+            set { esCompuesto = value; }
+        }
+
         public BE_Permiso() { }
 
         public BE_Permiso(string codigo, string nombre, string descripcion = "")
