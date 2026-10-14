@@ -3,12 +3,8 @@ using SERVICE;
 using BLL;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GUI
@@ -17,6 +13,7 @@ namespace GUI
     {
         private SV_IdiomaManager idiomaManager;
         private BLL_PERMISO bllPermiso;
+        private BE_Permiso permisoSeleccionado;
 
         public FormPermisoABM()
         {
@@ -33,26 +30,24 @@ namespace GUI
 
         private void CrearColumnasDataGrid()
         {
-            dgvPermisos.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Código", DataPropertyName = "Codigo", Width = 100, Tag = "CODIGO" });
-            dgvPermisos.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Nombre", DataPropertyName = "Nombre", Width = 200, Tag = "NOMBRE" });
-            dgvPermisos.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Descripción", DataPropertyName = "Descripcion", Width = 300, Tag = "DESCRIPCION" });
-            dgvPermisos.AutoGenerateColumns = false;
-            DataGridViewSortHelper.HabilitarOrdenamiento(dgvPermisos);
+            dgvComponentes.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Tipo", DataPropertyName = "Tipo", Width = 80 });
+            dgvComponentes.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Nombre", DataPropertyName = "Nombre", Width = 150 });
+            dgvComponentes.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Código", DataPropertyName = "Codigo", Width = 100 });
+            dgvComponentes.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Descripción", DataPropertyName = "Descripcion", Width = 180 });
+            DataGridViewSortHelper.HabilitarOrdenamiento(dgvComponentes);
         }
 
         private void ActualizarTextos()
         {
             this.Text = idiomaManager.Obtener("PERMISOS");
-            if (btnNuevo != null) btnNuevo.Text = idiomaManager.Obtener("NUEVO");
-            if (btnEditar != null) btnEditar.Text = idiomaManager.Obtener("EDITAR");
+            if (lblNombre != null) lblNombre.Text = idiomaManager.Obtener("NOMBRE");
+            if (lblDescripcion != null) lblDescripcion.Text = idiomaManager.Obtener("DESCRIPCION");
+            if (lblComponentes != null) lblComponentes.Text = "Componentes:";
+            if (chkCompuesto != null) chkCompuesto.Text = "Es permiso compuesto";
+            if (btnNuevoCompuesto != null) btnNuevoCompuesto.Text = "Crear Permiso\nCompuesto";
+            if (btnAgregarComponente != null) btnAgregarComponente.Text = "Agregar";
+            if (btnQuitarComponente != null) btnQuitarComponente.Text = "Quitar";
             if (btnEliminar != null) btnEliminar.Text = idiomaManager.Obtener("ELIMINAR");
-
-            if (dgvPermisos.Columns.Count >= 3)
-            {
-                dgvPermisos.Columns[0].HeaderText = idiomaManager.Obtener("CODIGO");
-                dgvPermisos.Columns[1].HeaderText = idiomaManager.Obtener("NOMBRE");
-                dgvPermisos.Columns[2].HeaderText = idiomaManager.Obtener("DESCRIPCION");
-            }
         }
 
         public void ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo)
@@ -60,27 +55,18 @@ namespace GUI
             ActualizarTextos();
         }
 
-        private void btnNuevo_Click(object sender, EventArgs e)
-        {
-            NuevoPermiso();
-        }
-
-        private void btnEditar_Click(object sender, EventArgs e)
-        {
-            EditarPermiso();
-        }
-
-        private void btnEliminar_Click(object sender, EventArgs e)
-        {
-            EliminarPermiso();
-        }
-
         private void CargarPermisos()
         {
             try
             {
+                tvPermisos.Nodes.Clear();
                 var permisos = bllPermiso.ObtenerTodosLosPermisos();
-                DataGridViewSortHelper.Bind(dgvPermisos, permisos);
+
+                foreach (var permiso in permisos.OrderBy(p => p.Nombre))
+                {
+                    var nodo = new TreeNode(permiso.Nombre) { Tag = permiso };
+                    tvPermisos.Nodes.Add(nodo);
+                }
             }
             catch (Exception ex)
             {
@@ -88,55 +74,97 @@ namespace GUI
             }
         }
 
-        private void NuevoPermiso()
+        private void tvPermisos_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            LimpiarDetalle();
+
+            if (e.Node?.Tag is BE_Permiso permiso)
+            {
+                permisoSeleccionado = permiso;
+                txtNombre.Text = permiso.Nombre;
+                txtDescripcion.Text = permiso.Descripcion ?? "";
+                btnEliminar.Enabled = true;
+                btnNuevoCompuesto.Enabled = true;
+
+                CargarComponentes(permiso.ID);
+            }
+        }
+
+        private void CargarComponentes(int idPermisoCompuesto)
+        {
+            try
+            {
+                var componentes = bllPermiso.ObtenerComponentes(idPermisoCompuesto);
+                DataGridViewSortHelper.Bind(dgvComponentes, componentes);
+
+                chkCompuesto.Checked = componentes.Count > 0;
+                btnAgregarComponente.Enabled = true;
+                btnQuitarComponente.Enabled = dgvComponentes.Rows.Count > 0;
+            }
+            catch
+            {
+                chkCompuesto.Checked = false;
+                btnAgregarComponente.Enabled = false;
+                btnQuitarComponente.Enabled = false;
+            }
+        }
+
+        private void LimpiarDetalle()
+        {
+            txtNombre.Clear();
+            txtDescripcion.Clear();
+            chkCompuesto.Checked = false;
+            dgvComponentes.DataSource = null;
+            btnEliminar.Enabled = false;
+            btnNuevoCompuesto.Enabled = false;
+            btnAgregarComponente.Enabled = false;
+            btnQuitarComponente.Enabled = false;
+            permisoSeleccionado = null;
+        }
+
+        private void btnNuevoCompuesto_Click(object sender, EventArgs e)
         {
             using (Form dialog = new Form())
             {
-                dialog.Text = idiomaManager.Obtener("NUEVO") + " - " + idiomaManager.Obtener("PERMISO");
+                dialog.Text = "Crear Permiso Compuesto";
                 dialog.Width = 450;
-                dialog.Height = 280;
+                dialog.Height = 200;
                 dialog.StartPosition = FormStartPosition.CenterParent;
                 dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
                 dialog.MaximizeBox = false;
                 dialog.MinimizeBox = false;
 
-                Label lblCodigo = new Label() { Left = 20, Top = 20, Text = idiomaManager.Obtener("CODIGO") + ":", Width = 400 };
-                TextBox txtCodigo = new TextBox() { Left = 20, Top = 45, Width = 400 };
+                Label lblNombre = new Label() { Left = 20, Top = 20, Text = "Nombre:", Width = 400 };
+                TextBox txtNombre = new TextBox() { Left = 20, Top = 45, Width = 400 };
 
-                Label lblNombre = new Label() { Left = 20, Top = 75, Text = idiomaManager.Obtener("NOMBRE") + ":", Width = 400 };
-                TextBox txtNombre = new TextBox() { Left = 20, Top = 100, Width = 400 };
+                Label lblDesc = new Label() { Left = 20, Top = 75, Text = "Descripción:", Width = 400 };
+                TextBox txtDesc = new TextBox() { Left = 20, Top = 100, Width = 400, Height = 40, Multiline = true };
 
-                Label lblDesc = new Label() { Left = 20, Top = 130, Text = idiomaManager.Obtener("DESCRIPCION") + ":", Width = 400 };
-                TextBox txtDesc = new TextBox() { Left = 20, Top = 155, Width = 400, Height = 50, Multiline = true };
+                Button btnOK = new Button() { Text = "Crear", Left = 250, Width = 80, Top = 145, DialogResult = DialogResult.OK };
+                Button btnCancel = new Button() { Text = "Cancelar", Left = 340, Width = 80, Top = 145, DialogResult = DialogResult.Cancel };
 
-                Button btnOK = new Button() { Text = "OK", Left = 250, Width = 80, Top = 220, DialogResult = DialogResult.OK };
-                Button btnCancel = new Button() { Text = idiomaManager.Obtener("CANCELAR"), Left = 340, Width = 80, Top = 220, DialogResult = DialogResult.Cancel };
-
-                dialog.Controls.Add(lblCodigo);
-                dialog.Controls.Add(txtCodigo);
-                dialog.Controls.Add(lblNombre);
-                dialog.Controls.Add(txtNombre);
-                dialog.Controls.Add(lblDesc);
-                dialog.Controls.Add(txtDesc);
-                dialog.Controls.Add(btnOK);
-                dialog.Controls.Add(btnCancel);
+                dialog.Controls.AddRange(new Control[] { lblNombre, txtNombre, lblDesc, txtDesc, btnOK, btnCancel });
                 dialog.AcceptButton = btnOK;
                 dialog.CancelButton = btnCancel;
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    if (string.IsNullOrWhiteSpace(txtCodigo.Text) || string.IsNullOrWhiteSpace(txtNombre.Text))
+                    if (string.IsNullOrWhiteSpace(txtNombre.Text))
                     {
-                        MessageBox.Show(idiomaManager.Obtener("CAMPOS_REQUERIDOS"), "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("El nombre es requerido", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
 
                     try
                     {
-                        BE_Permiso nuevoPermiso = new BE_Permiso(txtCodigo.Text, txtNombre.Text, txtDesc.Text);
+                        BE_Permiso nuevoPermiso = new BE_Permiso(
+                            txtNombre.Text.ToUpper(),
+                            txtNombre.Text,
+                            txtDesc.Text
+                        );
                         bllPermiso.CrearPermiso(nuevoPermiso);
                         CargarPermisos();
-                        MessageBox.Show(idiomaManager.Obtener("OPERACION_EXITOSA"), "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Permiso compuesto creado exitosamente", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {
@@ -146,67 +174,49 @@ namespace GUI
             }
         }
 
-        private void EditarPermiso()
+        private void btnAgregarComponente_Click(object sender, EventArgs e)
         {
-            if (dgvPermisos.SelectedRows.Count == 0)
+            if (permisoSeleccionado == null)
             {
-                MessageBox.Show(idiomaManager.Obtener("SELECCIONA_PERMISO"), "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Selecciona un permiso compuesto", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            var permisoSeleccionado = dgvPermisos.SelectedRows[0].DataBoundItem as BE_Permiso;
-            if (permisoSeleccionado == null) return;
+            var permisosDisponibles = bllPermiso.ObtenerTodosLosPermisos()
+                .Where(p => p.ID != permisoSeleccionado.ID)
+                .ToList();
 
             using (Form dialog = new Form())
             {
-                dialog.Text = idiomaManager.Obtener("EDITAR") + " - " + idiomaManager.Obtener("PERMISO");
-                dialog.Width = 450;
-                dialog.Height = 280;
+                dialog.Text = "Agregar Componente";
+                dialog.Width = 400;
+                dialog.Height = 180;
                 dialog.StartPosition = FormStartPosition.CenterParent;
                 dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
                 dialog.MaximizeBox = false;
                 dialog.MinimizeBox = false;
 
-                Label lblCodigo = new Label() { Left = 20, Top = 20, Text = idiomaManager.Obtener("CODIGO") + ":", Width = 400 };
-                TextBox txtCodigo = new TextBox() { Left = 20, Top = 45, Width = 400, Text = permisoSeleccionado.Codigo };
+                Label lblPermiso = new Label() { Left = 20, Top = 20, Text = "Selecciona permiso:", Width = 350 };
+                ComboBox cbPermiso = new ComboBox() { Left = 20, Top = 45, Width = 350, DropDownStyle = ComboBoxStyle.DropDownList };
 
-                Label lblNombre = new Label() { Left = 20, Top = 75, Text = idiomaManager.Obtener("NOMBRE") + ":", Width = 400 };
-                TextBox txtNombre = new TextBox() { Left = 20, Top = 100, Width = 400, Text = permisoSeleccionado.Nombre };
+                cbPermiso.DisplayMember = "Nombre";
+                cbPermiso.ValueMember = "ID";
+                cbPermiso.DataSource = permisosDisponibles;
 
-                Label lblDesc = new Label() { Left = 20, Top = 130, Text = idiomaManager.Obtener("DESCRIPCION") + ":", Width = 400 };
-                TextBox txtDesc = new TextBox() { Left = 20, Top = 155, Width = 400, Height = 50, Multiline = true, Text = permisoSeleccionado.Descripcion ?? "" };
+                Button btnOK = new Button() { Text = "Agregar", Left = 200, Width = 80, Top = 100, DialogResult = DialogResult.OK };
+                Button btnCancel = new Button() { Text = "Cancelar", Left = 290, Width = 80, Top = 100, DialogResult = DialogResult.Cancel };
 
-                Button btnOK = new Button() { Text = "OK", Left = 250, Width = 80, Top = 220, DialogResult = DialogResult.OK };
-                Button btnCancel = new Button() { Text = idiomaManager.Obtener("CANCELAR"), Left = 340, Width = 80, Top = 220, DialogResult = DialogResult.Cancel };
-
-                dialog.Controls.Add(lblCodigo);
-                dialog.Controls.Add(txtCodigo);
-                dialog.Controls.Add(lblNombre);
-                dialog.Controls.Add(txtNombre);
-                dialog.Controls.Add(lblDesc);
-                dialog.Controls.Add(txtDesc);
-                dialog.Controls.Add(btnOK);
-                dialog.Controls.Add(btnCancel);
+                dialog.Controls.AddRange(new Control[] { lblPermiso, cbPermiso, btnOK, btnCancel });
                 dialog.AcceptButton = btnOK;
                 dialog.CancelButton = btnCancel;
 
-                if (dialog.ShowDialog() == DialogResult.OK)
+                if (dialog.ShowDialog() == DialogResult.OK && cbPermiso.SelectedItem is BE_Permiso permisoSeleccionado)
                 {
-                    if (string.IsNullOrWhiteSpace(txtCodigo.Text) || string.IsNullOrWhiteSpace(txtNombre.Text))
-                    {
-                        MessageBox.Show(idiomaManager.Obtener("CAMPOS_REQUERIDOS"), "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-
                     try
                     {
-                        permisoSeleccionado.Codigo = txtCodigo.Text;
-                        permisoSeleccionado.Nombre = txtNombre.Text;
-                        permisoSeleccionado.Descripcion = txtDesc.Text;
-
-                        bllPermiso.ActualizarPermiso(permisoSeleccionado);
-                        CargarPermisos();
-                        MessageBox.Show(idiomaManager.Obtener("OPERACION_EXITOSA"), "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        bllPermiso.AgregarComponente(this.permisoSeleccionado.ID, permisoSeleccionado.ID);
+                        CargarComponentes(this.permisoSeleccionado.ID);
+                        MessageBox.Show("Componente agregado", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {
@@ -216,16 +226,36 @@ namespace GUI
             }
         }
 
-        private void EliminarPermiso()
+        private void btnQuitarComponente_Click(object sender, EventArgs e)
         {
-            if (dgvPermisos.SelectedRows.Count == 0)
+            if (permisoSeleccionado == null || dgvComponentes.SelectedRows.Count == 0)
             {
-                MessageBox.Show(idiomaManager.Obtener("SELECCIONA_PERMISO"), "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Selecciona un componente para quitar", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            var permisoSeleccionado = dgvPermisos.SelectedRows[0].DataBoundItem as BE_Permiso;
-            if (permisoSeleccionado == null) return;
+            var componente = dgvComponentes.SelectedRows[0].DataBoundItem as BE_Permiso;
+            if (componente == null) return;
+
+            try
+            {
+                bllPermiso.QuitarComponente(permisoSeleccionado.ID, componente.ID);
+                CargarComponentes(permisoSeleccionado.ID);
+                MessageBox.Show("Componente removido", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnEliminar_Click(object sender, EventArgs e)
+        {
+            if (permisoSeleccionado == null)
+            {
+                MessageBox.Show("Selecciona un permiso", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             if (MessageBox.Show($"¿Eliminar el permiso '{permisoSeleccionado.Nombre}'?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
@@ -234,7 +264,8 @@ namespace GUI
             {
                 bllPermiso.EliminarPermiso(permisoSeleccionado.ID);
                 CargarPermisos();
-                MessageBox.Show(idiomaManager.Obtener("OPERACION_EXITOSA"), "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LimpiarDetalle();
+                MessageBox.Show("Permiso eliminado", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {

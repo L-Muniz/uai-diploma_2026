@@ -94,6 +94,45 @@ namespace BLL
             }
         }
 
+        public void AgregarComponente(int idPermisoCompuesto, int idPermisoComponente)
+        {
+            try
+            {
+                if (idPermisoCompuesto == idPermisoComponente)
+                    throw new Exception("Un permiso no puede ser componente de sí mismo");
+
+                mpPermiso.AgregarComponente(idPermisoCompuesto, idPermisoComponente);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al agregar componente: " + ex.Message);
+            }
+        }
+
+        public void QuitarComponente(int idPermisoCompuesto, int idPermisoComponente)
+        {
+            try
+            {
+                mpPermiso.QuitarComponente(idPermisoCompuesto, idPermisoComponente);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al quitar componente: " + ex.Message);
+            }
+        }
+
+        public List<BE_Permiso> ObtenerComponentes(int idPermisoCompuesto)
+        {
+            try
+            {
+                return mpPermiso.ObtenerComponentes(idPermisoCompuesto);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener componentes: " + ex.Message);
+            }
+        }
+
         private void ValidarPermiso(BE_Permiso permiso)
         {
             if (permiso == null)
