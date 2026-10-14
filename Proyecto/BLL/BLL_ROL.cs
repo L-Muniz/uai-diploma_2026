@@ -10,7 +10,6 @@ namespace BLL
     public class BLL_ROL
     {
         private MP_ROL mp = new MP_ROL();
-        private BLL_PERFIL bllPerfil = new BLL_PERFIL();
 
         private BE_USUARIO ObtenerUsuarioActual()
         {
@@ -37,93 +36,10 @@ namespace BLL
             return mp.ObtenerPermisos(idRol);
         }
 
-        public List<BE_Permiso> ObtenerPermisosConHerencia(int idRol)
-        {
-            return ObtenerPermisosConHerencia(idRol, new HashSet<int>());
-        }
-
-        private List<BE_Permiso> ObtenerPermisosConHerencia(int idRol, HashSet<int> visitados)
-        {
-            if (!visitados.Add(idRol))
-                return new List<BE_Permiso>();
-
-            var rol = mp.ObtenerPorId(idRol);
-            if (rol == null) return new List<BE_Permiso>();
-
-            var permisos = new Dictionary<int, BE_Permiso>();
-            foreach (var p in ObtenerPermisosDelRol(idRol))
-                permisos[p.ID] = p;
-
-            foreach (var perfil in ObtenerPerfilesDelRol(idRol))
-            {
-                foreach (var p in ObtenerPermisosDelPaquetePerfil(perfil.ID))
-                {
-                    if (!permisos.ContainsKey(p.ID))
-                        permisos[p.ID] = p;
-                }
-            }
-
-            if (rol.IdPadreRol.HasValue && rol.IdPadreRol.Value > 0)
-            {
-                foreach (var p in ObtenerPermisosConHerencia(rol.IdPadreRol.Value, visitados))
-                {
-                    if (!permisos.ContainsKey(p.ID))
-                        permisos[p.ID] = p;
-                }
-            }
-
-            return new List<BE_Permiso>(permisos.Values);
-        }
-
-        public List<BE_Perfil> ObtenerPerfilesDelRol(int idRol)
-        {
-            return mp.ObtenerPerfiles(idRol);
-        }
-
-        private List<BE_Permiso> ObtenerPermisosDelPaquetePerfil(int idPerfil)
-        {
-            var permisos = new Dictionary<int, BE_Permiso>();
-            var visitados = new HashSet<int>();
-            AgregarPermisosDelPaquetePerfil(idPerfil, permisos, visitados);
-            return new List<BE_Permiso>(permisos.Values);
-        }
-
-        private void AgregarPermisosDelPaquetePerfil(int idPerfil, Dictionary<int, BE_Permiso> destino, HashSet<int> visitados)
-        {
-            if (!visitados.Add(idPerfil))
-                return;
-
-            foreach (var p in bllPerfil.ObtenerPermisosConHerencia(idPerfil))
-            {
-                if (!destino.ContainsKey(p.ID))
-                    destino[p.ID] = p;
-            }
-
-            foreach (var hijo in bllPerfil.ObtenerPerfilesHijos(idPerfil))
-                AgregarPermisosDelPaquetePerfil(hijo.ID, destino, visitados);
-        }
-
-        
         public List<BE_ComponenteAcceso> ObtenerComponentesDelRol(int idRol)
         {
             var componentes = new List<BE_ComponenteAcceso>();
             var idsPermisosDirectos = new HashSet<int>(ObtenerPermisosDelRol(idRol).Select(p => p.ID));
-            var perfilesPorPermiso = new Dictionary<int, List<string>>();
-
-            foreach (var perfil in ObtenerPerfilesDelRol(idRol))
-            {
-                foreach (var permisoPerfil in ObtenerPermisosDelPaquetePerfil(perfil.ID))
-                {
-                    if (!perfilesPorPermiso.TryGetValue(permisoPerfil.ID, out var nombresPerfil))
-                    {
-                        nombresPerfil = new List<string>();
-                        perfilesPorPermiso[permisoPerfil.ID] = nombresPerfil;
-                    }
-
-                    if (!nombresPerfil.Contains(perfil.Nombre))
-                        nombresPerfil.Add(perfil.Nombre);
-                }
-            }
 
             var rol = mp.ObtenerPorId(idRol);
             string nombrePadre = null;
@@ -132,20 +48,17 @@ namespace BLL
             {
                 var padre = mp.ObtenerPorId(rol.IdPadreRol.Value);
                 nombrePadre = padre?.Nombre;
-                foreach (var permisoPadre in ObtenerPermisosConHerencia(rol.IdPadreRol.Value))
+                foreach (var permisoPadre in ObtenerPermisosDelRol(rol.IdPadreRol.Value))
                     idsPermisosPadre.Add(permisoPadre.ID);
             }
 
-            foreach (var p in ObtenerPermisosConHerencia(idRol))
+            foreach (var p in ObtenerPermisosDelRol(idRol))
             {
                 bool esDirecto = idsPermisosDirectos.Contains(p.ID);
                 var origenes = new List<string>();
 
                 if (esDirecto)
                     origenes.Add(BE_ComponenteAcceso.OrigenDirecto);
-
-                if (perfilesPorPermiso.TryGetValue(p.ID, out var nombresPerfil))
-                    origenes.Add(BE_ComponenteAcceso.OrigenDesdePerfiles(nombresPerfil));
 
                 if (idsPermisosPadre.Contains(p.ID))
                     origenes.Add(BE_ComponenteAcceso.OrigenDesdeRolPadre(nombrePadre));
@@ -159,22 +72,6 @@ namespace BLL
                     Descripcion = p.Descripcion,
                     EsHeredado = !esDirecto,
                     Origen = BE_ComponenteAcceso.CombinarOrigenes(origenes)
-                });
-            }
-
-            foreach (var perfil in ObtenerPerfilesDelRol(idRol))
-            {
-                componentes.Add(new BE_ComponenteAcceso
-                {
-                    ID = perfil.ID,
-                    Tipo = BE_ComponenteAcceso.TipoPerfil,
-                    Nombre = perfil.Nombre,
-                    Codigo = "PERFIL",
-                    Descripcion = string.IsNullOrWhiteSpace(perfil.Descripcion)
-                        ? "Perfil asignado al rol"
-                        : perfil.Descripcion,
-                    EsHeredado = false,
-                    Origen = BE_ComponenteAcceso.OrigenDirecto
                 });
             }
 
@@ -197,13 +94,11 @@ namespace BLL
             return componentes;
         }
 
-        
         public List<BE_ComponenteAcceso> ObtenerComponentesDisponiblesParaAsignar(int idRol)
         {
             var disponibles = new List<BE_ComponenteAcceso>();
             var idsPermisosDirectos = new HashSet<int>(ObtenerPermisosDelRol(idRol).Select(p => p.ID));
             var idsHijos = new HashSet<int>(ObtenerRolesHijos(idRol).Select(r => r.ID));
-            var idsPerfiles = new HashSet<int>(ObtenerPerfilesDelRol(idRol).Select(p => p.ID));
 
             foreach (var p in ObtenerTodosLosPermisos())
             {
@@ -217,21 +112,6 @@ namespace BLL
                     Nombre = p.Nombre,
                     Codigo = p.Codigo,
                     Descripcion = p.Descripcion
-                });
-            }
-
-            foreach (var perfil in bllPerfil.ObtenerTodosLosPerfiles())
-            {
-                if (idsPerfiles.Contains(perfil.ID))
-                    continue;
-
-                disponibles.Add(new BE_ComponenteAcceso
-                {
-                    ID = perfil.ID,
-                    Tipo = BE_ComponenteAcceso.TipoPerfil,
-                    Nombre = perfil.Nombre,
-                    Codigo = "PERFIL",
-                    Descripcion = perfil.Descripcion
                 });
             }
 
@@ -260,7 +140,6 @@ namespace BLL
             return mp.ObtenerTodosLosPermisos();
         }
 
-        
         public bool FormariaReferenciaCircular(int idRol, int? idNuevoPadre)
         {
             if (!idNuevoPadre.HasValue || idNuevoPadre.Value <= 0)
@@ -278,7 +157,7 @@ namespace BLL
                     return true;
 
                 if (!visitados.Add(actual.Value))
-                    return true; 
+                    return true;
 
                 var nodo = mp.ObtenerPorId(actual.Value);
                 actual = nodo?.IdPadreRol;
@@ -310,12 +189,6 @@ namespace BLL
                 BLL_BITACORA bitacora = new BLL_BITACORA();
                 bitacora.IngresarRegistro(usuario, $"Rol '{rol.Nombre}' creado");
             }
-        }
-
-        public void CrearRol(string nombre, string descripcion)
-        {
-            BE_Rol rol = new BE_Rol(nombre, descripcion);
-            CrearRol(rol);
         }
 
         public void ActualizarRol(BE_Rol rol)
@@ -384,19 +257,12 @@ namespace BLL
 
             if (!componente.SePuedeDesasignar)
             {
-                if (componente.ProvieneDePerfil && componente.ProvieneDeRolPadre)
-                    throw new InvalidOperationException("Ese permiso proviene de un perfil y del rol padre. Desasigne el perfil y/o quítelo del rol padre.");
-
-                if (componente.ProvieneDePerfil)
-                    throw new InvalidOperationException("Ese permiso proviene de un perfil asignado. Desasigne el perfil o edítelo en la gestión de perfiles.");
-
-                throw new InvalidOperationException("No se puede desasignar un permiso heredado. Quítelo del rol padre.");
+                if (componente.ProvieneDeRolPadre)
+                    throw new InvalidOperationException("No se puede desasignar un permiso heredado. Quítelo del rol padre.");
             }
 
             if (componente.EsRol)
                 DesasignarSubRol(idRol, componente.ID);
-            else if (componente.EsPerfil)
-                QuitarPerfilDelRol(idRol, componente.ID);
             else if (componente.EsPermiso)
                 QuitarPermisoDelRol(idRol, componente.ID);
             else
@@ -410,54 +276,10 @@ namespace BLL
 
             if (componente.EsRol)
                 AsignarSubRol(idRol, componente.ID);
-            else if (componente.EsPerfil)
-                AsignarPerfilAlRol(idRol, componente.ID);
             else if (componente.EsPermiso)
                 AgregarPermisoAlRol(idRol, componente.ID);
             else
                 throw new InvalidOperationException("Tipo de componente no reconocido.");
-        }
-
-        public void AsignarPerfilAlRol(int idRol, int idPerfil)
-        {
-            if (idRol <= 0 || idPerfil <= 0)
-                throw new ArgumentException("IDs inválidos.");
-
-            if (bllPerfil.ObtenerTodosLosPerfiles().All(p => p.ID != idPerfil))
-                throw new Exception("Perfil no encontrado.");
-
-            if (ObtenerPerfilesDelRol(idRol).Any(p => p.ID == idPerfil))
-                return;
-
-            mp.AgregarPerfil(idRol, idPerfil);
-
-            if (ObtenerPerfilesDelRol(idRol).All(p => p.ID != idPerfil))
-                throw new Exception("Error al asignar el perfil al rol.");
-
-            var usuario = ObtenerUsuarioActual();
-            if (usuario != null)
-            {
-                BLL_BITACORA bitacora = new BLL_BITACORA();
-                bitacora.IngresarRegistro(usuario, $"Perfil ID {idPerfil} asignado al rol ID {idRol}");
-            }
-        }
-
-        public void QuitarPerfilDelRol(int idRol, int idPerfil)
-        {
-            if (ObtenerPerfilesDelRol(idRol).All(p => p.ID != idPerfil))
-                throw new InvalidOperationException("El perfil no está asignado a este rol.");
-
-            mp.QuitarPerfil(idRol, idPerfil);
-
-            if (ObtenerPerfilesDelRol(idRol).Any(p => p.ID == idPerfil))
-                throw new Exception("Error al desasignar el perfil del rol.");
-
-            var usuario = ObtenerUsuarioActual();
-            if (usuario != null)
-            {
-                BLL_BITACORA bitacora = new BLL_BITACORA();
-                bitacora.IngresarRegistro(usuario, $"Perfil ID {idPerfil} desasignado del rol ID {idRol}");
-            }
         }
 
         public void EliminarRol(int idRol)
@@ -504,7 +326,6 @@ namespace BLL
             return mp.ObtenerPorID(idRol);
         }
 
-        
         public List<BE_Rol> ObtenerRolesCandidatosComoPadre(int idRolHijo)
         {
             return ObtenerTodosLosRoles()

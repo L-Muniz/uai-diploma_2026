@@ -44,7 +44,7 @@ namespace GUI
             if (lblDescripcion != null) lblDescripcion.Text = idiomaManager.Obtener("DESCRIPCION");
             if (lblComponentes != null) lblComponentes.Text = "Componentes:";
             if (chkCompuesto != null) chkCompuesto.Text = "Es permiso compuesto";
-            if (btnNuevoCompuesto != null) btnNuevoCompuesto.Text = "Crear Permiso\nCompuesto";
+            if (btnNuevoCompuesto != null) btnNuevoCompuesto.Text = "Nuevo Compuesto";
             if (btnAgregarComponente != null) btnAgregarComponente.Text = "Agregar";
             if (btnQuitarComponente != null) btnQuitarComponente.Text = "Quitar";
             if (btnEliminar != null) btnEliminar.Text = idiomaManager.Obtener("ELIMINAR");
@@ -62,11 +62,34 @@ namespace GUI
                 tvPermisos.Nodes.Clear();
                 var permisos = bllPermiso.ObtenerTodosLosPermisos();
 
-                foreach (var permiso in permisos.OrderBy(p => p.Nombre))
+                // Separar simples y compuestos
+                var simples = permisos.Where(p => bllPermiso.ObtenerComponentes(p.ID).Count == 0).OrderBy(p => p.Nombre);
+                var compuestos = permisos.Where(p => bllPermiso.ObtenerComponentes(p.ID).Count > 0).OrderBy(p => p.Nombre);
+
+                // Nodo: Permisos Simples
+                var nodoSimples = new TreeNode("📄 PERMISOS SIMPLES");
+                nodoSimples.ForeColor = Color.DarkBlue;
+                tvPermisos.Nodes.Add(nodoSimples);
+
+                foreach (var permiso in simples)
                 {
                     var nodo = new TreeNode(permiso.Nombre) { Tag = permiso };
-                    tvPermisos.Nodes.Add(nodo);
+                    nodoSimples.Nodes.Add(nodo);
                 }
+
+                // Nodo: Permisos Compuestos
+                var nodoCompuestos = new TreeNode("📦 PERMISOS COMPUESTOS");
+                nodoCompuestos.ForeColor = Color.DarkGreen;
+                tvPermisos.Nodes.Add(nodoCompuestos);
+
+                foreach (var permiso in compuestos)
+                {
+                    var nodo = new TreeNode(permiso.Nombre) { Tag = permiso };
+                    nodoCompuestos.Nodes.Add(nodo);
+                }
+
+                nodoSimples.Expand();
+                nodoCompuestos.Expand();
             }
             catch (Exception ex)
             {
@@ -83,10 +106,19 @@ namespace GUI
                 permisoSeleccionado = permiso;
                 txtNombre.Text = permiso.Nombre;
                 txtDescripcion.Text = permiso.Descripcion ?? "";
-                btnEliminar.Enabled = true;
-                btnNuevoCompuesto.Enabled = true;
 
-                CargarComponentes(permiso.ID);
+                var componentes = bllPermiso.ObtenerComponentes(permiso.ID);
+                bool esCompuesto = componentes.Count > 0;
+
+                chkCompuesto.Checked = esCompuesto;
+                btnEliminar.Enabled = true;
+                btnAgregarComponente.Enabled = esCompuesto;
+                btnQuitarComponente.Enabled = esCompuesto && dgvComponentes.Rows.Count > 0;
+
+                if (esCompuesto)
+                {
+                    CargarComponentes(permiso.ID);
+                }
             }
         }
 
@@ -96,16 +128,10 @@ namespace GUI
             {
                 var componentes = bllPermiso.ObtenerComponentes(idPermisoCompuesto);
                 DataGridViewSortHelper.Bind(dgvComponentes, componentes);
-
-                chkCompuesto.Checked = componentes.Count > 0;
-                btnAgregarComponente.Enabled = true;
-                btnQuitarComponente.Enabled = dgvComponentes.Rows.Count > 0;
             }
             catch
             {
-                chkCompuesto.Checked = false;
-                btnAgregarComponente.Enabled = false;
-                btnQuitarComponente.Enabled = false;
+                dgvComponentes.DataSource = null;
             }
         }
 
@@ -116,7 +142,6 @@ namespace GUI
             chkCompuesto.Checked = false;
             dgvComponentes.DataSource = null;
             btnEliminar.Enabled = false;
-            btnNuevoCompuesto.Enabled = false;
             btnAgregarComponente.Enabled = false;
             btnQuitarComponente.Enabled = false;
             permisoSeleccionado = null;
@@ -128,7 +153,7 @@ namespace GUI
             {
                 dialog.Text = "Crear Permiso Compuesto";
                 dialog.Width = 450;
-                dialog.Height = 200;
+                dialog.Height = 220;
                 dialog.StartPosition = FormStartPosition.CenterParent;
                 dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
                 dialog.MaximizeBox = false;
@@ -138,10 +163,10 @@ namespace GUI
                 TextBox txtNombre = new TextBox() { Left = 20, Top = 45, Width = 400 };
 
                 Label lblDesc = new Label() { Left = 20, Top = 75, Text = "Descripción:", Width = 400 };
-                TextBox txtDesc = new TextBox() { Left = 20, Top = 100, Width = 400, Height = 40, Multiline = true };
+                TextBox txtDesc = new TextBox() { Left = 20, Top = 100, Width = 400, Height = 50, Multiline = true };
 
-                Button btnOK = new Button() { Text = "Crear", Left = 250, Width = 80, Top = 145, DialogResult = DialogResult.OK };
-                Button btnCancel = new Button() { Text = "Cancelar", Left = 340, Width = 80, Top = 145, DialogResult = DialogResult.Cancel };
+                Button btnOK = new Button() { Text = "Crear", Left = 250, Width = 80, Top = 160, DialogResult = DialogResult.OK };
+                Button btnCancel = new Button() { Text = "Cancelar", Left = 340, Width = 80, Top = 160, DialogResult = DialogResult.Cancel };
 
                 dialog.Controls.AddRange(new Control[] { lblNombre, txtNombre, lblDesc, txtDesc, btnOK, btnCancel });
                 dialog.AcceptButton = btnOK;
@@ -164,7 +189,7 @@ namespace GUI
                         );
                         bllPermiso.CrearPermiso(nuevoPermiso);
                         CargarPermisos();
-                        MessageBox.Show("Permiso compuesto creado exitosamente", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Permiso compuesto creado. Ahora puedes agregar componentes.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {
@@ -182,9 +207,16 @@ namespace GUI
                 return;
             }
 
+            var permisosExistentes = bllPermiso.ObtenerComponentes(permisoSeleccionado.ID).Select(p => p.ID).ToHashSet();
             var permisosDisponibles = bllPermiso.ObtenerTodosLosPermisos()
-                .Where(p => p.ID != permisoSeleccionado.ID)
+                .Where(p => p.ID != permisoSeleccionado.ID && !permisosExistentes.Contains(p.ID))
                 .ToList();
+
+            if (permisosDisponibles.Count == 0)
+            {
+                MessageBox.Show("No hay permisos disponibles para agregar", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
             using (Form dialog = new Form())
             {
