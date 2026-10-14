@@ -380,44 +380,11 @@ namespace GUI
         private List<RolAsignacionItem> ObtenerRolesJerarquicosParaAsignar()
         {
             var todos = bllRol.ObtenerTodosLosRoles() ?? new List<BE_Rol>();
-            var hijosPorPadre = todos
-                .GroupBy(r => r.IdPadreRol ?? 0)
-                .ToDictionary(g => g.Key, g => g.OrderBy(r => r.Nombre).ToList());
-
-            var lista = new List<RolAsignacionItem>();
-            var visitados = new HashSet<int>();
-
-            foreach (var raiz in todos.Where(r => !r.IdPadreRol.HasValue).OrderBy(r => r.Nombre))
-                AgregarRolJerarquico(raiz, raiz.Nombre, hijosPorPadre, lista, visitados);
-
-            foreach (var rol in todos.Where(r => !visitados.Contains(r.ID)).OrderBy(r => r.Nombre))
-                AgregarRolJerarquico(rol, rol.Nombre, hijosPorPadre, lista, visitados);
-
+            var lista = todos
+                .OrderBy(r => r.Nombre)
+                .Select(r => new RolAsignacionItem { ID = r.ID, Nombre = r.Nombre, Etiqueta = r.Nombre })
+                .ToList();
             return lista;
-        }
-
-        private void AgregarRolJerarquico(
-            BE_Rol rol,
-            string ruta,
-            Dictionary<int, List<BE_Rol>> hijosPorPadre,
-            List<RolAsignacionItem> destino,
-            HashSet<int> visitados)
-        {
-            if (rol == null || !visitados.Add(rol.ID))
-                return;
-
-            destino.Add(new RolAsignacionItem
-            {
-                ID = rol.ID,
-                Nombre = rol.Nombre,
-                Etiqueta = ruta
-            });
-
-            if (!hijosPorPadre.TryGetValue(rol.ID, out var hijos))
-                return;
-
-            foreach (var hijo in hijos)
-                AgregarRolJerarquico(hijo, ruta + " > " + hijo.Nombre, hijosPorPadre, destino, visitados);
         }
 
         private sealed class RolAsignacionItem

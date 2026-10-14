@@ -16,7 +16,6 @@ namespace DAL
             List<SqlParameter> parametros = new List<SqlParameter>();
             parametros.Add(acc.CrearParametro("@NOMBRE", obj.Nombre));
             parametros.Add(acc.CrearParametro("@DESCRIPCION", obj.Descripcion ?? ""));
-            parametros.Add(acc.CrearParametro("@ID_ROL_PADRE", obj.IdPadreRol ?? 0));
             int idNuevoRol = acc.Verificar(sql, parametros);
             acc.Cerrar();
 
@@ -49,20 +48,6 @@ namespace DAL
             parametros.Add(acc.CrearParametro("@ID_ROL", obj.ID));
             parametros.Add(acc.CrearParametro("@NOMBRE", obj.Nombre));
             parametros.Add(acc.CrearParametro("@DESCRIPCION", obj.Descripcion ?? ""));
-            parametros.Add(acc.CrearParametro("@ID_ROL_PADRE", obj.IdPadreRol ?? 0));
-            int filas = acc.Escribir(sql, parametros);
-            acc.Cerrar();
-            return filas;
-        }
-
-        public int AsignarPadre(int idRol, int? idRolPadre)
-        {
-            ACCESO acc = new ACCESO();
-            acc.Abrir();
-            string sql = "ROL_ASIGNAR_PADRE";
-            List<SqlParameter> parametros = new List<SqlParameter>();
-            parametros.Add(acc.CrearParametro("@ID_ROL", idRol));
-            parametros.Add(acc.CrearParametro("@ID_ROL_PADRE", idRolPadre ?? 0));
             int filas = acc.Escribir(sql, parametros);
             acc.Cerrar();
             return filas;
@@ -72,7 +57,7 @@ namespace DAL
         {
             ACCESO acc = new ACCESO();
             acc.Abrir();
-            string sql = "ROL_LISTAR_PRINCIPALES";
+            string sql = "ROL_LISTAR_TODOS";
             DataTable dt = acc.Leer(sql);
             acc.Cerrar();
 
@@ -86,54 +71,7 @@ namespace DAL
 
         public List<BE_Rol> ListarTodos()
         {
-            ACCESO acc = new ACCESO();
-            acc.Abrir();
-            string sql = "ROL_LISTAR_TODOS";
-            DataTable dt = acc.Leer(sql);
-            acc.Cerrar();
-
-            List<BE_Rol> lista = new List<BE_Rol>();
-            foreach (DataRow row in dt.Rows)
-            {
-                lista.Add(MapearDatos(row));
-            }
-
-            if (lista.Count == 0)
-            {
-                var visitados = new HashSet<int>();
-                foreach (var raiz in Listar())
-                    AgregarRolYDescendientes(raiz, lista, visitados);
-            }
-
-            return lista;
-        }
-
-        private void AgregarRolYDescendientes(BE_Rol rol, List<BE_Rol> destino, HashSet<int> visitados)
-        {
-            if (rol == null || !visitados.Add(rol.ID))
-                return;
-
-            destino.Add(rol);
-            foreach (var hijo in ObtenerRolesHijos(rol.ID))
-                AgregarRolYDescendientes(hijo, destino, visitados);
-        }
-
-        public List<BE_Rol> ObtenerRolesHijos(int idRolPadre)
-        {
-            ACCESO acc = new ACCESO();
-            acc.Abrir();
-            string sql = "ROL_LISTAR_HIJOS";
-            List<SqlParameter> parametros = new List<SqlParameter>();
-            parametros.Add(acc.CrearParametro("@ID_ROL_PADRE", idRolPadre));
-            DataTable dt = acc.Leer(sql, parametros);
-            acc.Cerrar();
-
-            List<BE_Rol> lista = new List<BE_Rol>();
-            foreach (DataRow row in dt.Rows)
-            {
-                lista.Add(MapearDatos(row));
-            }
-            return lista;
+            return Listar();
         }
 
         public BE_Rol ObtenerPorId(int idRol)
@@ -221,58 +159,6 @@ namespace DAL
             acc.Cerrar();
         }
 
-        public List<BE_Perfil> ObtenerPerfiles(int idRol)
-        {
-            ACCESO acc = new ACCESO();
-            acc.Abrir();
-            string sql = "ROL_OBTENER_PERFILES";
-            List<SqlParameter> parametros = new List<SqlParameter>();
-            parametros.Add(acc.CrearParametro("@ID_ROL", idRol));
-            DataTable dt = acc.Leer(sql, parametros);
-            acc.Cerrar();
-
-            List<BE_Perfil> lista = new List<BE_Perfil>();
-            foreach (DataRow row in dt.Rows)
-            {
-                var perfil = new BE_Perfil();
-                perfil.ID = int.Parse(row["ID_PERFIL"].ToString());
-                perfil.Nombre = row["NOMBRE"].ToString();
-                perfil.Descripcion = row["DESCRIPCION"]?.ToString();
-                if (row.Table.Columns.Contains("ID_PERFIL_PADRE") && row["ID_PERFIL_PADRE"] != DBNull.Value)
-                {
-                    int idPadre = int.Parse(row["ID_PERFIL_PADRE"].ToString());
-                    if (idPadre > 0)
-                        perfil.IdPadrePerfil = idPadre;
-                }
-                lista.Add(perfil);
-            }
-            return lista;
-        }
-
-        public void AgregarPerfil(int idRol, int idPerfil)
-        {
-            ACCESO acc = new ACCESO();
-            acc.Abrir();
-            string sql = "ROL_AGREGAR_PERFIL";
-            List<SqlParameter> parametros = new List<SqlParameter>();
-            parametros.Add(acc.CrearParametro("@ID_ROL", idRol));
-            parametros.Add(acc.CrearParametro("@ID_PERFIL", idPerfil));
-            acc.Escribir(sql, parametros);
-            acc.Cerrar();
-        }
-
-        public void QuitarPerfil(int idRol, int idPerfil)
-        {
-            ACCESO acc = new ACCESO();
-            acc.Abrir();
-            string sql = "ROL_QUITAR_PERFIL";
-            List<SqlParameter> parametros = new List<SqlParameter>();
-            parametros.Add(acc.CrearParametro("@ID_ROL", idRol));
-            parametros.Add(acc.CrearParametro("@ID_PERFIL", idPerfil));
-            acc.Escribir(sql, parametros);
-            acc.Cerrar();
-        }
-
         public BE_Rol ObtenerPorID(int idRol)
         {
             return ObtenerPorId(idRol);
@@ -284,14 +170,6 @@ namespace DAL
             rol.ID = int.Parse(row["ID_ROL"].ToString());
             rol.Nombre = row["NOMBRE"].ToString();
             rol.Descripcion = row["DESCRIPCION"].ToString();
-
-            if (row.Table.Columns.Contains("ID_ROL_PADRE") && row["ID_ROL_PADRE"] != DBNull.Value)
-            {
-                int idPadre = int.Parse(row["ID_ROL_PADRE"].ToString());
-                if (idPadre > 0)
-                    rol.IdPadreRol = idPadre;
-            }
-
             return rol;
         }
     }
