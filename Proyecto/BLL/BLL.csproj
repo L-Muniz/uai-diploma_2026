@@ -54,6 +54,7 @@
     <Compile Include="BLL_ROL.cs" />
     <Compile Include="BLL_Rollback.cs" />
     <Compile Include="BLL_USUARIO.cs" />
+    <Compile Include="BLL_UsuarioMemento.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -108,24 +108,36 @@ namespace BLL
             SV_Singleton.GetInstance().LimpiarSesion();
         }
 
-        public void CrearUsuario(string username, string password)
+        // Reglas de negocio únicas para usuario: las usan crear, editar, restaurar memento y revertir cambio.
+        public static string ValidarUsername(string username)
         {
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentException("El nombre de usuario es obligatorio.");
 
-            username = username.Trim();
+            string limpio = username.Trim();
 
-            if (username.Length < 3)
+            if (limpio.Length < 3)
                 throw new ArgumentException("El nombre de usuario debe tener al menos 3 caracteres.");
 
-            if (username.Length > 50)
+            if (limpio.Length > 50)
                 throw new ArgumentException("El nombre de usuario no puede superar los 50 caracteres.");
 
+            return limpio;
+        }
+
+        public static void ValidarPassword(string password)
+        {
             if (string.IsNullOrWhiteSpace(password))
                 throw new ArgumentException("La contraseña es obligatoria.");
 
             if (password.Length <= 4)
                 throw new ArgumentException("La contraseña debe tener más de 4 caracteres.");
+        }
+
+        public void CrearUsuario(string username, string password)
+        {
+            username = ValidarUsername(username);
+            ValidarPassword(password);
 
             try
             {
@@ -180,9 +192,6 @@ namespace BLL
             if (usuario == null)
                 return;
 
-            BLL_Rollback.GuardarSnapshotUsuario(usuario,
-                $"Snapshot antes de bloquear al usuario {usuario.Username} por intentos fallidos");
-
             usuario.Bloqueado = true;
             MP_USUARIO mpUsuario = new MP_USUARIO();
             mpUsuario.BloquearUsuario(usuario);
@@ -202,8 +211,7 @@ namespace BLL
             if (usuario == null)
                 return;
 
-            BLL_Rollback.GuardarSnapshotUsuario(usuario,
-                $"Snapshot antes de desbloquear al usuario {usuario.Username}");
+            BLL_UsuarioMemento.Capturar(usuario.ID, $"Antes de desbloquear al usuario {usuario.Username}");
 
             usuario.Bloqueado = false;
             MP_USUARIO mpUsuario = new MP_USUARIO();
@@ -239,7 +247,7 @@ namespace BLL
                 }
 
                 string estadoNuevo = usuario.Bloqueado ? "bloqueado" : "desbloqueado";
-                BLL_Rollback.GuardarSnapshotUsuario(usuario, $"Cambio de estado antes de ser {estadoNuevo}");
+                BLL_UsuarioMemento.Capturar(usuario.ID, $"Cambio de estado antes de ser {estadoNuevo}");
 
                 if (usuario.Bloqueado)
                 {
@@ -315,24 +323,24 @@ namespace BLL
             if (usuario == null)
                 throw new Exception("Usuario no encontrado.");
 
-            BLL_Rollback.GuardarSnapshotUsuario(usuario, $"Antes de editar usuario {usuario.Username}");
+            // Todas las validaciones se hacen antes de capturar el memento y de tocar el usuario.
+            string username = string.IsNullOrWhiteSpace(nuevoUsername) ? usuario.Username : ValidarUsername(nuevoUsername);
+            bool cambiaUsername = username != usuario.Username;
+            bool cambiaPassword = !string.IsNullOrWhiteSpace(nuevaPassword);
+
+            if (cambiaUsername && mpUsuario.BuscarPorUserName(username) != null)
+                throw new Exception("El nombre de usuario ya existe.");
+
+            if (cambiaPassword)
+                ValidarPassword(nuevaPassword);
+
+            BLL_UsuarioMemento.Capturar(idUsuario, $"Antes de editar usuario {usuario.Username}");
 
             string usernameAnterior = usuario.Username;
-            if (!string.IsNullOrWhiteSpace(nuevoUsername) && nuevoUsername != usuario.Username)
-            {
-                if (mpUsuario.BuscarPorUserName(nuevoUsername) != null)
-                    throw new Exception("El nombre de usuario ya existe.");
-
-                usuario.Username = nuevoUsername;
-                BLL_ControlCambios.RegistrarCambio("USUARIO", usuario.ID, "USERNAME", usernameAnterior, nuevoUsername, usuarioActual, "Username editado");
-            }
-
-            if (!string.IsNullOrWhiteSpace(nuevaPassword))
-            {
-                string passAnterior = usuario.HashedPassword;
+            if (cambiaUsername)
+                usuario.Username = username;
+            if (cambiaPassword)
                 usuario.HashedPassword = BLL_GESTOR.HashPassword(nuevaPassword);
-                BLL_ControlCambios.RegistrarCambio("USUARIO", usuario.ID, "PASS", "[hash]", "[hash-nuevo]", usuarioActual, "Contraseña restablecida");
-            }
 
             CalcularYGuardarDVHUsuario(usuario, mpUsuario);
             int filas = mpUsuario.Editar(usuario);
@@ -340,6 +348,13 @@ namespace BLL
                 throw new Exception("Error al editar el usuario.");
 
             CalcularYGuardarDVVUsuario(usuario);
+
+            // Se registran los cambios recién cuando la persistencia fue exitosa.
+            if (cambiaUsername)
+                BLL_ControlCambios.RegistrarCambio("USUARIO", usuario.ID, "USERNAME", usernameAnterior, usuario.Username, usuarioActual, "Username editado");
+            if (cambiaPassword)
+                BLL_ControlCambios.RegistrarCambio("USUARIO", usuario.ID, "PASS", "[hash]", "[hash-nuevo]", usuarioActual, "Contraseña restablecida");
+
             bitacoraBLL.IngresarRegistro(usuarioActual ?? usuario, $"Usuario editado: {usernameAnterior} -> {usuario.Username}");
         }
 
@@ -360,7 +375,7 @@ namespace BLL
             if (EsRolAdministrador(rolObjetivo))
                 throw new InvalidOperationException("No se puede eliminar a un usuario administrador.");
 
-            BLL_Rollback.GuardarSnapshotUsuario(usuario, $"Antes de eliminar usuario {usuario.Username}");
+            BLL_UsuarioMemento.Capturar(idUsuario, $"Antes de eliminar usuario {usuario.Username}");
 
             int filas = mpUsuario.Borrar(usuario);
             if (filas == 0)

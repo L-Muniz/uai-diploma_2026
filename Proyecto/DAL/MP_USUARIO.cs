@@ -190,5 +190,35 @@ namespace DAL
 
             return "USUARIO";
         }
+
+        public List<int> ObtenerIdRoles(int idUsuario)
+        {
+            ACCESO acc = new ACCESO();
+            acc.Abrir();
+            string sql = "USUARIO_OBTENER_ID_ROLES";
+            List<SqlParameter> parametros = new List<SqlParameter>();
+            parametros.Add(acc.CrearParametro("@ID_USUARIO", idUsuario));
+            DataTable dt = acc.Leer(sql, parametros);
+            acc.Cerrar();
+
+            List<int> idRoles = new List<int>();
+            foreach (DataRow row in dt.Rows)
+                idRoles.Add(int.Parse(row["ID_ROL"].ToString()));
+
+            return idRoles;
+        }
+
+        public int QuitarRol(int idUsuario, int idRol)
+        {
+            ACCESO acc = new ACCESO();
+            acc.Abrir();
+            string sql = "USUARIO_QUITAR_ROL";
+            List<SqlParameter> parametros = new List<SqlParameter>();
+            parametros.Add(acc.CrearParametro("@ID_USUARIO", idUsuario));
+            parametros.Add(acc.CrearParametro("@ID_ROL", idRol));
+            int filas = acc.Escribir(sql, parametros);
+            acc.Cerrar();
+            return filas;
+        }
     }
 }

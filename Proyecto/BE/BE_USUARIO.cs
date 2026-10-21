@@ -69,6 +69,35 @@ namespace BE
             Username = user;
         }
 
+        // Originator: crea un memento con el estado actual del usuario.
+        public BE_UsuarioMemento CrearMemento(List<int> idRoles, string descripcion)
+        {
+            return new BE_UsuarioMemento
+            {
+                IdUsuario = ID,
+                Username = Username,
+                HashedPassword = HashedPassword,
+                Bloqueado = Bloqueado,
+                IdRoles = new List<int>(idRoles ?? new List<int>()),
+                Descripcion = descripcion,
+                FechaCaptura = DateTime.Now
+            };
+        }
+
+        // Originator: aplica el estado guardado en el memento. Los roles los restaura la BLL.
+        public void RestaurarDesde(BE_UsuarioMemento memento)
+        {
+            if (memento == null)
+                throw new ArgumentNullException(nameof(memento));
+
+            if (memento.IdUsuario != ID)
+                throw new InvalidOperationException("El memento pertenece a otro usuario.");
+
+            Username = memento.Username;
+            HashedPassword = memento.HashedPassword;
+            Bloqueado = memento.Bloqueado;
+        }
+
         public override string ToString()
         {
             return Username;

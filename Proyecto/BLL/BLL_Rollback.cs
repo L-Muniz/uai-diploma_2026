@@ -126,26 +126,5 @@ namespace BLL
             }
         }
 
-        public static (bool exito, string mensaje) GuardarSnapshotUsuario(BE_USUARIO usuario, string descripcion)
-        {
-            try
-            {
-                if (usuario == null)
-                    return (false, "Usuario nulo");
-
-                MP_USUARIO mp = new MP_USUARIO();
-                var actual = mp.BuscarPorId(usuario.ID) ?? usuario;
-
-                string bloqueadoSql = actual.Bloqueado ? "1" : "0";
-                string contenido = $"UPDATE USUARIO SET USERNAME='{actual.Username.Replace("'", "''")}', BLOQUEADO={bloqueadoSql}, PASS='{actual.HashedPassword.Replace("'", "''")}', DVH_HORIZONTAL={actual.DVHorizontal} WHERE ID_USUARIO={actual.ID};";
-                string nombre = $"Usuario: {actual.Username}";
-
-                return GuardarSnapshot(nombre, descripcion, contenido);
-            }
-            catch (Exception ex)
-            {
-                return (false, ex.Message);
-            }
-        }
     }
 }

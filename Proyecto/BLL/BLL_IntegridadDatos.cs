@@ -29,6 +29,17 @@ namespace BLL
             return SV_DigitoVerificadorHorizontal.VerificarDV(datosUsuario, usuario.DVHorizontal);
         }
 
+        // Recalcula el DVH del usuario, lo persiste junto con sus datos y actualiza el DVV de la tabla.
+        public static int RecalcularYPersistirUsuario(BE_USUARIO usuario, MP_USUARIO mpUsuario)
+        {
+            CalcularDVHUsuario(usuario);
+            int filas = mpUsuario.Editar(usuario);
+            mpUsuario.ActualizarDVHorizontal(usuario);
+
+            PersistirDVVUsuario(CalcularDVVUsuario(usuario));
+            return filas;
+        }
+
         public static BE_DigitoVerificadorVertical CalcularDVVUsuario(BE_USUARIO usuario)
         {
             

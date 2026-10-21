@@ -149,9 +149,14 @@ namespace BLL
                 switch (cambio.NombreAtributo.ToUpper())
                 {
                     case "USERNAME":
-                        usuario.Username = cambio.ValorAnterior;
-                        RecalcularYPersistirUsuario(usuario, mpUsuario);
-                        RegistrarCambio("USUARIO", usuario.ID, "USERNAME", valorActual, cambio.ValorAnterior, usuarioReverti, $"Cambio revertido (Memento)");
+                        string username = BLL_USUARIO.ValidarUsername(cambio.ValorAnterior);
+                        BE_USUARIO conMismoNombre = mpUsuario.BuscarPorUserName(username);
+                        if (conMismoNombre != null && conMismoNombre.ID != usuario.ID)
+                            return (false, "El nombre de usuario ya está en uso por otro usuario");
+
+                        usuario.Username = username;
+                        BLL_IntegridadDatos.RecalcularYPersistirUsuario(usuario, mpUsuario);
+                        RegistrarCambio("USUARIO", usuario.ID, "USERNAME", valorActual, username, usuarioReverti, "Cambio revertido desde auditoría");
                         return (true, $"Usuario revertido: {cambio.NombreAtributo}");
 
                     case "BLOQUEADO":
@@ -160,8 +165,8 @@ namespace BLL
                             mpUsuario.BloquearUsuario(usuario);
                         else
                             mpUsuario.DesbloquearUsuario(usuario);
-                        RecalcularYPersistirUsuario(usuario, mpUsuario);
-                        RegistrarCambio("USUARIO", usuario.ID, "BLOQUEADO", valorActual, cambio.ValorAnterior, usuarioReverti, $"Cambio revertido (Memento)");
+                        BLL_IntegridadDatos.RecalcularYPersistirUsuario(usuario, mpUsuario);
+                        RegistrarCambio("USUARIO", usuario.ID, "BLOQUEADO", valorActual, cambio.ValorAnterior, usuarioReverti, "Cambio revertido desde auditoría");
                         return (true, $"Usuario revertido: {cambio.NombreAtributo}");
 
                     case "PASS":
@@ -171,15 +176,15 @@ namespace BLL
                         if (string.IsNullOrWhiteSpace(cambio.ValorAnterior) || cambio.ValorAnterior == "[hash]")
                             return (false, "No hay hash anterior restaurable para PASS");
                         usuario.HashedPassword = cambio.ValorAnterior;
-                        RecalcularYPersistirUsuario(usuario, mpUsuario);
-                        RegistrarCambio("USUARIO", usuario.ID, "PASS", valorActual, "[restaurado]", usuarioReverti, $"Cambio revertido (Memento)");
+                        BLL_IntegridadDatos.RecalcularYPersistirUsuario(usuario, mpUsuario);
+                        RegistrarCambio("USUARIO", usuario.ID, "PASS", valorActual, "[restaurado]", usuarioReverti, "Cambio revertido desde auditoría");
                         return (true, $"Usuario revertido: {cambio.NombreAtributo}");
 
                     case "ROL":
                         return (false, "La reversión de ROL se realiza desde Gestión de Usuarios / Asignar Rol");
 
                     case "ELIMINACION":
-                        return (false, "No se puede revertir una eliminación desde este cambio; use un Snapshot");
+                        return (false, "No se puede revertir una eliminación desde este cambio; restaure un memento del usuario");
 
                     case "CREACION":
                         return (false, "No se puede revertir una creación desde este cambio; use Eliminar usuario");
@@ -192,16 +197,6 @@ namespace BLL
             {
                 return (false, $"Error revertiendo usuario: {ex.Message}");
             }
-        }
-
-        private static void RecalcularYPersistirUsuario(BE_USUARIO usuario, MP_USUARIO mpUsuario)
-        {
-            BLL_IntegridadDatos.CalcularDVHUsuario(usuario);
-            mpUsuario.Editar(usuario);
-            mpUsuario.ActualizarDVHorizontal(usuario);
-
-            var dvv = BLL_IntegridadDatos.CalcularDVVUsuario(usuario);
-            BLL_IntegridadDatos.PersistirDVVUsuario(dvv);
         }
 
         private static (bool exito, string mensaje) RevertirCambioRol(BE_CambiosEntidad cambio, BE_USUARIO usuarioReverti)
@@ -221,13 +216,13 @@ namespace BLL
                     case "NOMBRE":
                         rol.Nombre = cambio.ValorAnterior;
                         mpRol.Editar(rol);
-                        RegistrarCambio("ROL", rol.ID, "NOMBRE", valorActual, cambio.ValorAnterior, usuarioReverti, $"Cambio revertido (Memento)");
+                        RegistrarCambio("ROL", rol.ID, "NOMBRE", valorActual, cambio.ValorAnterior, usuarioReverti, "Cambio revertido desde auditoría");
                         return (true, $"Rol revertido: {cambio.NombreAtributo}");
 
                     case "DESCRIPCION":
                         rol.Descripcion = cambio.ValorAnterior;
                         mpRol.Editar(rol);
-                        RegistrarCambio("ROL", rol.ID, "DESCRIPCION", valorActual, cambio.ValorAnterior, usuarioReverti, $"Cambio revertido (Memento)");
+                        RegistrarCambio("ROL", rol.ID, "DESCRIPCION", valorActual, cambio.ValorAnterior, usuarioReverti, "Cambio revertido desde auditoría");
                         return (true, $"Rol revertido: {cambio.NombreAtributo}");
 
                     default:
