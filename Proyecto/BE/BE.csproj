@@ -55,6 +55,11 @@
     <Compile Include="BE_Snapshot.cs" />
     <Compile Include="BE_USUARIO.cs" />
     <Compile Include="I_ComponenteAcceso.cs" />
+    <Compile Include="BE_Reciclaje.cs" />
+    <Compile Include="BE_EcoPuntos.cs" />
+    <Compile Include="BE_Gestion.cs" />
+    <Compile Include="BE_Marketplace.cs" />
+    <Compile Include="BE_DatosUsuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -34,6 +34,7 @@ namespace GUI
             {
                 CrearMenuAdministracion();
             }
+            CrearMenuProcesos();
             CrearMenuVentanas();
             CrearMenuSesion();
             ActualizarTextos();
@@ -187,6 +188,58 @@ namespace GUI
                 if (subitem is ToolStripMenuItem subMenu)
                     ActualizarItemMenu(subMenu);
             }
+        }
+
+        // Menú de los procesos de negocio. Cada opción aparece solo si el rol del usuario tiene su permiso.
+        // Un código con "|" significa que basta con cualquiera de los permisos indicados.
+        private void CrearMenuProcesos()
+        {
+            var menuStrip = this.Controls.OfType<MenuStrip>().FirstOrDefault();
+            if (menuStrip == null) return;
+
+            var menuProcesos = new ToolStripMenuItem("&Procesos de negocio");
+            AgregarSubmenu(menuProcesos, "&Reciclaje y Eco-Puntos",
+                ("&Declarar material", "PROC_DECLARAR_MATERIAL", () => new FormDeclararMaterial(usuarioActual)),
+                ("&Recepción en punto verde", "PROC_REGISTRAR_RECEPCION", () => new FormRecepcionAcopio(usuarioActual)),
+                ("&Canjear Eco-Puntos", "PROC_CANJEAR_PUNTOS", () => new FormCanjeEcoPuntos(usuarioActual)));
+            AgregarSubmenu(menuProcesos, "&Gestión",
+                ("&Indicadores", "PROC_VER_INDICADORES", () => new FormIndicadores(usuarioActual)),
+                ("&Red de puntos verdes", "PROC_GESTIONAR_PUNTOS_VERDES", () => new FormPuntosVerdes(usuarioActual)),
+                ("&Tarifas y conversión", "PROC_GESTIONAR_TARIFAS", () => new FormTarifas(usuarioActual)));
+            AgregarSubmenu(menuProcesos, "&Catálogos",
+                ("&Materiales", "PROC_ABM_MATERIALES", () => new FormMateriales(usuarioActual)),
+                ("&Guías de reutilización", "PROC_ABM_GUIAS", () => new FormGuias(usuarioActual)),
+                ("&Beneficios canjeables", "PROC_ABM_BENEFICIOS", () => new FormBeneficios(usuarioActual)));
+            AgregarSubmenu(menuProcesos, "&Tienda sustentable",
+                ("&Verificación de vendedor", "PROC_SOLICITAR_VERIFICACION|PROC_RESOLVER_VERIFICACION", () => new FormVerificacionVendedor(usuarioActual)),
+                ("&Publicar producto", "PROC_PUBLICAR_PRODUCTO|PROC_APROBAR_PRODUCTO", () => new FormPublicarProducto(usuarioActual)),
+                ("&Comprar", "PROC_COMPRAR", () => new FormCompraMarketplace(usuarioActual)),
+                ("&Pedidos y liquidaciones", "PROC_CONFIRMAR_RECEPCION|PROC_DESPACHAR|PROC_LIQUIDAR", () => new FormLiquidacion(usuarioActual)),
+                ("&Reclamos", "PROC_RECLAMAR|PROC_RESOLVER_RECLAMO", () => new FormReclamos(usuarioActual)));
+
+            AgregarSubmenu(menuProcesos, "&Mi cuenta",
+                ("&Mi perfil", "", () => new FormMiPerfil(usuarioActual)),
+                ("&Mis materiales", "PROC_SUSCRIBIRSE_MATERIALES", () => new FormSuscripciones(usuarioActual)),
+                ("&Estadísticas de mis ventas", "PROC_VER_ESTADISTICAS_VENTAS", () => new FormEstadisticasVentas(usuarioActual)));
+
+            if (menuProcesos.DropDownItems.Count > 0)
+                menuStrip.Items.Add(menuProcesos);
+        }
+
+        private void AgregarSubmenu(ToolStripMenuItem padre, string texto,
+                                    params (string Titulo, string Permiso, Func<Form> Fabrica)[] opciones)
+        {
+            var submenu = new ToolStripMenuItem(texto);
+            foreach (var opcion in opciones)
+            {
+                bool permitido = string.IsNullOrEmpty(opcion.Permiso) ||
+                                 opcion.Permiso.Split('|').Any(codigo => BLL_AUTORIZACION.TienePermiso(usuarioActual, codigo));
+                if (!permitido) continue;
+                var fabrica = opcion.Fabrica;
+                submenu.DropDownItems.Add(new ToolStripMenuItem(opcion.Titulo, null, (s, e) => AbrirHijoMdi(fabrica())));
+            }
+            if (submenu.DropDownItems.Count > 0)
+                padre.DropDownItems.Add(submenu);
         }
 
         private void CrearMenuAdministracion()

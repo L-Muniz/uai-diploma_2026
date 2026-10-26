@@ -121,6 +121,75 @@
     <Compile Include="DataGridViewSortHelper.cs" />
     <Compile Include="UITheme.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="UIHelper.cs" />
+    <Compile Include="FormDeclararMaterial.cs" />
+    <Compile Include="FormDeclararMaterial.Designer.cs">
+      <DependentUpon>FormDeclararMaterial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormRecepcionAcopio.cs" />
+    <Compile Include="FormRecepcionAcopio.Designer.cs">
+      <DependentUpon>FormRecepcionAcopio.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCanjeEcoPuntos.cs" />
+    <Compile Include="FormCanjeEcoPuntos.Designer.cs">
+      <DependentUpon>FormCanjeEcoPuntos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormIndicadores.cs" />
+    <Compile Include="FormIndicadores.Designer.cs">
+      <DependentUpon>FormIndicadores.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormPuntosVerdes.cs" />
+    <Compile Include="FormPuntosVerdes.Designer.cs">
+      <DependentUpon>FormPuntosVerdes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormTarifas.cs" />
+    <Compile Include="FormTarifas.Designer.cs">
+      <DependentUpon>FormTarifas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormVerificacionVendedor.cs" />
+    <Compile Include="FormVerificacionVendedor.Designer.cs">
+      <DependentUpon>FormVerificacionVendedor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormPublicarProducto.cs" />
+    <Compile Include="FormPublicarProducto.Designer.cs">
+      <DependentUpon>FormPublicarProducto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCompraMarketplace.cs" />
+    <Compile Include="FormCompraMarketplace.Designer.cs">
+      <DependentUpon>FormCompraMarketplace.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormLiquidacion.cs" />
+    <Compile Include="FormLiquidacion.Designer.cs">
+      <DependentUpon>FormLiquidacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormReclamos.cs" />
+    <Compile Include="FormReclamos.Designer.cs">
+      <DependentUpon>FormReclamos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormMateriales.cs" />
+    <Compile Include="FormMateriales.Designer.cs">
+      <DependentUpon>FormMateriales.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormGuias.cs" />
+    <Compile Include="FormGuias.Designer.cs">
+      <DependentUpon>FormGuias.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormBeneficios.cs" />
+    <Compile Include="FormBeneficios.Designer.cs">
+      <DependentUpon>FormBeneficios.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormMiPerfil.cs" />
+    <Compile Include="FormMiPerfil.Designer.cs">
+      <DependentUpon>FormMiPerfil.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormSuscripciones.cs" />
+    <Compile Include="FormSuscripciones.Designer.cs">
+      <DependentUpon>FormSuscripciones.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormEstadisticasVentas.cs" />
+    <Compile Include="FormEstadisticasVentas.Designer.cs">
+      <DependentUpon>FormEstadisticasVentas.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Bitacora.resx">
       <DependentUpon>Bitacora.cs</DependentUpon>

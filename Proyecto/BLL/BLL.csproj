@@ -54,6 +54,14 @@
     <Compile Include="BLL_ROL.cs" />
     <Compile Include="BLL_Rollback.cs" />
     <Compile Include="BLL_USUARIO.cs" />
+    <Compile Include="BLL_RECICLAJE.cs" />
+    <Compile Include="BLL_ECOPUNTOS.cs" />
+    <Compile Include="BLL_GESTION.cs" />
+    <Compile Include="BLL_MARKETPLACE.cs" />
+    <Compile Include="BLL_AUTORIZACION.cs" />
+    <Compile Include="BLL_CATALOGO.cs" />
+    <Compile Include="BLL_DATOS_USUARIO.cs" />
+    <Compile Include="BLL_ESTADISTICAS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

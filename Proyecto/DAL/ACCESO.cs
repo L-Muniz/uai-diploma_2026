@@ -42,6 +42,14 @@ namespace DAL
             return cmd.ExecuteNonQuery();
         }
 
+        // Ejecuta un procedimiento que devuelve un único valor (por ejemplo, un ID generado o un saldo).
+        // No oculta errores: los THROW de los procedimientos llegan a la BLL.
+        public object Escalar(string sp, List<SqlParameter> parametros = null)
+        {
+            SqlCommand cmd = CrearComando(sp, parametros);
+            return cmd.ExecuteScalar();
+        }
+
         public int Verificar(string sql, List<SqlParameter> parametros = null)
         {
             try
@@ -122,6 +130,17 @@ namespace DAL
             param.Value = value;
             param.DbType = DbType.Boolean;
             return param;
+        }
+
+        public SqlParameter CrearParametro(string key, decimal value)
+        {
+            return new SqlParameter(key, SqlDbType.Decimal) { Value = value };
+        }
+
+        // Para valores opcionales: null se envía como NULL de base de datos.
+        public SqlParameter CrearParametroObj(string key, object value)
+        {
+            return new SqlParameter(key, value ?? DBNull.Value);
         }
 
         public SqlConnection GetConexion()

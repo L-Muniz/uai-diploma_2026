@@ -52,6 +52,13 @@
     <Compile Include="MP_PERMISO.cs" />
     <Compile Include="MP_ROL.cs" />
     <Compile Include="MP_USUARIO.cs" />
+    <Compile Include="MP_RECICLAJE.cs" />
+    <Compile Include="MP_ECOPUNTOS.cs" />
+    <Compile Include="MP_GESTION.cs" />
+    <Compile Include="MP_MARKETPLACE.cs" />
+    <Compile Include="MP_CATALOGO.cs" />
+    <Compile Include="MP_DATOS_USUARIO.cs" />
+    <Compile Include="MP_ESTADISTICAS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
