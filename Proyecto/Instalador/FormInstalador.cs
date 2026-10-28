@@ -11,35 +11,6 @@ namespace Instalador
         {
             InitializeComponent();
             txtDestino.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BecoGre");
-            BuscarInstancias();
-        }
-
-        private void BuscarInstancias()
-        {
-            cboServidor.Items.Clear();
-            try
-            {
-                cboServidor.Items.AddRange(InstaladorLogica.ObtenerInstancias());
-            }
-            catch (Exception ex)
-            {
-                Informar("No se pudieron listar las instancias: " + ex.Message);
-            }
-
-            if (cboServidor.Items.Count == 0)
-            {
-                Informar("No se encontró ninguna instancia de SQL Server. Podés instalar SQL Server Express " +
-                         "o escribir el nombre de la instancia a mano.");
-            }
-            else
-            {
-                cboServidor.SelectedIndex = 0;
-            }
-        }
-
-        private void btnActualizar_Click(object sender, EventArgs e)
-        {
-            BuscarInstancias();
         }
 
         private void btnExaminar_Click(object sender, EventArgs e)
@@ -57,7 +28,14 @@ namespace Instalador
             txtLog.Clear();
             try
             {
-                InstaladorLogica.Instalar(cboServidor.Text.Trim(), txtDestino.Text.Trim(), Informar);
+                string servidor = InstaladorLogica.ElegirInstancia();
+                if (servidor == null)
+                {
+                    OfrecerDescargaSqlExpress("No se encontró ninguna instancia de SQL Server en esta computadora.\n\n" +
+                                              "Instalá SQL Server Express y volvé a ejecutar el instalador.");
+                    return;
+                }
+                InstaladorLogica.Instalar(servidor, txtDestino.Text.Trim(), Informar);
                 MessageBox.Show(this,
                     "La instalación se completó correctamente.\n\nSe creó el acceso directo BecoGre en el escritorio.",
                     "Instalador BecoGre", MessageBoxButtons.OK, MessageBoxIcon.Information);

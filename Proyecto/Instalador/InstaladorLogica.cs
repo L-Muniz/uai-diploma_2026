@@ -106,6 +106,14 @@ namespace Instalador
             return instancia.Equals("MSSQLSERVER", StringComparison.OrdinalIgnoreCase) ? "localhost" : "localhost\\" + instancia;
         }
 
+        // Elige la instancia a usar sin preguntar: prefiere SQLEXPRESS, y si no hay ninguna devuelve null.
+        public static string ElegirInstancia()
+        {
+            string[] instancias = ObtenerInstancias();
+            return instancias.FirstOrDefault(x => x.IndexOf("SQLEXPRESS", StringComparison.OrdinalIgnoreCase) >= 0)
+                   ?? instancias.FirstOrDefault();
+        }
+
         public static void Instalar(string servidor, string carpetaDestino, Action<string> informar)
         {
             const string nombreBase = NombreBase;
