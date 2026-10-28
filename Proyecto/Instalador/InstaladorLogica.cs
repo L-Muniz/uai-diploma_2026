@@ -28,6 +28,8 @@ namespace Instalador
     public static class InstaladorLogica
     {
         public const string UrlSqlExpress = "https://www.microsoft.com/sql-server/sql-server-downloads";
+        // La aplicación y los scripts usan siempre este nombre de base.
+        public const string NombreBase = "Proyecto";
         private const string NombreBaseOriginal = "Proyecto";
 
         // Sentencias del script original que no deben ejecutarse en una instalación nueva
@@ -38,22 +40,75 @@ namespace Instalador
             @"ALTER\s+AUTHORIZATION", @"CREATE\s+USER", @"CREATE\s+LOGIN", @"ALTER\s+LOGIN"
         };
 
+        // Busca instancias de SQL Server por tres vías: el enumerador de ADO.NET (requiere SQL Browser),
+        // el registro de Windows y los servicios MSSQL$. Así se detectan aunque SQL Browser esté apagado.
         public static string[] ObtenerInstancias()
         {
-            DataTable tabla = SqlDataSourceEnumerator.Instance.GetDataSources();
             var instancias = new List<string>();
-            foreach (DataRow fila in tabla.Rows)
+
+            try
             {
-                string servidor = fila["ServerName"].ToString();
-                string instancia = fila["InstanceName"] == DBNull.Value ? "" : fila["InstanceName"].ToString();
-                instancias.Add(string.IsNullOrEmpty(instancia) ? servidor : servidor + "\\" + instancia);
+                DataTable tabla = SqlDataSourceEnumerator.Instance.GetDataSources();
+                foreach (DataRow fila in tabla.Rows)
+                {
+                    string servidor = fila["ServerName"].ToString();
+                    string instancia = fila["InstanceName"] == DBNull.Value ? "" : fila["InstanceName"].ToString();
+                    instancias.Add(string.IsNullOrEmpty(instancia) ? servidor : servidor + "\\" + instancia);
+                }
             }
-            return instancias.Distinct().OrderBy(x => x).ToArray();
+            catch (Exception)
+            {
+                // Si el enumerador falla, se sigue con las otras fuentes.
+            }
+
+            try
+            {
+                using (var clave = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(
+                    @"SOFTWARE\Microsoft\Microsoft SQL Server\Instance Names\SQL"))
+                {
+                    if (clave != null)
+                    {
+                        foreach (string nombre in clave.GetValueNames())
+                            instancias.Add(NombreDesdeInstancia(nombre));
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Sin acceso al registro no se agregan instancias desde esta fuente.
+            }
+
+            try
+            {
+                foreach (ServiceController servicio in ServiceController.GetServices())
+                {
+                    if (servicio.ServiceName == "MSSQLSERVER")
+                        instancias.Add("localhost");
+                    else if (servicio.ServiceName.StartsWith("MSSQL$", StringComparison.OrdinalIgnoreCase))
+                        instancias.Add(NombreDesdeInstancia(servicio.ServiceName.Substring(6)));
+                }
+            }
+            catch (Exception)
+            {
+                // Sin acceso a los servicios no se agregan instancias desde esta fuente.
+            }
+
+            return instancias.Where(x => !string.IsNullOrWhiteSpace(x))
+                             .Select(x => x.Trim())
+                             .Distinct(StringComparer.OrdinalIgnoreCase)
+                             .OrderBy(x => x)
+                             .ToArray();
         }
 
-        public static void Instalar(string servidor, string nombreBase, string carpetaDestino, Action<string> informar)
+        // "MSSQLSERVER" es la instancia por defecto (se usa "localhost"); el resto se escribe como localhost\NOMBRE.
+        private static string NombreDesdeInstancia(string instancia)
         {
-            ValidarNombreBase(nombreBase);
+            return instancia.Equals("MSSQLSERVER", StringComparison.OrdinalIgnoreCase) ? "localhost" : "localhost\\" + instancia;
+        }
+
+        public static void Instalar(string servidor, string carpetaDestino, Action<string> informar)
+        {
+            const string nombreBase = NombreBase;
             if (string.IsNullOrWhiteSpace(servidor))
                 throw new ErrorMotorNoInstalado("No hay una instancia de SQL Server seleccionada.\n\n" +
                                                 "Si no tenés SQL Server, instalá SQL Server Express y volvé a intentar.");

@@ -19,8 +19,6 @@ namespace Instalador
             this.lblServidor = new System.Windows.Forms.Label();
             this.cboServidor = new System.Windows.Forms.ComboBox();
             this.btnActualizar = new System.Windows.Forms.Button();
-            this.lblBase = new System.Windows.Forms.Label();
-            this.txtBase = new System.Windows.Forms.TextBox();
             this.lblDestino = new System.Windows.Forms.Label();
             this.txtDestino = new System.Windows.Forms.TextBox();
             this.btnExaminar = new System.Windows.Forms.Button();
@@ -65,23 +63,6 @@ namespace Instalador
             this.btnActualizar.Text = "Buscar instancias";
             this.btnActualizar.UseVisualStyleBackColor = true;
             this.btnActualizar.Click += new System.EventHandler(this.btnActualizar_Click);
-            //
-            // lblBase
-            //
-            this.lblBase.AutoSize = true;
-            this.lblBase.Location = new System.Drawing.Point(16, 84);
-            this.lblBase.Name = "lblBase";
-            this.lblBase.Size = new System.Drawing.Size(117, 15);
-            this.lblBase.TabIndex = 4;
-            this.lblBase.Text = "Nombre de la base:";
-            //
-            // txtBase
-            //
-            this.txtBase.Location = new System.Drawing.Point(160, 81);
-            this.txtBase.Name = "txtBase";
-            this.txtBase.Size = new System.Drawing.Size(200, 23);
-            this.txtBase.TabIndex = 5;
-            this.txtBase.Text = "Proyecto";
             //
             // lblDestino
             //
@@ -149,8 +130,6 @@ namespace Instalador
             this.Controls.Add(this.btnExaminar);
             this.Controls.Add(this.txtDestino);
             this.Controls.Add(this.lblDestino);
-            this.Controls.Add(this.txtBase);
-            this.Controls.Add(this.lblBase);
             this.Controls.Add(this.btnActualizar);
             this.Controls.Add(this.cboServidor);
             this.Controls.Add(this.lblServidor);
@@ -165,8 +144,6 @@ namespace Instalador
         private System.Windows.Forms.Label lblServidor;
         private System.Windows.Forms.ComboBox cboServidor;
         private System.Windows.Forms.Button btnActualizar;
-        private System.Windows.Forms.Label lblBase;
-        private System.Windows.Forms.TextBox txtBase;
         private System.Windows.Forms.Label lblDestino;
         private System.Windows.Forms.TextBox txtDestino;
         private System.Windows.Forms.Button btnExaminar;

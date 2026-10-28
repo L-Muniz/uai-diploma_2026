@@ -57,7 +57,7 @@ namespace Instalador
             txtLog.Clear();
             try
             {
-                InstaladorLogica.Instalar(cboServidor.Text.Trim(), txtBase.Text.Trim(), txtDestino.Text.Trim(), Informar);
+                InstaladorLogica.Instalar(cboServidor.Text.Trim(), txtDestino.Text.Trim(), Informar);
                 MessageBox.Show(this,
                     "La instalación se completó correctamente.\n\nSe creó el acceso directo BecoGre en el escritorio.",
                     "Instalador BecoGre", MessageBoxButtons.OK, MessageBoxIcon.Information);
