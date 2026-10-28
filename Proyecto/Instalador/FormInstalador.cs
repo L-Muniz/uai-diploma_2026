@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
@@ -6,9 +7,6 @@ namespace Instalador
 {
     public partial class FormInstalador : Form
     {
-        private readonly string carpetaAplicacion = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Aplicacion");
-        private readonly string carpetaScripts = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts");
-
         public FormInstalador()
         {
             InitializeComponent();
@@ -30,8 +28,8 @@ namespace Instalador
 
             if (cboServidor.Items.Count == 0)
             {
-                Informar("No se encontró ninguna instancia de SQL Server. Instalá SQL Server Express " +
-                         "(https://www.microsoft.com/sql-server/sql-server-downloads) o escribí el nombre de la instancia a mano.");
+                Informar("No se encontró ninguna instancia de SQL Server. Podés instalar SQL Server Express " +
+                         "o escribir el nombre de la instancia a mano.");
             }
             else
             {
@@ -59,10 +57,15 @@ namespace Instalador
             txtLog.Clear();
             try
             {
-                InstaladorLogica.Instalar(cboServidor.Text.Trim(), txtBase.Text.Trim(), txtDestino.Text.Trim(),
-                                          carpetaAplicacion, carpetaScripts, Informar);
-                MessageBox.Show(this, "La instalación se completó correctamente.", "Instalador BecoGre",
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                InstaladorLogica.Instalar(cboServidor.Text.Trim(), txtBase.Text.Trim(), txtDestino.Text.Trim(), Informar);
+                MessageBox.Show(this,
+                    "La instalación se completó correctamente.\n\nSe creó el acceso directo BecoGre en el escritorio.",
+                    "Instalador BecoGre", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (ErrorMotorNoInstalado ex)
+            {
+                Informar("ERROR: " + ex.Message);
+                OfrecerDescargaSqlExpress(ex.Message);
             }
             catch (ErrorInstalacion ex)
             {
@@ -77,6 +80,18 @@ namespace Instalador
             finally
             {
                 btnInstalar.Enabled = true;
+            }
+        }
+
+        private void OfrecerDescargaSqlExpress(string mensaje)
+        {
+            DialogResult r = MessageBox.Show(this,
+                mensaje + "\n\n¿Abrir la página oficial de descarga de SQL Server Express?",
+                "Falta SQL Server", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (r == DialogResult.Yes)
+            {
+                Process.Start(InstaladorLogica.UrlSqlExpress);
+                Informar("Instalá SQL Server Express, volvé a abrir el instalador y presioná Buscar instancias.");
             }
         }
 

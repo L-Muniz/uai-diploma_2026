@@ -4,9 +4,11 @@ using System.Data;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Reflection;
 using System.ServiceProcess;
+using System.Text.RegularExpressions;
 
 namespace Instalador
 {
@@ -16,10 +18,16 @@ namespace Instalador
         public ErrorInstalacion(string mensaje) : base(mensaje) { }
     }
 
-    // Instalación completa del sistema: verifica SQL Server, crea la base, ejecuta los scripts
-    // y copia la aplicación configurada para usar esa base.
+    // No hay motor de SQL Server instalado (o no hay instancias): se ofrece abrir la descarga oficial.
+    public class ErrorMotorNoInstalado : ErrorInstalacion
+    {
+        public ErrorMotorNoInstalado(string mensaje) : base(mensaje) { }
+    }
+
+    // Instalación completa en un solo paso: la aplicación y los scripts van incrustados en el .exe.
     public static class InstaladorLogica
     {
+        public const string UrlSqlExpress = "https://www.microsoft.com/sql-server/sql-server-downloads";
         private const string NombreBaseOriginal = "Proyecto";
 
         // Sentencias del script original que no deben ejecutarse en una instalación nueva
@@ -43,14 +51,13 @@ namespace Instalador
             return instancias.Distinct().OrderBy(x => x).ToArray();
         }
 
-        public static void Instalar(string servidor, string nombreBase, string carpetaDestino,
-                                    string carpetaOrigen, string carpetaScripts, Action<string> informar)
+        public static void Instalar(string servidor, string nombreBase, string carpetaDestino, Action<string> informar)
         {
             ValidarNombreBase(nombreBase);
-            if (string.IsNullOrWhiteSpace(servidor)) throw new ErrorInstalacion("Indique la instancia de SQL Server.");
-            if (string.IsNullOrWhiteSpace(carpetaDestino)) throw new ErrorInstalacion("Indique la carpeta donde se instala la aplicación.");
-            if (!Directory.Exists(carpetaOrigen))
-                throw new ErrorInstalacion("No se encontró la aplicación compilada en '" + carpetaOrigen + "'. Compilá la solución completa antes de instalar.");
+            if (string.IsNullOrWhiteSpace(servidor))
+                throw new ErrorMotorNoInstalado("No hay una instancia de SQL Server seleccionada.\n\n" +
+                                                "Si no tenés SQL Server, instalá SQL Server Express y volvé a intentar.");
+            VerificarCarpetaDestino(carpetaDestino);
 
             informar("1/6 Verificando el motor de SQL Server...");
             VerificarMotorYServicio(servidor);
@@ -64,14 +71,12 @@ namespace Instalador
             string cadenaBase = CadenaBase(servidor, nombreBase).ConnectionString;
 
             informar("4/6 Creando tablas, procedimientos y datos base...");
-            string scriptBase = Path.Combine(carpetaScripts, "BD_SCRIPT_OCT.sql");
             if (!ExisteTabla(cadenaBase, "USUARIO"))
-                EjecutarScript(cadenaBase, scriptBase, nombreBase, informar);
+                EjecutarScript(cadenaBase, "BD_SCRIPT_OCT.sql", nombreBase, informar);
             else
                 informar("   La base ya tiene tablas: se omite el script original.");
 
             informar("5/6 Ejecutando los scripts de la 3ra entrega...");
-            string carpetaEntrega = Path.Combine(carpetaScripts, "Entrega3");
             foreach (string script in new[]
             {
                 "01_TABLAS_ENTREGA3.sql", "02_STORED_PROCEDURES_ENTREGA3.sql",
@@ -79,16 +84,37 @@ namespace Instalador
             })
             {
                 informar("   " + script);
-                EjecutarScript(cadenaBase, Path.Combine(carpetaEntrega, script), nombreBase, informar);
+                EjecutarScript(cadenaBase, script, nombreBase, informar);
             }
 
-            informar("6/6 Copiando la aplicación y configurando la conexión...");
-            CopiarAplicacion(carpetaOrigen, carpetaDestino);
-            ConfigurarConexion(carpetaDestino, CadenaBase(servidor, nombreBase).ConnectionString);
+            informar("6/6 Instalando la aplicación y configurando la conexión...");
+            ExtraerAplicacion(carpetaDestino);
+            ConfigurarConexion(carpetaDestino, cadenaBase);
+            CrearAccesoDirecto(Path.Combine(carpetaDestino, "GUI.exe"));
+
             informar("Instalación completa. La aplicación está en: " + carpetaDestino);
         }
 
         // ---------------------------------------------------------------- verificaciones
+
+        public static void VerificarCarpetaDestino(string carpeta)
+        {
+            if (string.IsNullOrWhiteSpace(carpeta))
+                throw new ErrorInstalacion("Indique la carpeta donde se instala la aplicación.");
+            try
+            {
+                Directory.CreateDirectory(carpeta);
+                string prueba = Path.Combine(carpeta, ".escritura.tmp");
+                File.WriteAllText(prueba, "ok");
+                File.Delete(prueba);
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorInstalacion(
+                    "No se puede escribir en la carpeta '" + carpeta + "'.\n\n" +
+                    "Elegí otra carpeta (por ejemplo, Documentos) o ejecutá el instalador como administrador.\n\nDetalle: " + ex.Message);
+            }
+        }
 
         // Caso: el motor no está instalado o el servicio está detenido.
         public static void VerificarMotorYServicio(string servidor)
@@ -98,10 +124,9 @@ namespace Instalador
                 .FirstOrDefault(s => s.ServiceName.Equals(nombreServicio, StringComparison.OrdinalIgnoreCase));
 
             if (servicio == null)
-                throw new ErrorInstalacion(
+                throw new ErrorMotorNoInstalado(
                     "No se encontró el motor de SQL Server '" + nombreServicio + "' en esta computadora.\n\n" +
-                    "Instalá SQL Server Express (https://www.microsoft.com/sql-server/sql-server-downloads) " +
-                    "o revisá el nombre de la instancia, y volvé a intentar.");
+                    "Instalá SQL Server Express, o revisá el nombre de la instancia.");
 
             if (servicio.Status == ServiceControllerStatus.Running)
                 return;
@@ -164,13 +189,10 @@ namespace Instalador
             }
         }
 
-        // Ejecuta un script separando los lotes por GO y omitiendo las sentencias de creación de la base.
-        public static void EjecutarScript(string cadenaBase, string ruta, string nombreBase, Action<string> informar)
+        // Ejecuta un script incrustado separando los lotes por GO y omitiendo las sentencias de creación de la base.
+        public static void EjecutarScript(string cadenaBase, string nombreRecurso, string nombreBase, Action<string> informar)
         {
-            if (!File.Exists(ruta))
-                throw new ErrorInstalacion("Falta el script '" + ruta + "'. Volvé a compilar el instalador.");
-
-            string texto = File.ReadAllText(ruta).Replace("[" + NombreBaseOriginal + "]", "[" + nombreBase + "]");
+            string texto = LeerRecursoTexto(nombreRecurso).Replace("[" + NombreBaseOriginal + "]", "[" + nombreBase + "]");
             string[] lotes = Regex.Split(texto, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
             using (var cn = new SqlConnection(cadenaBase))
@@ -191,7 +213,7 @@ namespace Instalador
                     catch (Exception ex)
                     {
                         throw new ErrorInstalacion(
-                            "Error al ejecutar '" + Path.GetFileName(ruta) + "':\n\n" + ex.Message +
+                            "Error al ejecutar '" + nombreRecurso + "':\n\n" + ex.Message +
                             "\n\nSentencia: " + Resumir(lote));
                     }
                 }
@@ -211,24 +233,27 @@ namespace Instalador
 
         // ---------------------------------------------------------------- aplicación y configuración
 
-        public static void CopiarAplicacion(string origen, string destino)
+        public static void ExtraerAplicacion(string carpetaDestino)
         {
-            Directory.CreateDirectory(destino);
-            foreach (string archivo in Directory.GetFiles(origen, "*.*", SearchOption.AllDirectories))
+            using (Stream recurso = LeerRecurso("aplicacion.zip"))
+            using (var zip = new ZipArchive(recurso, ZipArchiveMode.Read))
             {
-                string relativo = archivo.Substring(origen.Length).TrimStart('\\');
-                string destinoArchivo = Path.Combine(destino, relativo);
-                Directory.CreateDirectory(Path.GetDirectoryName(destinoArchivo));
-                File.Copy(archivo, destinoArchivo, true);
+                foreach (ZipArchiveEntry entrada in zip.Entries)
+                {
+                    if (string.IsNullOrEmpty(entrada.Name)) continue;
+                    string destino = Path.Combine(carpetaDestino, entrada.FullName.Replace('/', '\\'));
+                    Directory.CreateDirectory(Path.GetDirectoryName(destino));
+                    entrada.ExtractToFile(destino, true);
+                }
             }
         }
 
-        // Reemplaza la cadena de conexión "Proyecto" del App.config instalado por la de la instalación.
+        // Reemplaza la cadena de conexión "Proyecto" del GUI.exe.config instalado por la de esta instalación.
         public static void ConfigurarConexion(string carpetaDestino, string cadena)
         {
             string config = Path.Combine(carpetaDestino, "GUI.exe.config");
             if (!File.Exists(config))
-                throw new ErrorInstalacion("No se encontró GUI.exe.config en la carpeta de instalación.");
+                throw new ErrorInstalacion("No se encontró GUI.exe.config en la aplicación instalada.");
 
             string xml = File.ReadAllText(config);
             string nuevo = Regex.Replace(xml,
@@ -236,6 +261,46 @@ namespace Instalador
                 m => m.Groups[1].Value + cadena.Replace("&", "&amp;") + m.Groups[2].Value,
                 RegexOptions.Singleline);
             File.WriteAllText(config, nuevo);
+        }
+
+        // Acceso directo en el escritorio (usa WScript.Shell; si falla, la instalación sigue igual).
+        public static void CrearAccesoDirecto(string ejecutable)
+        {
+            try
+            {
+                Type tipo = Type.GetTypeFromProgID("WScript.Shell");
+                object shell = Activator.CreateInstance(tipo);
+                string escritorio = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                object acceso = tipo.InvokeMember("CreateShortcut", BindingFlags.InvokeMethod, null, shell,
+                                                  new object[] { Path.Combine(escritorio, "BecoGre.lnk") });
+                acceso.GetType().InvokeMember("TargetPath", BindingFlags.SetProperty, null, acceso, new object[] { ejecutable });
+                acceso.GetType().InvokeMember("WorkingDirectory", BindingFlags.SetProperty, null, acceso,
+                                              new object[] { Path.GetDirectoryName(ejecutable) });
+                acceso.GetType().InvokeMember("Save", BindingFlags.InvokeMethod, null, acceso, null);
+            }
+            catch (Exception)
+            {
+                // El acceso directo es opcional.
+            }
+        }
+
+        // ---------------------------------------------------------------- recursos incrustados
+
+        private static Stream LeerRecurso(string nombre)
+        {
+            Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(nombre);
+            if (stream == null)
+                throw new ErrorInstalacion("Falta el recurso '" + nombre + "' dentro del instalador. Volvé a compilarlo.");
+            return stream;
+        }
+
+        private static string LeerRecursoTexto(string nombre)
+        {
+            using (Stream stream = LeerRecurso(nombre))
+            using (var lector = new StreamReader(stream, true))
+            {
+                return lector.ReadToEnd();
+            }
         }
 
         // ---------------------------------------------------------------- utilidades

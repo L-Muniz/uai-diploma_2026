@@ -36,6 +36,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -51,31 +53,28 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <!-- Scripts que se ejecutan al instalar: base de datos original (sin la creación de la base) y scripts 01 a 05 de la 3ra entrega. -->
-    <None Include="..\BD_SCRIPT_OCT.sql">
-      <Link>Scripts\BD_SCRIPT_OCT.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Scripts\Entrega3\01_TABLAS_ENTREGA3.sql">
-      <Link>Scripts\Entrega3\01_TABLAS_ENTREGA3.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Scripts\Entrega3\02_STORED_PROCEDURES_ENTREGA3.sql">
-      <Link>Scripts\Entrega3\02_STORED_PROCEDURES_ENTREGA3.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Scripts\Entrega3\03_PERFIL_SUSCRIPCIONES_ESTADISTICAS.sql">
-      <Link>Scripts\Entrega3\03_PERFIL_SUSCRIPCIONES_ESTADISTICAS.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Scripts\Entrega3\04_AMPLIAR_BITACORA.sql">
-      <Link>Scripts\Entrega3\04_AMPLIAR_BITACORA.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\Scripts\Entrega3\05_DATOS_DE_PRUEBA.sql">
-      <Link>Scripts\Entrega3\05_DATOS_DE_PRUEBA.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <!-- Todo va dentro del .exe: la aplicación comprimida y los scripts. Un solo archivo para llevar en el pendrive. -->
+    <EmbeddedResource Include="$(IntermediateOutputPath)aplicacion.zip">
+      <LogicalName>aplicacion.zip</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\BD_SCRIPT_OCT.sql">
+      <LogicalName>BD_SCRIPT_OCT.sql</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Scripts\Entrega3\01_TABLAS_ENTREGA3.sql">
+      <LogicalName>01_TABLAS_ENTREGA3.sql</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Scripts\Entrega3\02_STORED_PROCEDURES_ENTREGA3.sql">
+      <LogicalName>02_STORED_PROCEDURES_ENTREGA3.sql</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Scripts\Entrega3\03_PERFIL_SUSCRIPCIONES_ESTADISTICAS.sql">
+      <LogicalName>03_PERFIL_SUSCRIPCIONES_ESTADISTICAS.sql</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Scripts\Entrega3\04_AMPLIAR_BITACORA.sql">
+      <LogicalName>04_AMPLIAR_BITACORA.sql</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Scripts\Entrega3\05_DATOS_DE_PRUEBA.sql">
+      <LogicalName>05_DATOS_DE_PRUEBA.sql</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GUI\GUI.csproj">
@@ -84,12 +83,10 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
-  <!-- Copia la aplicación ya compilada (GUI) a la carpeta Aplicacion, que el instalador usa como origen. -->
-  <Target Name="CopiarAplicacion" AfterTargets="Build">
-    <ItemGroup>
-      <AplicacionArchivos Include="..\GUI\bin\$(Configuration)\**\*.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(AplicacionArchivos)" DestinationFiles="@(AplicacionArchivos->'$(OutputPath)Aplicacion\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  <!-- Comprime la aplicación compilada (GUI) antes de incrustar los recursos. -->
+  <Target Name="EmpaquetarAplicacion" BeforeTargets="PrepareResources">
+    <MakeDir Directories="$(IntermediateOutputPath)" />
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;Compress-Archive -Path '..\GUI\bin\$(Configuration)\*' -DestinationPath '$(IntermediateOutputPath)aplicacion.zip' -Force&quot;" />
   </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
