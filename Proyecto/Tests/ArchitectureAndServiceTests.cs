@@ -13,8 +13,14 @@ namespace Tests
         private static int _passed;
         private static int _failed;
 
-        private static void Main()
+        private static void Main(string[] args)
         {
+            if (args.Length > 0 && args[0] == "negocio")
+            {
+                ProcesosNegocioPruebas.Ejecutar();
+                return;
+            }
+
             Console.WriteLine("=== Pruebas de arquitectura y servicios ===");
             Console.WriteLine();
 
