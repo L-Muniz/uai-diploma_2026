@@ -62,6 +62,7 @@
     <Compile Include="BLL_CATALOGO.cs" />
     <Compile Include="BLL_DATOS_USUARIO.cs" />
     <Compile Include="BLL_ESTADISTICAS.cs" />
+    <Compile Include="BLL_REPORTES.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -190,6 +190,12 @@
     <Compile Include="FormEstadisticasVentas.Designer.cs">
       <DependentUpon>FormEstadisticasVentas.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormAyuda.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAyuda.Designer.cs">
+      <DependentUpon>FormAyuda.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Bitacora.resx">
       <DependentUpon>Bitacora.cs</DependentUpon>

@@ -24,6 +24,7 @@ namespace GUI
             this.lblResumen = new System.Windows.Forms.Label();
             this.lblProductos = new System.Windows.Forms.Label();
             this.dgvProductos = new System.Windows.Forms.DataGridView();
+            this.btnExportarPdf = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProductos)).BeginInit();
             this.SuspendLayout();
             //
@@ -107,7 +108,17 @@ namespace GUI
             this.dgvProductos.Name = "dgvProductos";
             this.dgvProductos.ReadOnly = true;
             this.dgvProductos.RowHeadersVisible = false;
-            this.dgvProductos.Size = new System.Drawing.Size(614, 280);
+            this.dgvProductos.Size = new System.Drawing.Size(614, 240);
+            //
+            // btnExportarPdf
+            //
+            this.btnExportarPdf.Location = new System.Drawing.Point(16, 444);
+            this.btnExportarPdf.Name = "btnExportarPdf";
+            this.btnExportarPdf.Size = new System.Drawing.Size(160, 28);
+            this.btnExportarPdf.TabIndex = 9;
+            this.btnExportarPdf.Text = "Exportar a PDF";
+            this.btnExportarPdf.UseVisualStyleBackColor = true;
+            this.btnExportarPdf.Click += new System.EventHandler(this.btnExportarPdf_Click);
             this.dgvProductos.TabIndex = 8;
             //
             // FormEstadisticasVentas
@@ -116,6 +127,7 @@ namespace GUI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(650, 490);
             this.Controls.Add(this.dgvProductos);
+            this.Controls.Add(this.btnExportarPdf);
             this.Controls.Add(this.lblProductos);
             this.Controls.Add(this.lblResumen);
             this.Controls.Add(this.btnConsultar);
@@ -140,5 +152,6 @@ namespace GUI
         private System.Windows.Forms.Label lblResumen;
         private System.Windows.Forms.Label lblProductos;
         private System.Windows.Forms.DataGridView dgvProductos;
+        private System.Windows.Forms.Button btnExportarPdf;
     }
 }

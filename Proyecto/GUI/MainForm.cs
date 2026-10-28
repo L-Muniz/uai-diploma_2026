@@ -35,6 +35,7 @@ namespace GUI
                 CrearMenuAdministracion();
             }
             CrearMenuProcesos();
+            CrearMenuAyuda();
             CrearMenuVentanas();
             CrearMenuSesion();
             ActualizarTextos();
@@ -224,6 +225,19 @@ namespace GUI
 
             if (menuProcesos.DropDownItems.Count > 0)
                 menuStrip.Items.Add(menuProcesos);
+        }
+
+        // Ayuda en línea (D02), accesible con F1.
+        private void CrearMenuAyuda()
+        {
+            var menuStrip = this.Controls.OfType<MenuStrip>().FirstOrDefault();
+            if (menuStrip == null) return;
+
+            var menuAyuda = new ToolStripMenuItem("A&yuda");
+            var itemAyuda = new ToolStripMenuItem("&Ayuda en línea", null, (s, e) => FormUnico.Abrir(() => new FormAyuda()));
+            itemAyuda.ShortcutKeys = Keys.F1;
+            menuAyuda.DropDownItems.Add(itemAyuda);
+            menuStrip.Items.Add(menuAyuda);
         }
 
         private void AgregarSubmenu(ToolStripMenuItem padre, string texto,

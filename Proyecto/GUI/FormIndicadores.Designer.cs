@@ -20,6 +20,9 @@ namespace GUI
             this.txtPeriodo = new System.Windows.Forms.TextBox();
             this.btnConsultar = new System.Windows.Forms.Button();
             this.dgvIndicadores = new System.Windows.Forms.DataGridView();
+            this.btnExportarPdf = new System.Windows.Forms.Button();
+            this.btnExportarXml = new System.Windows.Forms.Button();
+            this.btnImportarXml = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvIndicadores)).BeginInit();
             this.SuspendLayout();
             //
@@ -68,8 +71,38 @@ namespace GUI
             this.dgvIndicadores.Name = "dgvIndicadores";
             this.dgvIndicadores.ReadOnly = true;
             this.dgvIndicadores.RowHeadersVisible = false;
-            this.dgvIndicadores.Size = new System.Drawing.Size(614, 400);
+            this.dgvIndicadores.Size = new System.Drawing.Size(614, 350);
             this.dgvIndicadores.TabIndex = 4;
+            //
+            // btnExportarPdf
+            //
+            this.btnExportarPdf.Location = new System.Drawing.Point(16, 455);
+            this.btnExportarPdf.Name = "btnExportarPdf";
+            this.btnExportarPdf.Size = new System.Drawing.Size(150, 28);
+            this.btnExportarPdf.TabIndex = 5;
+            this.btnExportarPdf.Text = "Exportar a PDF";
+            this.btnExportarPdf.UseVisualStyleBackColor = true;
+            this.btnExportarPdf.Click += new System.EventHandler(this.btnExportarPdf_Click);
+            //
+            // btnExportarXml
+            //
+            this.btnExportarXml.Location = new System.Drawing.Point(180, 455);
+            this.btnExportarXml.Name = "btnExportarXml";
+            this.btnExportarXml.Size = new System.Drawing.Size(150, 28);
+            this.btnExportarXml.TabIndex = 6;
+            this.btnExportarXml.Text = "Guardar XML";
+            this.btnExportarXml.UseVisualStyleBackColor = true;
+            this.btnExportarXml.Click += new System.EventHandler(this.btnExportarXml_Click);
+            //
+            // btnImportarXml
+            //
+            this.btnImportarXml.Location = new System.Drawing.Point(344, 455);
+            this.btnImportarXml.Name = "btnImportarXml";
+            this.btnImportarXml.Size = new System.Drawing.Size(150, 28);
+            this.btnImportarXml.TabIndex = 7;
+            this.btnImportarXml.Text = "Abrir XML guardado";
+            this.btnImportarXml.UseVisualStyleBackColor = true;
+            this.btnImportarXml.Click += new System.EventHandler(this.btnImportarXml_Click);
             //
             // FormIndicadores
             //
@@ -77,6 +110,9 @@ namespace GUI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(650, 510);
             this.Controls.Add(this.dgvIndicadores);
+            this.Controls.Add(this.btnExportarPdf);
+            this.Controls.Add(this.btnExportarXml);
+            this.Controls.Add(this.btnImportarXml);
             this.Controls.Add(this.btnConsultar);
             this.Controls.Add(this.txtPeriodo);
             this.Controls.Add(this.lblPeriodo);
@@ -93,5 +129,8 @@ namespace GUI
         private System.Windows.Forms.TextBox txtPeriodo;
         private System.Windows.Forms.Button btnConsultar;
         private System.Windows.Forms.DataGridView dgvIndicadores;
+        private System.Windows.Forms.Button btnExportarPdf;
+        private System.Windows.Forms.Button btnExportarXml;
+        private System.Windows.Forms.Button btnImportarXml;
     }
 }

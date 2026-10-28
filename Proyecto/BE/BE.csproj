@@ -60,6 +60,7 @@
     <Compile Include="BE_Gestion.cs" />
     <Compile Include="BE_Marketplace.cs" />
     <Compile Include="BE_DatosUsuario.cs" />
+    <Compile Include="BE_InformeIndicadores.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

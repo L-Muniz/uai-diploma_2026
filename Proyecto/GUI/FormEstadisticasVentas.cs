@@ -12,6 +12,7 @@ namespace GUI
     {
         private readonly BE_USUARIO vendedor;
         private readonly BLL_ESTADISTICAS bllEstadisticas = new BLL_ESTADISTICAS();
+        private readonly BLL_REPORTES bllReportes = new BLL_REPORTES();
 
         public FormEstadisticasVentas(BE_USUARIO vendedor)
         {
@@ -25,6 +26,23 @@ namespace GUI
         private void btnConsultar_Click(object sender, EventArgs e)
         {
             Consultar();
+        }
+
+        private void btnExportarPdf_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (SaveFileDialog dlg = new SaveFileDialog { Filter = "PDF (*.pdf)|*.pdf", FileName = "Estadisticas_ventas.pdf" })
+                {
+                    if (dlg.ShowDialog(this) != DialogResult.OK) return;
+                    bllReportes.ExportarEstadisticasPdf(vendedor, dtpDesde.Value, dtpHasta.Value, dlg.FileName);
+                    UIHelper.Informar("Informe PDF generado.");
+                }
+            }
+            catch (Exception ex)
+            {
+                UIHelper.Error(ex);
+            }
         }
 
         private void Consultar()
