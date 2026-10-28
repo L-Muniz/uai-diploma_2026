@@ -67,12 +67,21 @@ namespace BLL
                 Descripcion = descripcion,
                 Fecha = DateTime.Now
             };
-            MP_BITACORA mpBitacora = new MP_BITACORA();
-            int filas = mpBitacora.Alta(bitacora);
-
-            if (filas != 1 && filas != -1)
+            // La operación de negocio ya quedó guardada cuando se registra en bitácora:
+            // un fallo de bitácora no debe mostrarla como error. Se informa en el log de depuración.
+            try
             {
-                throw new InvalidOperationException("Error del sistema al ingresar el registro en la bitácora.");
+                MP_BITACORA mpBitacora = new MP_BITACORA();
+                int filas = mpBitacora.Alta(bitacora);
+
+                if (filas != 1 && filas != -1)
+                {
+                    System.Diagnostics.Debug.WriteLine("Bitácora: no se registró la descripción: " + descripcion);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Bitácora: error al registrar '" + descripcion + "': " + ex.Message);
             }
         }
 

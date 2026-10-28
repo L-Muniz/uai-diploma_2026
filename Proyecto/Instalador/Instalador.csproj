@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7A1C2E55-3B0D-4F6A-9C1E-5D2B8F4A9E10}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Instalador</RootNamespace>
+    <AssemblyName>Instalador</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="InstaladorLogica.cs" />
+    <Compile Include="FormInstalador.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormInstalador.Designer.cs">
+      <DependentUpon>FormInstalador.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Scripts que se ejecutan al instalar: base de datos original (sin la creación de la base) y scripts 01 a 05 de la 3ra entrega. -->
+    <None Include="..\BD_SCRIPT_OCT.sql">
+      <Link>Scripts\BD_SCRIPT_OCT.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Scripts\Entrega3\01_TABLAS_ENTREGA3.sql">
+      <Link>Scripts\Entrega3\01_TABLAS_ENTREGA3.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Scripts\Entrega3\02_STORED_PROCEDURES_ENTREGA3.sql">
+      <Link>Scripts\Entrega3\02_STORED_PROCEDURES_ENTREGA3.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Scripts\Entrega3\03_PERFIL_SUSCRIPCIONES_ESTADISTICAS.sql">
+      <Link>Scripts\Entrega3\03_PERFIL_SUSCRIPCIONES_ESTADISTICAS.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Scripts\Entrega3\04_AMPLIAR_BITACORA.sql">
+      <Link>Scripts\Entrega3\04_AMPLIAR_BITACORA.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Scripts\Entrega3\05_DATOS_DE_PRUEBA.sql">
+      <Link>Scripts\Entrega3\05_DATOS_DE_PRUEBA.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GUI\GUI.csproj">
+      <Project>{1C1015C8-644D-4FF4-B134-905102F349C9}</Project>
+      <Name>GUI</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <!-- Copia la aplicación ya compilada (GUI) a la carpeta Aplicacion, que el instalador usa como origen. -->
+  <Target Name="CopiarAplicacion" AfterTargets="Build">
+    <ItemGroup>
+      <AplicacionArchivos Include="..\GUI\bin\$(Configuration)\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(AplicacionArchivos)" DestinationFiles="@(AplicacionArchivos->'$(OutputPath)Aplicacion\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
