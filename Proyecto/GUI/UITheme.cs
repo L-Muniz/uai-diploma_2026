@@ -9,13 +9,13 @@ namespace GUI
         public static readonly Color FondoApp = Color.FromArgb(244, 246, 249);
         public static readonly Color FondoPanel = Color.FromArgb(228, 234, 241);
         public static readonly Color FondoTarjeta = Color.FromArgb(255, 255, 255);
-        public static readonly Color Acento = Color.FromArgb(91, 124, 153);
-        public static readonly Color AcentoOscuro = Color.FromArgb(70, 100, 128);
-        public static readonly Color AcentoClaro = Color.FromArgb(210, 222, 234);
+        public static readonly Color Acento = Color.FromArgb(61, 198, 90);
+        public static readonly Color AcentoOscuro = Color.FromArgb(30, 158, 104);
+        public static readonly Color AcentoClaro = Color.FromArgb(220, 245, 224);
         public static readonly Color Texto = Color.FromArgb(51, 65, 85);
         public static readonly Color TextoSuave = Color.FromArgb(100, 116, 139);
         public static readonly Color Borde = Color.FromArgb(197, 208, 220);
-        public static readonly Color GridHeader = Color.FromArgb(213, 222, 232);
+        public static readonly Color GridHeader = Color.FromArgb(214, 240, 219);
         public static readonly Color GridAlt = Color.FromArgb(248, 250, 252);
         public static readonly Color GridLinea = Color.FromArgb(226, 232, 240);
         public static readonly Color Seleccion = Color.FromArgb(186, 205, 222);

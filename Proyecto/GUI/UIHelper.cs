@@ -1,6 +1,8 @@
 using System;
 using System.Data;
+using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Windows.Forms;
 
 namespace GUI
@@ -17,6 +19,20 @@ namespace GUI
             public override string ToString()
             {
                 return Texto;
+            }
+        }
+
+        // Imagen de la carpeta Recursos (marca de BecoGre). Devuelve null si no existe.
+        public static Image CargarRecurso(string nombre)
+        {
+            try
+            {
+                string ruta = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Recursos", nombre);
+                return File.Exists(ruta) ? Image.FromFile(ruta) : null;
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 

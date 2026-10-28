@@ -7,6 +7,7 @@
     <ProjectGuid>{1C1015C8-644D-4FF4-B134-905102F349C9}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>GUI</RootNamespace>
+    <ApplicationIcon>Recursos\becogre.ico</ApplicationIcon>
     <AssemblyName>GUI</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -196,6 +197,12 @@
     <Compile Include="FormAyuda.Designer.cs">
       <DependentUpon>FormAyuda.cs</DependentUpon>
     </Compile>
+    <Content Include="Recursos\*.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Recursos\becogre.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Bitacora.resx">
       <DependentUpon>Bitacora.cs</DependentUpon>

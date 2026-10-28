@@ -21,6 +21,12 @@ namespace GUI
         public LogInOut()
         {
             InitializeComponent();
+            Image fondo = UIHelper.CargarRecurso("fondo.png");
+            if (fondo != null)
+            {
+                BackgroundImage = fondo;
+                BackgroundImageLayout = ImageLayout.Center;
+            }
 
             bllIdioma = new BLL_Idioma();
             var idiomasDisponibles = bllIdioma.ObtenerIdiomasDisponibles();

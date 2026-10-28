@@ -34,6 +34,7 @@ namespace GUI
             {
                 CrearMenuAdministracion();
             }
+            AplicarMarca();
             CrearMenuProcesos();
             CrearMenuAyuda();
             CrearMenuVentanas();
@@ -225,6 +226,21 @@ namespace GUI
 
             if (menuProcesos.DropDownItems.Count > 0)
                 menuStrip.Items.Add(menuProcesos);
+        }
+
+        // Marca de BecoGre: fondo con el logo detrás del área de trabajo (MDI).
+        private void AplicarMarca()
+        {
+            Image fondo = UIHelper.CargarRecurso("fondo.png");
+            if (fondo == null) return;
+            foreach (Control control in this.Controls)
+            {
+                if (control is MdiClient)
+                {
+                    control.BackgroundImage = fondo;
+                    control.BackgroundImageLayout = ImageLayout.Center;
+                }
+            }
         }
 
         // Ayuda en línea (D02), accesible con F1.
