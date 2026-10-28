@@ -90,7 +90,8 @@ namespace Tests
             string user = "TEST_" + nombre;
             Exec("IF NOT EXISTS (SELECT 1 FROM USUARIO WHERE USERNAME = @u) EXEC ALTA_USUARIO @u, N'TEST'", P("@u", user));
             int id = Convert.ToInt32(Scalar("SELECT ID_USUARIO FROM USUARIO WHERE USERNAME = @u", P("@u", user)));
-            Exec("IF NOT EXISTS (SELECT 1 FROM USUARIO_ROL WHERE ID_USUARIO = @id) EXEC USUARIO_ASIGNAR_ROL @id, (SELECT ID_ROL FROM ROL WHERE NOMBRE = @r)",
+            Exec("DECLARE @rid INT = (SELECT ID_ROL FROM ROL WHERE NOMBRE = @r); " +
+                 "IF NOT EXISTS (SELECT 1 FROM USUARIO_ROL WHERE ID_USUARIO = @id) EXEC USUARIO_ASIGNAR_ROL @id, @rid",
                  P("@id", id), P("@r", rol));
             return new BE_USUARIO { ID = id, Username = user, Rol = rol };
         }
