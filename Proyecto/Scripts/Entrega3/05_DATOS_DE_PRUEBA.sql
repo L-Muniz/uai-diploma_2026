@@ -159,3 +159,74 @@ IF NOT EXISTS (SELECT 1 FROM dbo.DECLARACION_MATERIAL D JOIN dbo.USUARIO U ON U.
     FROM dbo.USUARIO U, dbo.MATERIAL M
     WHERE U.USERNAME = 'ciudadano1' AND M.NOMBRE = N'Papel';
 GO
+
+-- ---------- dígitos verificadores de USUARIO ----------
+-- Las funciones replican SV_DigitoVerificadorHorizontal y SV_DigitoVerificadorVertical de la aplicación.
+-- Así los usuarios insertados arriba quedan con su DVH y la tabla USUARIO no queda con el DVV desactualizado.
+
+CREATE OR ALTER FUNCTION dbo.DV_HORIZONTAL (@datos NVARCHAR(MAX))
+RETURNS INT
+AS
+BEGIN
+    DECLARE @suma INT = 0, @i INT = 1, @n INT = LEN(@datos + N'_') - 1;
+    WHILE @i <= @n
+    BEGIN
+        SET @suma = @suma + (UNICODE(SUBSTRING(@datos, @i, 1)) * @i) % 11;
+        SET @i = @i + 1;
+    END
+    RETURN (11 - (@suma % 11)) % 11;
+END
+GO
+
+CREATE OR ALTER FUNCTION dbo.DV_VERTICAL_ATRIBUTO (@valor NVARCHAR(MAX), @posicion INT)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @suma INT = 0, @i INT = 0, @n INT = LEN(@valor + N'_') - 1;
+    WHILE @i < @n
+    BEGIN
+        SET @suma = @suma + (UNICODE(SUBSTRING(@valor, @i + 1, 1)) * (@posicion + @i + 1)) % 11;
+        SET @i = @i + 1;
+    END
+    RETURN (11 - (@suma % 11)) % 11;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.DV_USUARIO_RECALCULAR
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- DVH de cada usuario: usuario + contraseña + bloqueado (como BLL_IntegridadDatos.CalcularDVHUsuario).
+    UPDATE U
+    SET DVH_HORIZONTAL = dbo.DV_HORIZONTAL(U.USERNAME + U.PASS + CASE WHEN U.BLOQUEADO = 1 THEN N'True' ELSE N'False' END)
+    FROM dbo.USUARIO U;
+
+    -- DVV de la tabla: la suma de los DV de cada columna sobre todos los usuarios, en orden de ID.
+    -- Sumar y aplicar módulo 11 al final da el mismo resultado que aplicarlo en cada paso.
+    DECLARE @dvUsername INT, @dvPassword INT, @dvBloqueado INT;
+    SELECT @dvUsername = ISNULL(SUM(X.DV_U), 0) % 11,
+           @dvPassword = ISNULL(SUM(X.DV_P), 0) % 11,
+           @dvBloqueado = ISNULL(SUM(X.DV_B), 0) % 11
+    FROM (
+        SELECT dbo.DV_VERTICAL_ATRIBUTO(T.USERNAME, T.FILA) AS DV_U,
+               dbo.DV_VERTICAL_ATRIBUTO(T.PASS, T.FILA) AS DV_P,
+               dbo.DV_VERTICAL_ATRIBUTO(CASE WHEN T.BLOQUEADO = 1 THEN N'True' ELSE N'False' END, T.FILA) AS DV_B
+        FROM (
+            SELECT USERNAME, PASS, BLOQUEADO, ROW_NUMBER() OVER (ORDER BY ID_USUARIO) AS FILA
+            FROM dbo.USUARIO
+        ) T
+    ) X;
+
+    IF EXISTS (SELECT 1 FROM dbo.DIGITO_VERIFICADOR_VERTICAL WHERE TIPO_ENTIDAD = N'USUARIO')
+        UPDATE dbo.DIGITO_VERIFICADOR_VERTICAL
+        SET DV_USERNAME = @dvUsername, DV_PASSWORD = @dvPassword, DV_BLOQUEADO = @dvBloqueado
+        WHERE TIPO_ENTIDAD = N'USUARIO';
+    ELSE
+        INSERT INTO dbo.DIGITO_VERIFICADOR_VERTICAL (ID_ENTIDAD, TIPO_ENTIDAD, DV_USERNAME, DV_PASSWORD, DV_BLOQUEADO)
+        VALUES (0, N'USUARIO', @dvUsername, @dvPassword, @dvBloqueado);
+END
+GO
+
+EXEC dbo.DV_USUARIO_RECALCULAR;
+GO

@@ -15,14 +15,8 @@ namespace GUI
         public static string MensajeIntegridad { get; set; } = "";
 
         [STAThread]
-        static void Main(string[] args)
+        static void Main()
         {
-            // Modo de instalación: recalcula los dígitos verificadores de todas las tablas y termina (0 = correcto).
-            if (args.Length > 0 && args[0] == "--recalcular-dv")
-            {
-                Environment.Exit(RecalcularDvYSalir());
-            }
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -53,12 +47,6 @@ namespace GUI
             {
                 ManejarExcepcion(ex, "Error fatal al iniciar la aplicación");
             }
-        }
-
-        private static int RecalcularDvYSalir()
-        {
-            var resultado = BLL_IntegridadDatos.RecalcularTodosLosDV();
-            return resultado.exito ? 0 : 1;
         }
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
