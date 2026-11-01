@@ -122,24 +122,24 @@ namespace Instalador
                                                 "Si no tenés SQL Server, instalá SQL Server Express y volvé a intentar.");
             VerificarCarpetaDestino(carpetaDestino);
 
-            informar("1/6 Verificando el motor de SQL Server...");
+            informar("1/7 Verificando el motor de SQL Server...");
             VerificarMotorYServicio(servidor);
 
-            informar("2/6 Conectando a la instancia " + servidor + "...");
+            informar("2/7 Conectando a la instancia " + servidor + "...");
             ProbarConexion(servidor);
 
-            informar("3/6 Creando la base de datos '" + nombreBase + "' (si no existe)...");
+            informar("3/7 Creando la base de datos '" + nombreBase + "' (si no existe)...");
             CrearBaseSiNoExiste(servidor, nombreBase);
 
             string cadenaBase = CadenaBase(servidor, nombreBase).ConnectionString;
 
-            informar("4/6 Creando tablas, procedimientos y datos base...");
+            informar("4/7 Creando tablas, procedimientos y datos base...");
             if (!ExisteTabla(cadenaBase, "USUARIO"))
                 EjecutarScript(cadenaBase, "BD_SCRIPT_OCT.sql", nombreBase, informar);
             else
                 informar("   La base ya tiene tablas: se omite el script original.");
 
-            informar("5/6 Ejecutando los scripts de la 3ra entrega...");
+            informar("5/7 Ejecutando los scripts de la 3ra entrega...");
             foreach (string script in new[]
             {
                 "01_TABLAS_ENTREGA3.sql", "02_STORED_PROCEDURES_ENTREGA3.sql",
@@ -150,9 +150,12 @@ namespace Instalador
                 EjecutarScript(cadenaBase, script, nombreBase, informar);
             }
 
-            informar("6/6 Instalando la aplicación y configurando la conexión...");
+            informar("6/7 Instalando la aplicación y configurando la conexión...");
             ExtraerAplicacion(carpetaDestino);
             ConfigurarConexion(carpetaDestino, cadenaBase);
+
+            informar("7/7 Recalculando los dígitos verificadores de integridad...");
+            RecalcularDigitosVerificadores(carpetaDestino);
             CrearAccesoDirecto(Path.Combine(carpetaDestino, "GUI.exe"));
 
             informar("Instalación completa. La aplicación está en: " + carpetaDestino);
@@ -326,6 +329,30 @@ namespace Instalador
             File.WriteAllText(config, nuevo);
         }
 
+        // Ejecuta la aplicación instalada con --recalcular-dv: recalcula los DV de todas las tablas.
+        // Los usuarios de prueba se insertan con SQL y no traen su DV; sin este paso la tabla USUARIO queda corrupta.
+        public static void RecalcularDigitosVerificadores(string carpetaDestino)
+        {
+            string ejecutable = Path.Combine(carpetaDestino, "GUI.exe");
+            var inicio = new System.Diagnostics.ProcessStartInfo(ejecutable, "--recalcular-dv")
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                WorkingDirectory = carpetaDestino
+            };
+            using (var proceso = System.Diagnostics.Process.Start(inicio))
+            {
+                if (!proceso.WaitForExit(120000))
+                {
+                    proceso.Kill();
+                    throw new ErrorInstalacion("El recálculo de los dígitos verificadores tardó demasiado.");
+                }
+                if (proceso.ExitCode != 0)
+                    throw new ErrorInstalacion("No se pudieron recalcular los dígitos verificadores (código " + proceso.ExitCode + ").\n\n" +
+                                               "La aplicación quedó instalada; desde Integridad / DV podés volver a intentarlo.");
+            }
+        }
+
         // Acceso directo en el escritorio (usa WScript.Shell; si falla, la instalación sigue igual).
         public static void CrearAccesoDirecto(string ejecutable)
         {
@@ -337,6 +364,11 @@ namespace Instalador
                 object acceso = tipo.InvokeMember("CreateShortcut", BindingFlags.InvokeMethod, null, shell,
                                                   new object[] { Path.Combine(escritorio, "BecoGre.lnk") });
                 acceso.GetType().InvokeMember("TargetPath", BindingFlags.SetProperty, null, acceso, new object[] { ejecutable });
+
+                string icono = Path.Combine(Path.GetDirectoryName(ejecutable), "Recursos", "becogre.ico");
+                if (File.Exists(icono))
+                    acceso.GetType().InvokeMember("IconLocation", BindingFlags.SetProperty, null, acceso, new object[] { icono });
+
                 acceso.GetType().InvokeMember("WorkingDirectory", BindingFlags.SetProperty, null, acceso,
                                               new object[] { Path.GetDirectoryName(ejecutable) });
                 acceso.GetType().InvokeMember("Save", BindingFlags.InvokeMethod, null, acceso, null);

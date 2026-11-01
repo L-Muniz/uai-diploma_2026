@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Instalador
@@ -22,20 +23,23 @@ namespace Instalador
             }
         }
 
-        private void btnInstalar_Click(object sender, EventArgs e)
+        private async void btnInstalar_Click(object sender, EventArgs e)
         {
             btnInstalar.Enabled = false;
+            btnExaminar.Enabled = false;
             txtLog.Clear();
+            string destino = txtDestino.Text.Trim();
             try
             {
-                string servidor = InstaladorLogica.ElegirInstancia();
-                if (servidor == null)
+                // Corre en segundo plano para que la ventana siga respondiendo y el log avance en vivo.
+                await Task.Run(() =>
                 {
-                    OfrecerDescargaSqlExpress("No se encontró ninguna instancia de SQL Server en esta computadora.\n\n" +
-                                              "Instalá SQL Server Express y volvé a ejecutar el instalador.");
-                    return;
-                }
-                InstaladorLogica.Instalar(servidor, txtDestino.Text.Trim(), Informar);
+                    string servidor = InstaladorLogica.ElegirInstancia();
+                    if (servidor == null)
+                        throw new ErrorMotorNoInstalado("No se encontró ninguna instancia de SQL Server en esta computadora.\n\n" +
+                                                        "Instalá SQL Server Express y volvé a ejecutar el instalador.");
+                    InstaladorLogica.Instalar(servidor, destino, Informar);
+                });
                 MessageBox.Show(this,
                     "La instalación se completó correctamente.\n\nSe creó el acceso directo BecoGre en el escritorio.",
                     "Instalador BecoGre", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -58,6 +62,7 @@ namespace Instalador
             finally
             {
                 btnInstalar.Enabled = true;
+                btnExaminar.Enabled = true;
             }
         }
 
@@ -69,14 +74,19 @@ namespace Instalador
             if (r == DialogResult.Yes)
             {
                 Process.Start(InstaladorLogica.UrlSqlExpress);
-                Informar("Instalá SQL Server Express, volvé a abrir el instalador y presioná Buscar instancias.");
+                Informar("Instalá SQL Server Express, volvé a abrir el instalador y ejecutalo de nuevo.");
             }
         }
 
+        // Puede llamarse desde el hilo de la instalación: vuelve al hilo de la ventana antes de escribir.
         private void Informar(string mensaje)
         {
+            if (txtLog.InvokeRequired)
+            {
+                txtLog.BeginInvoke(new Action(() => Informar(mensaje)));
+                return;
+            }
             txtLog.AppendText(mensaje + Environment.NewLine);
-            Application.DoEvents();
         }
     }
 }
