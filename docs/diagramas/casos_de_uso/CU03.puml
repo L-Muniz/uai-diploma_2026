@@ -1,0 +1,6 @@
+@startuml CU03_caso_de_uso
+left to right direction
+actor "Ciudadano" as ACT
+usecase "CU03 Canjear Eco-Puntos" as UC
+ACT -- UC
+@enduml

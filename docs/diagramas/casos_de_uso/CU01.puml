@@ -1,0 +1,6 @@
+@startuml CU01_caso_de_uso
+left to right direction
+actor "Ciudadano" as ACT
+usecase "CU01 Declarar material" as UC
+ACT -- UC
+@enduml

@@ -4,6 +4,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU01 Declarar material
 
+**Descripción:** Permite al ciudadano declarar un material y elegir cómo reciclarlo.
 **Actor principal:** Ciudadano.
 **Precondiciones:** el usuario tiene sesión iniciada con el rol CIUDADANO.
 **Postcondiciones:** queda registrada la declaración y su recomendación (reutilizar o entregar).
@@ -31,6 +32,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU02 Registrar recepción de material
 
+**Descripción:** Permite al operador de punto verde registrar el peso recibido y acreditar los Eco-Puntos.
 **Actor principal:** Operador de punto verde.
 **Precondiciones:** el operador tiene sesión iniciada con el rol OPERADOR_PUNTO_VERDE y existe al menos una declaración pendiente en el punto verde.
 **Postcondiciones:** la declaración queda entregada y el ciudadano recibe los Eco-Puntos del peso registrado.
@@ -57,6 +59,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU03 Canjear Eco-Puntos
 
+**Descripción:** Permite al ciudadano canjear sus Eco-Puntos por un beneficio.
 **Actor principal:** Ciudadano.
 **Precondiciones:** el usuario tiene sesión iniciada y una cuenta de Eco-Puntos.
 **Postcondiciones:** se descuentan los puntos del beneficio y queda registrado el canje.
@@ -83,6 +86,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU04 Consultar indicadores
 
+**Descripción:** Permite a gerencia consultar los indicadores de acopio, ventas y costo de canjes de un período.
 **Actor principal:** Gerencia.
 **Precondiciones:** el usuario tiene sesión iniciada con el rol GERENCIA.
 **Postcondiciones:** se muestran los indicadores del período y queda registrado el informe.
@@ -101,6 +105,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU05 Exportar informe de indicadores
 
+**Descripción:** Permite a gerencia exportar el informe de indicadores a PDF o XML.
 **Actor principal:** Gerencia.
 **Precondiciones:** se consultaron los indicadores de un período (CU04).
 **Postcondiciones:** queda guardado el archivo PDF o XML en la ubicación elegida.
@@ -126,6 +131,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU06 Gestionar puntos verdes
 
+**Descripción:** Permite a gerencia dar de alta o modificar puntos verdes y sus materiales aceptados.
 **Actor principal:** Gerencia.
 **Precondiciones:** el usuario tiene sesión iniciada con el rol GERENCIA.
 **Postcondiciones:** el punto verde queda dado de alta o modificado, con sus materiales aceptados.
@@ -150,6 +156,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU07 Fijar comisión por categoría
 
+**Descripción:** Permite a gerencia fijar la comisión por categoría de producto.
 **Actor principal:** Gerencia.
 **Precondiciones:** el usuario tiene sesión iniciada con el rol GERENCIA.
 **Postcondiciones:** la comisión de la categoría queda vigente desde la fecha de hoy.
@@ -170,6 +177,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU08 Fijar conversión de puntos
 
+**Descripción:** Permite a gerencia fijar los puntos por kilo de cada material.
 **Actor principal:** Gerencia.
 **Precondiciones:** el usuario tiene sesión iniciada con el rol GERENCIA.
 **Postcondiciones:** la conversión de puntos por kilo del material queda vigente desde hoy.
@@ -192,6 +200,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU09 Solicitar verificación de vendedor
 
+**Descripción:** Permite al ciudadano pedir la verificación para vender.
 **Actor principal:** Ciudadano.
 **Precondiciones:** el usuario tiene sesión iniciada y cargó su fecha de nacimiento en "Mi perfil".
 **Postcondiciones:** queda una solicitud pendiente de revisión por el área comercial.
@@ -216,6 +225,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU10 Resolver verificación de vendedor
 
+**Descripción:** Permite al área comercial aprobar o rechazar la verificación de un vendedor.
 **Actor principal:** Área comercial.
 **Precondiciones:** el usuario tiene sesión iniciada con el rol AREA_COMERCIAL y existe al menos una solicitud pendiente.
 **Postcondiciones:** la solicitud queda aprobada o rechazada, y sale de la lista de pendientes.
@@ -236,6 +246,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU11 Publicar producto
 
+**Descripción:** Permite a un vendedor verificado publicar un producto.
 **Actor principal:** Vendedor verificado.
 **Precondiciones:** el vendedor tiene el estado de verificado (CU10).
 **Postcondiciones:** el producto queda publicado en estado pendiente de aprobación.
@@ -262,6 +273,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU12 Aprobar producto
 
+**Descripción:** Permite al área comercial aprobar un producto pendiente para su venta.
 **Actor principal:** Área comercial.
 **Precondiciones:** el usuario tiene sesión iniciada con el rol AREA_COMERCIAL y existe al menos un producto pendiente.
 **Postcondiciones:** el producto queda visible en el catálogo de compra.
@@ -280,6 +292,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU13 Comprar producto
 
+**Descripción:** Permite al comprador comprar un producto y pagarlo.
 **Actor principal:** Comprador (ciudadano).
 **Precondiciones:** el usuario tiene sesión iniciada y existe al menos un producto aprobado con stock.
 **Postcondiciones:** queda registrada la orden, con el pago aprobado, el stock descontado y la liquidación del vendedor retenida.
@@ -312,6 +325,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU14 Despachar pedido
 
+**Descripción:** Permite al vendedor marcar una venta como despachada.
 **Actor principal:** Vendedor.
 **Precondiciones:** el vendedor tiene una venta pagada (CU13).
 **Postcondiciones:** la orden queda despachada y espera la confirmación del comprador.
@@ -332,6 +346,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU15 Confirmar recepción de pedido
 
+**Descripción:** Permite al comprador confirmar la recepción conforme de un pedido.
 **Actor principal:** Comprador (ciudadano).
 **Precondiciones:** la orden fue despachada (CU14).
 **Postcondiciones:** la orden queda recibida y la liquidación del vendedor pasa a disponible.
@@ -352,6 +367,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU16 Liquidar vendedor
 
+**Descripción:** Permite al área comercial ordenar la transferencia del saldo neto al vendedor.
 **Actor principal:** Área comercial.
 **Precondiciones:** existe una liquidación disponible (CU15).
 **Postcondiciones:** la liquidación queda pagada.
@@ -376,6 +392,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU17 Presentar reclamo
 
+**Descripción:** Permite al comprador presentar un reclamo sobre un pedido despachado.
 **Actor principal:** Comprador (ciudadano).
 **Precondiciones:** el comprador tiene una orden despachada.
 **Postcondiciones:** queda registrado el reclamo y la liquidación del vendedor queda congelada.
@@ -398,6 +415,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 ## CU18 Resolver reclamo
 
+**Descripción:** Permite al área comercial resolver un reclamo como procedente o improcedente.
 **Actor principal:** Área comercial.
 **Precondiciones:** existe al menos un reclamo abierto (CU17).
 **Postcondiciones:** el reclamo queda resuelto como procedente o improcedente, y la liquidación se actualiza según la resolución.

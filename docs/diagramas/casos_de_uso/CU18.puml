@@ -1,0 +1,6 @@
+@startuml CU18_caso_de_uso
+left to right direction
+actor "Área comercial" as ACT
+usecase "CU18 Resolver reclamo" as UC
+ACT -- UC
+@enduml

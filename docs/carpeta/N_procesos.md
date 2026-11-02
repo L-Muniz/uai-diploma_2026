@@ -59,8 +59,11 @@ Casos de uso (numeración global):
 
 ### 5. Especificación de casos de uso
 
+![Figura N01-0. Diagrama de casos de uso del proceso N01](diagramas/casos_de_uso_png/N01.png)
+
 ### CU04 Consultar indicadores
 
+**Descripción:** Permite a gerencia consultar los indicadores de acopio, ventas y costo de canjes de un período.
 **Actor principal:** Gerencia.
 **Precondiciones:** el usuario tiene sesión iniciada con el rol GERENCIA.
 **Postcondiciones:** se muestran los indicadores del período y queda registrado el informe.
@@ -77,6 +80,8 @@ Casos de uso (numeración global):
 - 3a. Período con formato incorrecto.
   - 3a.1 Sistema: muestra "El período debe tener el formato aaaa-mm."
 
+![Figura CU04-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU04.png)
+
 ![Figura CU04-a. Diagrama de clases](diagramas/cu/CU04_clases.svg)
 
 ![Figura CU04-b. Modelo de datos](diagramas/cu/CU04_der.svg)
@@ -86,6 +91,7 @@ Casos de uso (numeración global):
 
 ### CU05 Exportar informe de indicadores
 
+**Descripción:** Permite a gerencia exportar el informe de indicadores a PDF o XML.
 **Actor principal:** Gerencia.
 **Precondiciones:** se consultaron los indicadores de un período (CU04).
 **Postcondiciones:** queda guardado el archivo PDF o XML en la ubicación elegida.
@@ -109,6 +115,8 @@ Casos de uso (numeración global):
 - 2a. Usuario cierra el diálogo sin guardar.
   - 2a.1 Sistema: no guarda el archivo y vuelve a la pantalla.
 
+![Figura CU05-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU05.png)
+
 ![Figura CU05-a. Diagrama de clases](diagramas/cu/CU05_clases.svg)
 
 ![Figura CU05-b. Modelo de datos](diagramas/cu/CU05_der.svg)
@@ -118,6 +126,7 @@ Casos de uso (numeración global):
 
 ### CU06 Gestionar puntos verdes
 
+**Descripción:** Permite a gerencia dar de alta o modificar puntos verdes y sus materiales aceptados.
 **Actor principal:** Gerencia.
 **Precondiciones:** el usuario tiene sesión iniciada con el rol GERENCIA.
 **Postcondiciones:** el punto verde queda dado de alta o modificado, con sus materiales aceptados.
@@ -140,6 +149,8 @@ Casos de uso (numeración global):
 - 3c. Dirección vacía.
   - 3c.1 Sistema: muestra "Ingrese la dirección."
 
+![Figura CU06-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU06.png)
+
 ![Figura CU06-a. Diagrama de clases](diagramas/cu/CU06_clases.svg)
 
 ![Figura CU06-b. Modelo de datos](diagramas/cu/CU06_der.svg)
@@ -149,6 +160,7 @@ Casos de uso (numeración global):
 
 ### CU07 Fijar comisión por categoría
 
+**Descripción:** Permite a gerencia fijar la comisión por categoría de producto.
 **Actor principal:** Gerencia.
 **Precondiciones:** el usuario tiene sesión iniciada con el rol GERENCIA.
 **Postcondiciones:** la comisión de la categoría queda vigente desde la fecha de hoy.
@@ -167,6 +179,8 @@ Casos de uso (numeración global):
 - 3b. Categoría vacía.
   - 3b.1 Sistema: muestra "Ingrese la categoría."
 
+![Figura CU07-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU07.png)
+
 ![Figura CU07-a. Diagrama de clases](diagramas/cu/CU07_clases.svg)
 
 ![Figura CU07-b. Modelo de datos](diagramas/cu/CU07_der.svg)
@@ -176,6 +190,7 @@ Casos de uso (numeración global):
 
 ### CU08 Fijar conversión de puntos
 
+**Descripción:** Permite a gerencia fijar los puntos por kilo de cada material.
 **Actor principal:** Gerencia.
 **Precondiciones:** el usuario tiene sesión iniciada con el rol GERENCIA.
 **Postcondiciones:** la conversión de puntos por kilo del material queda vigente desde hoy.
@@ -195,6 +210,8 @@ Casos de uso (numeración global):
   - 5a.1 Sistema: muestra "Los puntos por kg deben ser mayores a cero." o "Puntos por kg: ingrese un número válido.".
 - 5b. No hay material seleccionado.
   - 5b.1 Sistema: muestra "Seleccione un material."
+
+![Figura CU08-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU08.png)
 
 ![Figura CU08-a. Diagrama de clases](diagramas/cu/CU08_clases.svg)
 
@@ -240,8 +257,11 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 ### 5. Especificación de casos de uso
 
+![Figura N02-0. Diagrama de casos de uso del proceso N02](diagramas/casos_de_uso_png/N02.png)
+
 ### CU09 Solicitar verificación de vendedor
 
+**Descripción:** Permite al ciudadano pedir la verificación para vender.
 **Actor principal:** Ciudadano.
 **Precondiciones:** el usuario tiene sesión iniciada y cargó su fecha de nacimiento en "Mi perfil".
 **Postcondiciones:** queda una solicitud pendiente de revisión por el área comercial.
@@ -264,6 +284,8 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 - 3c. Tiene menos de 18 años.
   - 3c.1 Sistema: muestra "Para vender debe tener al menos 18 años."
 
+![Figura CU09-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU09.png)
+
 ![Figura CU09-a. Diagrama de clases](diagramas/cu/CU09_clases.svg)
 
 ![Figura CU09-b. Modelo de datos](diagramas/cu/CU09_der.svg)
@@ -273,6 +295,7 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 ### CU10 Resolver verificación de vendedor
 
+**Descripción:** Permite al área comercial aprobar o rechazar la verificación de un vendedor.
 **Actor principal:** Área comercial.
 **Precondiciones:** el usuario tiene sesión iniciada con el rol AREA_COMERCIAL y existe al menos una solicitud pendiente.
 **Postcondiciones:** la solicitud queda aprobada o rechazada, y sale de la lista de pendientes.
@@ -291,6 +314,8 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 - 3b. Usuario presiona "Aprobar seleccionada" o "Rechazar seleccionada" sin seleccionar una solicitud.
   - 3b.1 Sistema: muestra "Seleccione una solicitud."
 
+![Figura CU10-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU10.png)
+
 ![Figura CU10-a. Diagrama de clases](diagramas/cu/CU10_clases.svg)
 
 ![Figura CU10-b. Modelo de datos](diagramas/cu/CU10_der.svg)
@@ -300,6 +325,7 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 ### CU11 Publicar producto
 
+**Descripción:** Permite a un vendedor verificado publicar un producto.
 **Actor principal:** Vendedor verificado.
 **Precondiciones:** el vendedor tiene el estado de verificado (CU10).
 **Postcondiciones:** el producto queda publicado en estado pendiente de aprobación.
@@ -324,6 +350,8 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 - 3d. Precio igual o menor a cero, o stock negativo.
   - 3d.1 Sistema: muestra "El precio debe ser mayor a cero." o "El stock no puede ser negativo.".
 
+![Figura CU11-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU11.png)
+
 ![Figura CU11-a. Diagrama de clases](diagramas/cu/CU11_clases.svg)
 
 ![Figura CU11-b. Modelo de datos](diagramas/cu/CU11_der.svg)
@@ -333,6 +361,7 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 ### CU12 Aprobar producto
 
+**Descripción:** Permite al área comercial aprobar un producto pendiente para su venta.
 **Actor principal:** Área comercial.
 **Precondiciones:** el usuario tiene sesión iniciada con el rol AREA_COMERCIAL y existe al menos un producto pendiente.
 **Postcondiciones:** el producto queda visible en el catálogo de compra.
@@ -349,6 +378,8 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 - 3a. Usuario presiona "Aprobar producto seleccionado" sin seleccionar un producto.
   - 3a.1 Sistema: muestra "Seleccione un producto pendiente."
 
+![Figura CU12-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU12.png)
+
 ![Figura CU12-a. Diagrama de clases](diagramas/cu/CU12_clases.svg)
 
 ![Figura CU12-b. Modelo de datos](diagramas/cu/CU12_der.svg)
@@ -358,6 +389,7 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 ### CU13 Comprar producto
 
+**Descripción:** Permite al comprador comprar un producto y pagarlo.
 **Actor principal:** Comprador (ciudadano).
 **Precondiciones:** el usuario tiene sesión iniciada y existe al menos un producto aprobado con stock.
 **Postcondiciones:** queda registrada la orden, con el pago aprobado, el stock descontado y la liquidación del vendedor retenida.
@@ -388,6 +420,8 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 - 7d. El producto es propio del usuario.
   - 7d.1 Sistema: muestra "No puede comprar sus propios productos."
 
+![Figura CU13-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU13.png)
+
 ![Figura CU13-a. Diagrama de clases](diagramas/cu/CU13_clases.svg)
 
 ![Figura CU13-b. Modelo de datos](diagramas/cu/CU13_der.svg)
@@ -397,6 +431,7 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 ### CU14 Despachar pedido
 
+**Descripción:** Permite al vendedor marcar una venta como despachada.
 **Actor principal:** Vendedor.
 **Precondiciones:** el vendedor tiene una venta pagada (CU13).
 **Postcondiciones:** la orden queda despachada y espera la confirmación del comprador.
@@ -415,6 +450,8 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 - 3b. La orden ya no está pendiente de despacho.
   - 3b.1 Sistema: muestra "La orden no está pendiente de despacho o no le pertenece."
 
+![Figura CU14-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU14.png)
+
 ![Figura CU14-a. Diagrama de clases](diagramas/cu/CU14_clases.svg)
 
 ![Figura CU14-b. Modelo de datos](diagramas/cu/CU14_der.svg)
@@ -424,6 +461,7 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 ### CU15 Confirmar recepción de pedido
 
+**Descripción:** Permite al comprador confirmar la recepción conforme de un pedido.
 **Actor principal:** Comprador (ciudadano).
 **Precondiciones:** la orden fue despachada (CU14).
 **Postcondiciones:** la orden queda recibida y la liquidación del vendedor pasa a disponible.
@@ -442,6 +480,8 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 - 3b. La orden no está despachada.
   - 3b.1 Sistema: muestra "La orden no está despachada o no le pertenece."
 
+![Figura CU15-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU15.png)
+
 ![Figura CU15-a. Diagrama de clases](diagramas/cu/CU15_clases.svg)
 
 ![Figura CU15-b. Modelo de datos](diagramas/cu/CU15_der.svg)
@@ -451,6 +491,7 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 ### CU16 Liquidar vendedor
 
+**Descripción:** Permite al área comercial ordenar la transferencia del saldo neto al vendedor.
 **Actor principal:** Área comercial.
 **Precondiciones:** existe una liquidación disponible (CU15).
 **Postcondiciones:** la liquidación queda pagada.
@@ -473,6 +514,8 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 - 5b. La liquidación ya no está disponible.
   - 5b.1 Sistema: muestra "La liquidación no está disponible para pagar."
 
+![Figura CU16-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU16.png)
+
 ![Figura CU16-a. Diagrama de clases](diagramas/cu/CU16_clases.svg)
 
 ![Figura CU16-b. Modelo de datos](diagramas/cu/CU16_der.svg)
@@ -482,6 +525,7 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 ### CU17 Presentar reclamo
 
+**Descripción:** Permite al comprador presentar un reclamo sobre un pedido despachado.
 **Actor principal:** Comprador (ciudadano).
 **Precondiciones:** el comprador tiene una orden despachada.
 **Postcondiciones:** queda registrado el reclamo y la liquidación del vendedor queda congelada.
@@ -502,6 +546,8 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 - 3c. La orden no es despachada o no es propia.
   - 3c.1 Sistema: muestra "Solo puede reclamar órdenes despachadas propias."
 
+![Figura CU17-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU17.png)
+
 ![Figura CU17-a. Diagrama de clases](diagramas/cu/CU17_clases.svg)
 
 ![Figura CU17-b. Modelo de datos](diagramas/cu/CU17_der.svg)
@@ -511,6 +557,7 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 ### CU18 Resolver reclamo
 
+**Descripción:** Permite al área comercial resolver un reclamo como procedente o improcedente.
 **Actor principal:** Área comercial.
 **Precondiciones:** existe al menos un reclamo abierto (CU17).
 **Postcondiciones:** el reclamo queda resuelto como procedente o improcedente, y la liquidación se actualiza según la resolución.
@@ -530,6 +577,8 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
   - 3b.1 Sistema: muestra "Seleccione un reclamo."
 - 3c. El reclamo ya no está abierto.
   - 3c.1 Sistema: muestra "El reclamo no está abierto."
+
+![Figura CU18-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU18.png)
 
 ![Figura CU18-a. Diagrama de clases](diagramas/cu/CU18_clases.svg)
 
@@ -574,8 +623,11 @@ Cada caso de uso tiene su secuencia (figuras de CU07 a CU11 arriba).
 
 ### 5. Especificación de casos de uso
 
+![Figura N03-0. Diagrama de casos de uso del proceso N03](diagramas/casos_de_uso_png/N03.png)
+
 ### CU01 Declarar material
 
+**Descripción:** Permite al ciudadano declarar un material y elegir cómo reciclarlo.
 **Actor principal:** Ciudadano.
 **Precondiciones:** el usuario tiene sesión iniciada con el rol CIUDADANO.
 **Postcondiciones:** queda registrada la declaración y su recomendación (reutilizar o entregar).
@@ -601,6 +653,8 @@ Cada caso de uso tiene su secuencia (figuras de CU07 a CU11 arriba).
 - 2b. Usuario presiona "Declarar" sin elegir material.
   - 2b.1 Sistema: muestra "Seleccione un material."
 
+![Figura CU01-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU01.png)
+
 ![Figura CU01-a. Diagrama de clases](diagramas/cu/CU01_clases.svg)
 
 ![Figura CU01-b. Modelo de datos](diagramas/cu/CU01_der.svg)
@@ -610,6 +664,7 @@ Cada caso de uso tiene su secuencia (figuras de CU07 a CU11 arriba).
 
 ### CU02 Registrar recepción de material
 
+**Descripción:** Permite al operador de punto verde registrar el peso recibido y acreditar los Eco-Puntos.
 **Actor principal:** Operador de punto verde.
 **Precondiciones:** el operador tiene sesión iniciada con el rol OPERADOR_PUNTO_VERDE y existe al menos una declaración pendiente en el punto verde.
 **Postcondiciones:** la declaración queda entregada y el ciudadano recibe los Eco-Puntos del peso registrado.
@@ -634,6 +689,8 @@ Cada caso de uso tiene su secuencia (figuras de CU07 a CU11 arriba).
 - 5c. Peso vacío, cero o no numérico.
   - 5c.1 Sistema: muestra "El peso debe ser mayor a cero." o "Peso: ingrese un número válido.".
 
+![Figura CU02-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU02.png)
+
 ![Figura CU02-a. Diagrama de clases](diagramas/cu/CU02_clases.svg)
 
 ![Figura CU02-b. Modelo de datos](diagramas/cu/CU02_der.svg)
@@ -643,6 +700,7 @@ Cada caso de uso tiene su secuencia (figuras de CU07 a CU11 arriba).
 
 ### CU03 Canjear Eco-Puntos
 
+**Descripción:** Permite al ciudadano canjear sus Eco-Puntos por un beneficio.
 **Actor principal:** Ciudadano.
 **Precondiciones:** el usuario tiene sesión iniciada y una cuenta de Eco-Puntos.
 **Postcondiciones:** se descuentan los puntos del beneficio y queda registrado el canje.
@@ -666,6 +724,8 @@ Cada caso de uso tiene su secuencia (figuras de CU07 a CU11 arriba).
   - 5b.1 Sistema: muestra "Saldo insuficiente de Eco-Puntos."
 - 5c. El beneficio dejó de estar disponible.
   - 5c.1 Sistema: muestra "El beneficio no está disponible."
+
+![Figura CU03-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU03.png)
 
 ![Figura CU03-a. Diagrama de clases](diagramas/cu/CU03_clases.svg)
 

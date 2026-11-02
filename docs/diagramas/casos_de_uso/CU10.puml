@@ -1,0 +1,6 @@
+@startuml CU10_caso_de_uso
+left to right direction
+actor "Área comercial" as ACT
+usecase "CU10 Resolver verificación de vendedor" as UC
+ACT -- UC
+@enduml
