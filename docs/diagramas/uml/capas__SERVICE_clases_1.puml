@@ -1,40 +1,7 @@
 @startuml
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
-title Capa SERVICE (parte 1 de 1)
-class "BE_InformeIndicadores" as BE_InformeIndicadores <<BE>> {
-  +Version: string
-  +Periodo: string
-  +FechaGeneracion: DateTime
-  +Generado: string
-}
-class "BE_Perfil" as BE_Perfil <<BE>> {
-  +ID: int
-  +Nombre: string
-  +Descripcion: string
-  +IdPadrePerfil: int?
-  --
-  +AgregarPermiso(BE_Permiso permiso): void
-  +AgregarSubperfil(BE_Perfil subperfil): void
-  +QuitarSubperfil(BE_Perfil subperfil): void
-  +ObtenerPermisosHeredados(): HashSet<BE_Permiso>
-  +ObtenerTodosLosPermisos(): HashSet<BE_Permiso>
-  +TienePermiso(BE_Permiso permiso): bool
-  +TienePermisoPorCodigo(string codigo): bool
-  +ObtenerProfundidad(): int
-  +ContarPermisosTotal(): int
-  +ToString(): string
-}
-class "BE_USUARIO" as BE_USUARIO <<BE>> {
-  +Username: string
-  +HashedPassword: string
-  +ID: int
-  +Bloqueado: bool
-  +DVHorizontal: int
-  +Rol: string
-  --
-  +ToString(): string
-}
+title Capa SERVICE (parte 1 de 3)
 interface "ISV_IdiomaObserver" as ISV_IdiomaObserver <<SERVICE>> {
   +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
 }
@@ -61,79 +28,9 @@ class "SV_Encriptacion" as SV_Encriptacion <<SERVICE>> {
   +EncriptarArchivo(string rutaArchivo): void
   +LeerArchivoDesencriptado(string rutaArchivo): string
 }
-class "SV_GeneradorPdf" as SV_GeneradorPdf <<SERVICE>> {
-  +GenerarTabla(string ruta, string titulo, string subtitulo, string[] columnas, IList<string[]> filas, string pie = null): void
-}
-class "SV_Hash" as SV_Hash <<SERVICE>> {
-  +HashPassword(string password): string
-  +EsHashValido(string storedHash): bool
-  +VerifyPassword(string password, string storedHash): bool
-}
-class "SV_IdiomaManager" as SV_IdiomaManager <<SERVICE>> {
-  +GetInstance(): SV_IdiomaManager
-  +EstablecerProveedorTraduccion(ISV_ProveedorTraduccion proveedor): void
-  +ObtenerIdiomaActual(): string
-  +ObtenerIdiomasSoportados(): List<string>
-  +CambiarIdioma(string codigoIdioma): void
-  +Obtener(string clave): string
-  +Obtener(string clave, params object[] args): string
-  +RegistrarObservador(ISV_IdiomaObserver observador): void
-  +DesregistrarObservador(ISV_IdiomaObserver observador): void
-  +ContarObservadores(): int
-}
-class "SV_IdiomaObserverBase" as SV_IdiomaObserverBase <<SERVICE>> {
-  +ObtenerNombre(): string
-}
-class "SV_Mensajes" as SV_Mensajes <<SERVICE>> {
-  +GetLoginMessage(): string
-  +GetLogoutMessage(): string
-  +GetNewUserMessage(): string
-  +GetUsuarioBloqueadoMessage(): string
-  +GetIntentoFallidoMessage(int intento, int intentosMaximos): string
-  +GetUsuarioBloqueadoPorIntentosMessage(): string
-  +GetErrorIntegridadDatos(): string
-  +GetErrorIntegridadDVH(): string
-  +GetErrorIntegridadDVV(): string
-  +GetVerificacionIntegridadExitosa(): string
-  +Obtener(string clave): string
-  +Obtener(string clave, params object[] args): string
-}
-class "SV_PerfilComposite" as SV_PerfilComposite <<SERVICE>> {
-  +ConstructorArbolPerfiles(List<BE_Perfil> perfilesPlanos): List<BE_Perfil>
-  +VisualizarArbolPerfiles(List<BE_Perfil> raices): string
-  +ObtenerRutaPerfil(BE_Perfil perfil): string
-  +ContarPermisosEnArbol(List<BE_Perfil> raices): int
-  +BuscarPerfilPorNombre(List<BE_Perfil> raices, string nombre): BE_Perfil
-  +ObtenerTodosLosPerfiles(List<BE_Perfil> raices): List<BE_Perfil>
-  +ObtenerProfundidadMaxima(List<BE_Perfil> raices): int
-}
-class "SV_Serializacion" as SV_Serializacion <<SERVICE>> {
-  +GuardarInforme(string ruta, BE_InformeIndicadores informe): void
-  +CargarInforme(string ruta): BE_InformeIndicadores
-}
-class "SV_Singleton" as SV_Singleton <<SERVICE>> {
-  +GetInstance(): SV_Singleton
-  +LimpiarSesion(): void
-}
-BE_InformeIndicadores -[hidden]down- BE_Perfil
-BE_Perfil -[hidden]down- BE_USUARIO
-BE_USUARIO -[hidden]down- ISV_IdiomaObserver
 ISV_IdiomaObserver -[hidden]down- ISV_ProveedorTraduccion
 ISV_ProveedorTraduccion -[hidden]down- SV_ArchivoInvalidoException
-SV_ArchivoInvalidoException -[hidden]down- SV_DigitoVerificadorHorizontal
 SV_DigitoVerificadorHorizontal -[hidden]down- SV_DigitoVerificadorVertical
 SV_DigitoVerificadorVertical -[hidden]down- SV_Encriptacion
-SV_GeneradorPdf -[hidden]down- SV_Hash
-SV_Hash -[hidden]down- SV_IdiomaManager
-SV_IdiomaManager -[hidden]down- SV_IdiomaObserverBase
-SV_IdiomaObserverBase -[hidden]down- SV_Mensajes
-SV_Mensajes -[hidden]down- SV_PerfilComposite
-SV_PerfilComposite -[hidden]down- SV_Serializacion
-SV_Serializacion -[hidden]down- SV_Singleton
-BE_InformeIndicadores -[hidden]right- SV_GeneradorPdf
-SV_IdiomaManager --> ISV_IdiomaObserver
-SV_IdiomaManager --> ISV_ProveedorTraduccion
-SV_PerfilComposite --> BE_Perfil
-SV_Serializacion --> BE_InformeIndicadores
-SV_Singleton "0..*" --> "1" BE_USUARIO : Usuario
+ISV_IdiomaObserver -[hidden]right- SV_DigitoVerificadorHorizontal
 @enduml

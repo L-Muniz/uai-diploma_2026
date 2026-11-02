@@ -1,0 +1,33 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+title Capa BE (parte 7 de 7)
+class "BE_PermisoSimple" as BE_PermisoSimple <<BE>> {
+  +ID: int
+  +Nombre: string
+  +Descripcion: string
+  +Codigo: string
+  --
+  +ObtenerTodosLosPermisos(): HashSet<BE_PermisoSimple>
+  +TienePermiso(BE_PermisoSimple permiso): bool
+  +TienePermisoPorCodigo(string codigo): bool
+  +ToString(): string
+  +Equals(object obj): bool
+  +GetHashCode(): int
+}
+class "BE_VerificacionVendedor" as BE_VerificacionVendedor <<BE>> {
+  +ID: int
+  +IDUsuario: int
+  +Fecha: DateTime
+  +Estado: string
+  +DocumentoRef: string
+}
+interface "I_ComponenteAcceso" as I_ComponenteAcceso <<BE>> {
+  +ObtenerTodosLosPermisos(): HashSet<BE_PermisoSimple>
+  +TienePermiso(BE_PermisoSimple permiso): bool
+  +TienePermisoPorCodigo(string codigo): bool
+}
+BE_PermisoSimple -[hidden]down- BE_VerificacionVendedor
+BE_PermisoSimple -[hidden]right- I_ComponenteAcceso
+I_ComponenteAcceso --> BE_PermisoSimple
+@enduml

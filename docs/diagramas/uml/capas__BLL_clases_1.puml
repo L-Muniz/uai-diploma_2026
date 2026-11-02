@@ -1,7 +1,7 @@
 @startuml
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
-title Capa BLL (parte 1 de 2)
+title Capa BLL (parte 1 de 5)
 class "BE_BITACORA" as BE_BITACORA <<BE>> {
   +ID: int
   +Descripcion: string
@@ -31,29 +31,6 @@ class "BE_CambiosEntidad" as BE_CambiosEntidad <<BE>> {
   --
   +ToString(): string
 }
-class "BE_ComponenteAcceso" as BE_ComponenteAcceso <<BE>> {
-  +ID: int
-  +Tipo: string
-  +Nombre: string
-  +Codigo: string
-  +Descripcion: string
-  +EsHeredado: bool
-  +Origen: string
-  +EsPermiso: bool
-  +EsRol: bool
-  +EsPerfil: bool
-  +SePuedeDesasignar: bool
-  +ProvieneDePerfil: bool
-  +ProvieneDeRolPadre: bool
-  +OrigenDirecto: string
-  +Etiqueta: string
-  --
-  +OrigenDesdePerfil(string nombrePerfil): string
-  +OrigenDesdePerfiles(IList<string> nombresPerfil): string
-  +OrigenDesdeRolPadre(string nombreRolPadre): string
-  +CombinarOrigenes(IList<string> origenes): string
-  +ToString(): string
-}
 class "BE_DatosUsuario" as BE_DatosUsuario <<BE>> {
   +IDUsuario: int
   +FechaNacimiento: DateTime?
@@ -61,28 +38,11 @@ class "BE_DatosUsuario" as BE_DatosUsuario <<BE>> {
   +Longitud: decimal?
   +Localidad: string
 }
-class "BE_DigitoVerificadorVertical" as BE_DigitoVerificadorVertical <<BE>> {
-  +ID: int
-  +IdEntidad: int
-  +TipoEntidad: string
-  +DVUsername: int
-  +DVHashedPassword: int
-  +DVBloqueado: int
-  +FechaCreacion: DateTime
-  --
-  +ToString(): string
-}
 class "BE_GuiaReutilizacion" as BE_GuiaReutilizacion <<BE>> {
   +ID: int
   +Titulo: string
   +Pasos: string
   +Dificultad: string
-}
-class "BE_Idioma" as BE_Idioma <<BE>> {
-  +Codigo: string
-  +Nombre: string
-  --
-  +ToString(): string
 }
 class "BE_Material" as BE_Material <<BE>> {
   +ID: int
@@ -90,58 +50,6 @@ class "BE_Material" as BE_Material <<BE>> {
   +Categoria: string
   +UnidadMedida: string
   --
-  +ToString(): string
-}
-class "BE_Perfil" as BE_Perfil <<BE>> {
-  +ID: int
-  +Nombre: string
-  +Descripcion: string
-  +IdPadrePerfil: int?
-  --
-  +AgregarPermiso(BE_Permiso permiso): void
-  +AgregarSubperfil(BE_Perfil subperfil): void
-  +QuitarSubperfil(BE_Perfil subperfil): void
-  +ObtenerPermisosHeredados(): HashSet<BE_Permiso>
-  +ObtenerTodosLosPermisos(): HashSet<BE_Permiso>
-  +TienePermiso(BE_Permiso permiso): bool
-  +TienePermisoPorCodigo(string codigo): bool
-  +ObtenerProfundidad(): int
-  +ContarPermisosTotal(): int
-  +ToString(): string
-}
-class "BE_Permiso" as BE_Permiso <<BE>> {
-  +ID: int
-  +Nombre: string
-  +Descripcion: string
-  +Codigo: string
-  +EsCompuesto: bool
-  --
-  +ToString(): string
-  +Equals(object obj): bool
-  +GetHashCode(): int
-}
-class "BE_PuntoVerde" as BE_PuntoVerde <<BE>> {
-  +ID: int
-  +Nombre: string
-  +Direccion: string
-  +Latitud: decimal?
-  +Longitud: decimal?
-  +Horario: string
-  +Activo: bool
-  --
-  +ToString(): string
-}
-class "BE_Rol" as BE_Rol <<BE>> {
-  +ID: int
-  +Nombre: string
-  +Descripcion: string
-  --
-  +AgregarComponente(I_ComponenteAcceso componente): void
-  +QuitarComponente(I_ComponenteAcceso componente): void
-  +ObtenerTodosLosPermisos(): HashSet<BE_PermisoSimple>
-  +TienePermiso(BE_PermisoSimple permiso): bool
-  +TienePermisoPorCodigo(string codigo): bool
-  +ContarPermisosTotal(): int
   +ToString(): string
 }
 class "BE_USUARIO" as BE_USUARIO <<BE>> {
@@ -213,135 +121,21 @@ class "BLL_DATOS_USUARIO" as BLL_DATOS_USUARIO <<BLL>> {
   +EdadEn(DateTime nacimiento): int
   +DistanciaKm(double lat1, double lon1, double lat2, double lon2): double
 }
-class "BLL_ECOPUNTOS" as BLL_ECOPUNTOS <<BLL>> {
-  +ObtenerSaldo(int idUsuario): int
-  +ListarMovimientos(int idUsuario): DataTable
-  +ListarBeneficios(): DataTable
-  +ListarCanjes(int idUsuario): DataTable
-  +Acreditar(int idUsuario, int puntos, string tipo, string motivo): int
-  +Canjear(BE_USUARIO usuario, int idBeneficio): int
-}
-class "BLL_ESTADISTICAS" as BLL_ESTADISTICAS <<BLL>> {
-  +Resumen(BE_USUARIO vendedor, DateTime desde, DateTime hasta): DataTable
-  +VentasPorProducto(BE_USUARIO vendedor, DateTime desde, DateTime hasta): DataTable
-}
-class "BLL_GESTION" as BLL_GESTION <<BLL>> {
-  +ListarMateriales(): DataTable
-  +ListarPuntosVerdes(): DataTable
-  +ListarMaterialesAceptados(int idPuntoVerde): DataTable
-  +ListarTarifas(): DataTable
-  +ListarConversiones(): DataTable
-  +ConsultarIndicadores(BE_USUARIO usuario, string periodo): DataTable
-  +GuardarPuntoVerde(BE_USUARIO usuario, BE_PuntoVerde pv, List<int> materiales, bool validadoPorReferente): int
-  +ProponerTarifa(BE_USUARIO usuario, string categoria, decimal porcentaje): int
-  +ProponerConversion(BE_USUARIO usuario, int idMaterial, decimal puntosPorKg): int
-}
-class "BLL_GESTOR" as BLL_GESTOR <<BLL>> {
-  +HashPassword(string password): string
-  +VerifyPassword(string password, string storedHash): bool
-  +EsHashValido(string storedHash): bool
-}
-class "BLL_Idioma" as BLL_Idioma <<BLL>> {
-  +ObtenerIdiomas(): List<BE_Idioma>
-  +ObtenerIdiomasDisponibles(): List<string>
-  +ObtenerTraduccion(string clave, string codigoIdioma): string
-  +AgregarIdioma(string codigo, string nombre): bool
-  +ObtenerTodasLasClaves(): List<string>
-  +AgregarTraduccion(string clave, string codigoIdioma, string valor): bool
-}
-class "BLL_IntegridadDatos" as BLL_IntegridadDatos <<BLL>> {
-  +CalcularDVHUsuario(BE_USUARIO usuario): void
-  +VerificarIntegridadDVHUsuario(BE_USUARIO usuario): bool
-  +CalcularDVVUsuario(BE_USUARIO usuario): BE_DigitoVerificadorVertical
-  +PersistirDVVUsuario(BE_DigitoVerificadorVertical dvv): void
-  +VerificarIntegridadDVVUsuario(BE_USUARIO usuario, BE_DigitoVerificadorVertical dvv): bool
-  +CalcularDVHRol(BE_Rol rol): void
-  +VerificarIntegridadDVHRol(BE_Rol rol): bool
-}
-class "BLL_MARKETPLACE" as BLL_MARKETPLACE <<BLL>> {
-  +SolicitarVerificacion(BE_USUARIO usuario, string documentoRef): void
-  +ListarSolicitudesVerificacion(): DataTable
-  +ResolverVerificacion(BE_USUARIO responsable, int idUsuarioSolicitante, bool aprobada): void
-  +ObtenerEstadoVerificacion(int idUsuario): string
-  +EsVendedorVerificado(int idUsuario): bool
-  +PublicarProducto(BE_USUARIO vendedor, string nombre, string descripcion, string categoria, decimal precio, int stock): int
-  +ModificarProducto(BE_USUARIO vendedor, int idProducto, decimal precio, int stock): void
-  +ObtenerComisionEstimada(string categoria): decimal
-  +ListarProductosPendientes(): DataTable
-  +AprobarProducto(BE_USUARIO responsable, int idProducto): void
-  +ListarCatalogo(): DataTable
-  +ListarProductosDeVendedor(int idVendedor): DataTable
-  +Comprar(BE_USUARIO comprador, int idProducto, int cantidad, string direccion, IPasarelaPago pasarela): int
-  +ListarOrdenesComprador(int idComprador): DataTable
-  +ListarOrdenesVendedor(int idVendedor): DataTable
-  +MarcarDespachada(BE_USUARIO vendedor, int idOrden): void
-  +ConfirmarRecepcion(BE_USUARIO comprador, int idOrden): void
-  +ListarLiquidaciones(string estado): DataTable
-  +ListarLiquidacionesDeVendedor(int idVendedor): DataTable
-  +PagarLiquidacion(BE_USUARIO responsable, int idLiquidacion): void
-  +PresentarReclamo(BE_USUARIO comprador, int idOrden, string motivo): int
-  +ListarReclamosAbiertos(): DataTable
-  +ResolverReclamo(BE_USUARIO responsable, int idReclamo, bool procedente): void
-}
-class "BLL_PERFIL" as BLL_PERFIL <<BLL>> {
-  +ObtenerPerfilesPrincipales(): List<BE_Perfil>
-  +ObtenerTodosLosPerfiles(): List<BE_Perfil>
-  +ObtenerPerfilesHijos(int idPerfilPadre): List<BE_Perfil>
-  +ObtenerPermisosDelPerfil(int idPerfil): List<BE_Permiso>
-  +ObtenerTodosLosPermisos(): List<BE_Permiso>
-  +ObtenerPermisosConHerencia(int idPerfil): List<BE_Permiso>
-  +ObtenerComponentesDelPerfil(int idPerfil): List<BE_ComponenteAcceso>
-  +ObtenerComponentesDisponiblesParaAsignar(int idPerfil): List<BE_ComponenteAcceso>
-  +FormariaReferenciaCircular(int idPerfil, int? idNuevoPadre): bool
-  +ValidarAsignacionPadre(int idPerfil, int? idNuevoPadre): void
-  +CrearPerfil(string nombre, string descripcion): void
-  +CrearPerfil(BE_Perfil perfil): void
-  +ActualizarPerfil(BE_Perfil perfil): void
-  +AsignarSubPerfil(int idPerfilPadre, int idPerfilHijo): void
-  +DesasignarSubPerfil(int idPerfilPadre, int idPerfilHijo): void
-  +AsignarComponente(int idPerfil, BE_ComponenteAcceso componente): void
-  +DesasignarComponente(int idPerfil, BE_ComponenteAcceso componente): void
-  +EliminarPerfil(int idPerfil): void
-  +AgregarPermisoAlPerfil(int idPerfil, int idPermiso): void
-  +QuitarPermisoDelPerfil(int idPerfil, int idPermiso): void
-  +ObtenerPerfilesCandidatosComoPadre(int idPerfilHijo): List<BE_Perfil>
-}
-interface "IPasarelaPago" as IPasarelaPago <<BLL>> {
-  +Cobrar(decimal monto, string referencia): ResultadoCobro
-}
 BE_BITACORA -[hidden]down- BE_Beneficio
 BE_Beneficio -[hidden]down- BE_CambiosEntidad
-BE_CambiosEntidad -[hidden]down- BE_ComponenteAcceso
-BE_ComponenteAcceso -[hidden]down- BE_DatosUsuario
-BE_DatosUsuario -[hidden]down- BE_DigitoVerificadorVertical
-BE_DigitoVerificadorVertical -[hidden]down- BE_GuiaReutilizacion
-BE_GuiaReutilizacion -[hidden]down- BE_Idioma
-BE_Idioma -[hidden]down- BE_Material
-BE_Material -[hidden]down- BE_Perfil
-BE_Perfil -[hidden]down- BE_Permiso
-BE_Permiso -[hidden]down- BE_PuntoVerde
-BE_PuntoVerde -[hidden]down- BE_Rol
-BE_Rol -[hidden]down- BE_USUARIO
-BE_USUARIO -[hidden]down- BLL_AUTORIZACION
+BE_CambiosEntidad -[hidden]down- BE_DatosUsuario
+BE_DatosUsuario -[hidden]down- BE_GuiaReutilizacion
+BE_GuiaReutilizacion -[hidden]down- BE_Material
+BE_Material -[hidden]down- BE_USUARIO
+BLL_AUTORIZACION -[hidden]down- BLL_BITACORA
 BLL_BITACORA -[hidden]down- BLL_BackupRestore
 BLL_BackupRestore -[hidden]down- BLL_CATALOGO
 BLL_CATALOGO -[hidden]down- BLL_ControlCambios
 BLL_ControlCambios -[hidden]down- BLL_DATOS_USUARIO
-BLL_DATOS_USUARIO -[hidden]down- BLL_ECOPUNTOS
-BLL_ECOPUNTOS -[hidden]down- BLL_ESTADISTICAS
-BLL_ESTADISTICAS -[hidden]down- BLL_GESTION
-BLL_GESTION -[hidden]down- BLL_GESTOR
-BLL_GESTOR -[hidden]down- BLL_Idioma
-BLL_Idioma -[hidden]down- BLL_IntegridadDatos
-BLL_IntegridadDatos -[hidden]down- BLL_MARKETPLACE
-BLL_MARKETPLACE -[hidden]down- BLL_PERFIL
-BLL_PERFIL -[hidden]down- IPasarelaPago
-BE_BITACORA -[hidden]right- BLL_BITACORA
+BE_BITACORA -[hidden]right- BLL_AUTORIZACION
 BE_BITACORA "0..*" --> "1" BE_USUARIO : Usuario
 BE_CambiosEntidad "0..*" --> "1" BE_USUARIO : UsuarioModifico
 BE_GuiaReutilizacion "0..*" --> "1" BE_Material : Material
-BE_Perfil "1" o-- "0..*" BE_Permiso : Permisos
-BE_PuntoVerde "1" o-- "0..*" BE_Material : MaterialesAceptados
 BLL_AUTORIZACION --> BE_USUARIO
 BLL_BITACORA --> BE_BITACORA
 BLL_BITACORA --> BE_USUARIO
@@ -353,17 +147,4 @@ BLL_ControlCambios --> BE_CambiosEntidad
 BLL_ControlCambios --> BE_USUARIO
 BLL_DATOS_USUARIO --> BE_DatosUsuario
 BLL_DATOS_USUARIO --> BE_USUARIO
-BLL_ECOPUNTOS --> BE_USUARIO
-BLL_ESTADISTICAS --> BE_USUARIO
-BLL_GESTION --> BE_PuntoVerde
-BLL_GESTION --> BE_USUARIO
-BLL_Idioma --> BE_Idioma
-BLL_IntegridadDatos --> BE_DigitoVerificadorVertical
-BLL_IntegridadDatos --> BE_Rol
-BLL_IntegridadDatos --> BE_USUARIO
-BLL_MARKETPLACE --> BE_USUARIO
-BLL_MARKETPLACE --> IPasarelaPago
-BLL_PERFIL --> BE_ComponenteAcceso
-BLL_PERFIL --> BE_Perfil
-BLL_PERFIL --> BE_Permiso
 @enduml

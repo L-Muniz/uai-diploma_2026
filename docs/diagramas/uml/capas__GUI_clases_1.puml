@@ -1,7 +1,7 @@
 @startuml
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
-title Capa GUI (parte 1 de 3)
+title Capa GUI (parte 1 de 7)
 class "Bitacora" as Bitacora <<GUI>> {
   +ID: int
   +Usuario: string
@@ -29,38 +29,9 @@ class "FormAyuda" as FormAyuda <<GUI>> {
 class "FormBackups" as FormBackups <<GUI>> {
   +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
 }
-class "FormBeneficios" as FormBeneficios <<GUI>> {
-}
-class "FormCambiarIdioma" as FormCambiarIdioma <<GUI>> {
-}
-class "FormCanjeEcoPuntos" as FormCanjeEcoPuntos <<GUI>> {
-}
-class "FormCompraMarketplace" as FormCompraMarketplace <<GUI>> {
-}
-class "FormDeclararMaterial" as FormDeclararMaterial <<GUI>> {
-}
-class "FormEstadisticasVentas" as FormEstadisticasVentas <<GUI>> {
-}
-class "FormGestionUsuarios" as FormGestionUsuarios <<GUI>> {
-  +ID: int
-  +Nombre: string
-  +Etiqueta: string
-  --
-  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
-}
-class "FormGuias" as FormGuias <<GUI>> {
-}
 Bitacora -[hidden]down- DataGridViewSortHelper
 DataGridViewSortHelper -[hidden]down- FormAgregarIdioma
-FormAgregarIdioma -[hidden]down- FormAuditoria
 FormAuditoria -[hidden]down- FormAyuda
 FormAyuda -[hidden]down- FormBackups
-FormBackups -[hidden]down- FormBeneficios
-FormCambiarIdioma -[hidden]down- FormCanjeEcoPuntos
-FormCanjeEcoPuntos -[hidden]down- FormCompraMarketplace
-FormCompraMarketplace -[hidden]down- FormDeclararMaterial
-FormDeclararMaterial -[hidden]down- FormEstadisticasVentas
-FormEstadisticasVentas -[hidden]down- FormGestionUsuarios
-FormGestionUsuarios -[hidden]down- FormGuias
-Bitacora -[hidden]right- FormCambiarIdioma
+Bitacora -[hidden]right- FormAuditoria
 @enduml

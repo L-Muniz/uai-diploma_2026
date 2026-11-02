@@ -1,35 +1,69 @@
 @startuml
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
-title Capa BE (parte 2 de 3)
-class "BE_IndicadorItem" as BE_IndicadorItem <<BE>> {
+title Capa BE (parte 2 de 7)
+class "BE_ComponenteAcceso" as BE_ComponenteAcceso <<BE>> {
+  +ID: int
+  +Tipo: string
   +Nombre: string
-  +Valor: string
+  +Codigo: string
+  +Descripcion: string
+  +EsHeredado: bool
+  +Origen: string
+  +EsPermiso: bool
+  +EsRol: bool
+  +EsPerfil: bool
+  +SePuedeDesasignar: bool
+  +ProvieneDePerfil: bool
+  +ProvieneDeRolPadre: bool
+  +OrigenDirecto: string
+  +Etiqueta: string
+  --
+  +OrigenDesdePerfil(string nombrePerfil): string
+  +OrigenDesdePerfiles(IList<string> nombresPerfil): string
+  +OrigenDesdeRolPadre(string nombreRolPadre): string
+  +CombinarOrigenes(IList<string> origenes): string
+  +ToString(): string
 }
-class "BE_InformeGestion" as BE_InformeGestion <<BE>> {
+class "BE_CuentaEcoPuntos" as BE_CuentaEcoPuntos <<BE>> {
   +ID: int
   +IDUsuario: int
-  +Tipo: string
-  +Periodo: string
-  +FechaGeneracion: DateTime
+  +Saldo: int
+  +Nivel: int
 }
-class "BE_InformeIndicadores" as BE_InformeIndicadores <<BE>> {
-  +Version: string
-  +Periodo: string
-  +FechaGeneracion: DateTime
-  +Generado: string
+class "BE_DatosUsuario" as BE_DatosUsuario <<BE>> {
+  +IDUsuario: int
+  +FechaNacimiento: DateTime?
+  +Latitud: decimal?
+  +Longitud: decimal?
+  +Localidad: string
 }
-class "BE_ItemOrden" as BE_ItemOrden <<BE>> {
-  +Cantidad: int
-  +PrecioUnitario: decimal
-}
-class "BE_LiquidacionVendedor" as BE_LiquidacionVendedor <<BE>> {
+class "BE_Decision" as BE_Decision <<BE>> {
   +ID: int
-  +IDOrden: int
-  +MontoNeto: decimal
+  +IDInforme: int?
+  +IDUsuario: int
+  +IDPuntoVerde: int?
+  +Tipo: string
+  +Descripcion: string
+  +Fecha: DateTime
+}
+class "BE_DeclaracionMaterial" as BE_DeclaracionMaterial <<BE>> {
+  +ID: int
+  +IDUsuario: int
+  +Cantidad: decimal
+  +Fecha: DateTime
   +Estado: string
-  +FechaDisponible: DateTime?
-  +FechaPago: DateTime?
+}
+class "BE_DigitoVerificadorVertical" as BE_DigitoVerificadorVertical <<BE>> {
+  +ID: int
+  +IdEntidad: int
+  +TipoEntidad: string
+  +DVUsername: int
+  +DVHashedPassword: int
+  +DVBloqueado: int
+  +FechaCreacion: DateTime
+  --
+  +ToString(): string
 }
 class "BE_Material" as BE_Material <<BE>> {
   +ID: int
@@ -39,124 +73,11 @@ class "BE_Material" as BE_Material <<BE>> {
   --
   +ToString(): string
 }
-class "BE_MovimientoEcoPuntos" as BE_MovimientoEcoPuntos <<BE>> {
-  +ID: int
-  +IDCuenta: int
-  +Tipo: string
-  +Puntos: int
-  +Fecha: DateTime
-  +Motivo: string
-}
-class "BE_OrdenVenta" as BE_OrdenVenta <<BE>> {
-  +ID: int
-  +IDComprador: int
-  +IDVendedor: int
-  +Fecha: DateTime
-  +Estado: string
-  +MontoBruto: decimal
-  +DireccionEnvio: string
-}
-class "BE_Pago" as BE_Pago <<BE>> {
-  +ID: int
-  +IDOrden: int
-  +ReferenciaPasarela: string
-  +Monto: decimal
-  +Estado: string
-  +Fecha: DateTime
-}
-class "BE_Perfil" as BE_Perfil <<BE>> {
-  +ID: int
-  +Nombre: string
-  +Descripcion: string
-  +IdPadrePerfil: int?
-  --
-  +AgregarPermiso(BE_Permiso permiso): void
-  +AgregarSubperfil(BE_Perfil subperfil): void
-  +QuitarSubperfil(BE_Perfil subperfil): void
-  +ObtenerPermisosHeredados(): HashSet<BE_Permiso>
-  +ObtenerTodosLosPermisos(): HashSet<BE_Permiso>
-  +TienePermiso(BE_Permiso permiso): bool
-  +TienePermisoPorCodigo(string codigo): bool
-  +ObtenerProfundidad(): int
-  +ContarPermisosTotal(): int
-  +ToString(): string
-}
-class "BE_Permiso" as BE_Permiso <<BE>> {
-  +ID: int
-  +Nombre: string
-  +Descripcion: string
-  +Codigo: string
-  +EsCompuesto: bool
-  --
-  +ToString(): string
-  +Equals(object obj): bool
-  +GetHashCode(): int
-}
-class "BE_PermisoCompuesto" as BE_PermisoCompuesto <<BE>> {
-  +ID: int
-  +Nombre: string
-  +Descripcion: string
-  +Codigo: string
-  --
-  +AgregarComponente(I_ComponenteAcceso componente): void
-  +QuitarComponente(I_ComponenteAcceso componente): void
-  +ObtenerTodosLosPermisos(): HashSet<BE_PermisoSimple>
-  +TienePermiso(BE_PermisoSimple permiso): bool
-  +TienePermisoPorCodigo(string codigo): bool
-  +ToString(): string
-  +Equals(object obj): bool
-  +GetHashCode(): int
-}
-class "BE_PermisoSimple" as BE_PermisoSimple <<BE>> {
-  +ID: int
-  +Nombre: string
-  +Descripcion: string
-  +Codigo: string
-  --
-  +ObtenerTodosLosPermisos(): HashSet<BE_PermisoSimple>
-  +TienePermiso(BE_PermisoSimple permiso): bool
-  +TienePermisoPorCodigo(string codigo): bool
-  +ToString(): string
-  +Equals(object obj): bool
-  +GetHashCode(): int
-}
-class "BE_Producto" as BE_Producto <<BE>> {
-  +ID: int
-  +IDVendedor: int
-  +IDTarifa: int?
-  +Nombre: string
-  +Descripcion: string
-  +Categoria: string
-  +Precio: decimal
-  +Stock: int
-  +Estado: string
-  --
-  +ToString(): string
-}
-interface "I_ComponenteAcceso" as I_ComponenteAcceso <<BE>> {
-  +ObtenerTodosLosPermisos(): HashSet<BE_PermisoSimple>
-  +TienePermiso(BE_PermisoSimple permiso): bool
-  +TienePermisoPorCodigo(string codigo): bool
-}
-BE_IndicadorItem -[hidden]down- BE_InformeGestion
-BE_InformeGestion -[hidden]down- BE_InformeIndicadores
-BE_InformeIndicadores -[hidden]down- BE_ItemOrden
-BE_ItemOrden -[hidden]down- BE_LiquidacionVendedor
-BE_LiquidacionVendedor -[hidden]down- BE_Material
-BE_Material -[hidden]down- BE_MovimientoEcoPuntos
-BE_MovimientoEcoPuntos -[hidden]down- BE_OrdenVenta
-BE_Pago -[hidden]down- BE_Perfil
-BE_Perfil -[hidden]down- BE_Permiso
-BE_Permiso -[hidden]down- BE_PermisoCompuesto
-BE_PermisoCompuesto -[hidden]down- BE_PermisoSimple
-BE_PermisoSimple -[hidden]down- BE_Producto
-BE_Producto -[hidden]down- I_ComponenteAcceso
-BE_IndicadorItem -[hidden]right- BE_Pago
-BE_InformeIndicadores "1" *-- "0..*" BE_IndicadorItem : Indicadores
-BE_ItemOrden "0..*" --> "1" BE_Producto : Producto
-BE_OrdenVenta "1" *-- "0..*" BE_ItemOrden : Items
-BE_Perfil "1" o-- "0..*" BE_Permiso : Permisos
-BE_PermisoCompuesto "1" *-- "0..*" I_ComponenteAcceso : Componentes
-BE_PermisoCompuesto --> BE_PermisoSimple
-I_ComponenteAcceso --> BE_PermisoSimple
+BE_ComponenteAcceso -[hidden]down- BE_CuentaEcoPuntos
+BE_CuentaEcoPuntos -[hidden]down- BE_DatosUsuario
+BE_DatosUsuario -[hidden]down- BE_Decision
+BE_DeclaracionMaterial -[hidden]down- BE_DigitoVerificadorVertical
+BE_DigitoVerificadorVertical -[hidden]down- BE_Material
+BE_ComponenteAcceso -[hidden]right- BE_DeclaracionMaterial
+BE_DeclaracionMaterial "0..*" --> "1" BE_Material : Material
 @enduml

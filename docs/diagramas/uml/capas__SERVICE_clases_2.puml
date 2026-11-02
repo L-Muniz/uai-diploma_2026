@@ -1,0 +1,86 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+title Capa SERVICE (parte 2 de 3)
+class "BE_Perfil" as BE_Perfil <<BE>> {
+  +ID: int
+  +Nombre: string
+  +Descripcion: string
+  +IdPadrePerfil: int?
+  --
+  +AgregarPermiso(BE_Permiso permiso): void
+  +AgregarSubperfil(BE_Perfil subperfil): void
+  +QuitarSubperfil(BE_Perfil subperfil): void
+  +ObtenerPermisosHeredados(): HashSet<BE_Permiso>
+  +ObtenerTodosLosPermisos(): HashSet<BE_Permiso>
+  +TienePermiso(BE_Permiso permiso): bool
+  +TienePermisoPorCodigo(string codigo): bool
+  +ObtenerProfundidad(): int
+  +ContarPermisosTotal(): int
+  +ToString(): string
+}
+interface "ISV_IdiomaObserver" as ISV_IdiomaObserver <<SERVICE>> {
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+interface "ISV_ProveedorTraduccion" as ISV_ProveedorTraduccion <<SERVICE>> {
+  +ObtenerTraduccion(string clave, string codigoIdioma): string
+  +ObtenerIdiomasDisponibles(): List<string>
+}
+class "SV_GeneradorPdf" as SV_GeneradorPdf <<SERVICE>> {
+  +GenerarTabla(string ruta, string titulo, string subtitulo, string[] columnas, IList<string[]> filas, string pie = null): void
+}
+class "SV_Hash" as SV_Hash <<SERVICE>> {
+  +HashPassword(string password): string
+  +EsHashValido(string storedHash): bool
+  +VerifyPassword(string password, string storedHash): bool
+}
+class "SV_IdiomaManager" as SV_IdiomaManager <<SERVICE>> {
+  +GetInstance(): SV_IdiomaManager
+  +EstablecerProveedorTraduccion(ISV_ProveedorTraduccion proveedor): void
+  +ObtenerIdiomaActual(): string
+  +ObtenerIdiomasSoportados(): List<string>
+  +CambiarIdioma(string codigoIdioma): void
+  +Obtener(string clave): string
+  +Obtener(string clave, params object[] args): string
+  +RegistrarObservador(ISV_IdiomaObserver observador): void
+  +DesregistrarObservador(ISV_IdiomaObserver observador): void
+  +ContarObservadores(): int
+}
+class "SV_IdiomaObserverBase" as SV_IdiomaObserverBase <<SERVICE>> {
+  +ObtenerNombre(): string
+}
+class "SV_Mensajes" as SV_Mensajes <<SERVICE>> {
+  +GetLoginMessage(): string
+  +GetLogoutMessage(): string
+  +GetNewUserMessage(): string
+  +GetUsuarioBloqueadoMessage(): string
+  +GetIntentoFallidoMessage(int intento, int intentosMaximos): string
+  +GetUsuarioBloqueadoPorIntentosMessage(): string
+  +GetErrorIntegridadDatos(): string
+  +GetErrorIntegridadDVH(): string
+  +GetErrorIntegridadDVV(): string
+  +GetVerificacionIntegridadExitosa(): string
+  +Obtener(string clave): string
+  +Obtener(string clave, params object[] args): string
+}
+class "SV_PerfilComposite" as SV_PerfilComposite <<SERVICE>> {
+  +ConstructorArbolPerfiles(List<BE_Perfil> perfilesPlanos): List<BE_Perfil>
+  +VisualizarArbolPerfiles(List<BE_Perfil> raices): string
+  +ObtenerRutaPerfil(BE_Perfil perfil): string
+  +ContarPermisosEnArbol(List<BE_Perfil> raices): int
+  +BuscarPerfilPorNombre(List<BE_Perfil> raices, string nombre): BE_Perfil
+  +ObtenerTodosLosPerfiles(List<BE_Perfil> raices): List<BE_Perfil>
+  +ObtenerProfundidadMaxima(List<BE_Perfil> raices): int
+}
+BE_Perfil -[hidden]down- ISV_IdiomaObserver
+ISV_IdiomaObserver -[hidden]down- ISV_ProveedorTraduccion
+ISV_ProveedorTraduccion -[hidden]down- SV_GeneradorPdf
+SV_GeneradorPdf -[hidden]down- SV_Hash
+SV_IdiomaManager -[hidden]down- SV_IdiomaObserverBase
+SV_IdiomaObserverBase -[hidden]down- SV_Mensajes
+SV_Mensajes -[hidden]down- SV_PerfilComposite
+BE_Perfil -[hidden]right- SV_IdiomaManager
+SV_IdiomaManager --> ISV_IdiomaObserver
+SV_IdiomaManager --> ISV_ProveedorTraduccion
+SV_PerfilComposite --> BE_Perfil
+@enduml

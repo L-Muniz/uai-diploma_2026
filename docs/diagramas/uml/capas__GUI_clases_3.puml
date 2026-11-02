@@ -1,100 +1,28 @@
 @startuml
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
-title Capa GUI (parte 3 de 3)
-class "BE_USUARIO" as BE_USUARIO <<BE>> {
-  +Username: string
-  +HashedPassword: string
+title Capa GUI (parte 3 de 7)
+class "FormGestionUsuarios" as FormGestionUsuarios <<GUI>> {
   +ID: int
-  +Bloqueado: bool
-  +DVHorizontal: int
-  +Rol: string
+  +Nombre: string
+  +Etiqueta: string
   --
-  +ToString(): string
-}
-class "FormUnico" as FormUnico <<GUI>> {
-}
-class "FormVerificacionVendedor" as FormVerificacionVendedor <<GUI>> {
-}
-class "ItemLista" as ItemLista <<GUI>> {
-  +ID: int
-  +Texto: string
-  --
-  +ToString(): string
-}
-class "LogInOut" as LogInOut <<GUI>> {
-  +ObtenerTraduccion(string clave, string codigoIdioma): string
-  +ObtenerIdiomasDisponibles(): List<string>
   +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
 }
-class "MainForm" as MainForm <<GUI>> {
-  +ObtenerUsuario(): BE_USUARIO
+class "FormGuias" as FormGuias <<GUI>> {
+}
+class "FormIndicadores" as FormIndicadores <<GUI>> {
+}
+class "FormIntegridad" as FormIntegridad <<GUI>> {
   +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
 }
-class "ManejoErrores" as ManejoErrores <<GUI>> {
-  +MostrarError(Exception ex): void
+class "FormLiquidacion" as FormLiquidacion <<GUI>> {
 }
-class "Register" as Register <<GUI>> {
-  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+class "FormMateriales" as FormMateriales <<GUI>> {
 }
-class "SortableBindingList" as SortableBindingList <<GUI>> {
-}
-class "UIHelper" as UIHelper <<GUI>> {
-  +ID: int
-  +Texto: string
-  --
-  +ToString(): string
-  +CargarRecurso(string nombre): Image
-  +Informar(string mensaje): void
-  +Error(Exception ex): void
-  +Confirmar(string pregunta): bool
-  +LeerDecimal(string texto, string nombreCampo): decimal
-  +CargarCombo(ComboBox combo, DataTable datos, string campoMostrar, string campoValor): void
-  +CargarGrilla(DataGridView grilla, DataTable datos): void
-  +ValorId(DataGridViewRow fila, string columna): int?
-}
-class "UITheme" as UITheme <<GUI>> {
-  +FondoApp: Color
-  +FondoPanel: Color
-  +FondoTarjeta: Color
-  +Acento: Color
-  +AcentoOscuro: Color
-  +AcentoClaro: Color
-  +Texto: Color
-  +TextoSuave: Color
-  +Borde: Color
-  +GridHeader: Color
-  +GridAlt: Color
-  +GridLinea: Color
-  +Seleccion: Color
-  +MenuFondo: Color
-  +MenuTexto: Color
-  +BotonDeshabilitadoFondo: Color
-  +BotonDeshabilitadoTexto: Color
-  +BotonDeshabilitadoBorde: Color
-  +FuenteNormal: Font
-  +FuenteTitulo: Font
-  +FuenteMenu: Font
-  +AcentoRoles: Color
-  +FondoRoles: Color
-  +AcentoPerfiles: Color
-  +FondoPerfiles: Color
-  --
-  +Aplicar(Form form): void
-  +DiferenciarModulo(Panel panelBotones, Panel panelIzquierdo, string titulo, string subtitulo, Color acento, Color fondoSuave, params Button[] botonesAccion): void
-  +AplicarLogin(Form form): void
-  +EstilizarGrid(DataGridView grid): void
-  +EstilizarMenu(MenuStrip menu): void
-}
-BE_USUARIO -[hidden]down- FormUnico
-FormUnico -[hidden]down- FormVerificacionVendedor
-FormVerificacionVendedor -[hidden]down- ItemLista
-ItemLista -[hidden]down- LogInOut
-LogInOut -[hidden]down- MainForm
-ManejoErrores -[hidden]down- Register
-Register -[hidden]down- SortableBindingList
-SortableBindingList -[hidden]down- UIHelper
-UIHelper -[hidden]down- UITheme
-BE_USUARIO -[hidden]right- ManejoErrores
-MainForm --> BE_USUARIO
+FormGestionUsuarios -[hidden]down- FormGuias
+FormGuias -[hidden]down- FormIndicadores
+FormIntegridad -[hidden]down- FormLiquidacion
+FormLiquidacion -[hidden]down- FormMateriales
+FormGestionUsuarios -[hidden]right- FormIntegridad
 @enduml

@@ -1,0 +1,87 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+title Capa BE (parte 4 de 7)
+class "BE_ItemOrden" as BE_ItemOrden <<BE>> {
+  +Cantidad: int
+  +PrecioUnitario: decimal
+}
+class "BE_LiquidacionVendedor" as BE_LiquidacionVendedor <<BE>> {
+  +ID: int
+  +IDOrden: int
+  +MontoNeto: decimal
+  +Estado: string
+  +FechaDisponible: DateTime?
+  +FechaPago: DateTime?
+}
+class "BE_Material" as BE_Material <<BE>> {
+  +ID: int
+  +Nombre: string
+  +Categoria: string
+  +UnidadMedida: string
+  --
+  +ToString(): string
+}
+class "BE_MovimientoEcoPuntos" as BE_MovimientoEcoPuntos <<BE>> {
+  +ID: int
+  +IDCuenta: int
+  +Tipo: string
+  +Puntos: int
+  +Fecha: DateTime
+  +Motivo: string
+}
+class "BE_OrdenVenta" as BE_OrdenVenta <<BE>> {
+  +ID: int
+  +IDComprador: int
+  +IDVendedor: int
+  +Fecha: DateTime
+  +Estado: string
+  +MontoBruto: decimal
+  +DireccionEnvio: string
+}
+class "BE_Pago" as BE_Pago <<BE>> {
+  +ID: int
+  +IDOrden: int
+  +ReferenciaPasarela: string
+  +Monto: decimal
+  +Estado: string
+  +Fecha: DateTime
+}
+class "BE_Perfil" as BE_Perfil <<BE>> {
+  +ID: int
+  +Nombre: string
+  +Descripcion: string
+  +IdPadrePerfil: int?
+  --
+  +AgregarPermiso(BE_Permiso permiso): void
+  +AgregarSubperfil(BE_Perfil subperfil): void
+  +QuitarSubperfil(BE_Perfil subperfil): void
+  +ObtenerPermisosHeredados(): HashSet<BE_Permiso>
+  +ObtenerTodosLosPermisos(): HashSet<BE_Permiso>
+  +TienePermiso(BE_Permiso permiso): bool
+  +TienePermisoPorCodigo(string codigo): bool
+  +ObtenerProfundidad(): int
+  +ContarPermisosTotal(): int
+  +ToString(): string
+}
+class "BE_Permiso" as BE_Permiso <<BE>> {
+  +ID: int
+  +Nombre: string
+  +Descripcion: string
+  +Codigo: string
+  +EsCompuesto: bool
+  --
+  +ToString(): string
+  +Equals(object obj): bool
+  +GetHashCode(): int
+}
+BE_ItemOrden -[hidden]down- BE_LiquidacionVendedor
+BE_LiquidacionVendedor -[hidden]down- BE_Material
+BE_Material -[hidden]down- BE_MovimientoEcoPuntos
+BE_OrdenVenta -[hidden]down- BE_Pago
+BE_Pago -[hidden]down- BE_Perfil
+BE_Perfil -[hidden]down- BE_Permiso
+BE_ItemOrden -[hidden]right- BE_OrdenVenta
+BE_OrdenVenta "1" *-- "0..*" BE_ItemOrden : Items
+BE_Perfil "1" o-- "0..*" BE_Permiso : Permisos
+@enduml
