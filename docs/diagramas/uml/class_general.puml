@@ -335,25 +335,25 @@ interface "I_ComponenteAcceso" as I_ComponenteAcceso <<BE>> {
   +TienePermiso(BE_PermisoSimple permiso): bool
   +TienePermisoPorCodigo(string codigo): bool
 }
-BE_Acopio "1" o-- "0..1" BE_PuntoVerde : PuntoVerde
-BE_Acopio "1" o-- "0..1" BE_Material : Material
-BE_BITACORA "1" o-- "0..1" BE_USUARIO : Usuario
-BE_CambiosEntidad "1" o-- "0..1" BE_USUARIO : UsuarioModifico
-BE_Canje "1" o-- "0..1" BE_Beneficio : Beneficio
-BE_DeclaracionMaterial "1" o-- "0..1" BE_Material : Material
-BE_GuiaReutilizacion "1" o-- "0..1" BE_Material : Material
-BE_InformeIndicadores "1" o-- "0..*" BE_IndicadorItem : Indicadores
-BE_ItemOrden "1" o-- "0..1" BE_Producto : Producto
-BE_OrdenVenta "1" o-- "0..*" BE_ItemOrden : Items
-BE_Perfil "1" o-- "0..*" BE_Permiso : Permisos
+BE_Acopio "0..*" -- "1" BE_PuntoVerde : PuntoVerde
+BE_Acopio "0..*" -- "1" BE_Material : Material
+BE_BITACORA "0..*" -- "1" BE_USUARIO : Usuario
+BE_CambiosEntidad "0..*" -- "1" BE_USUARIO : UsuarioModifico
+BE_Canje "0..*" -- "1" BE_Beneficio : Beneficio
+BE_DeclaracionMaterial "0..*" -- "1" BE_Material : Material
+BE_GuiaReutilizacion "0..*" -- "1" BE_Material : Material
+BE_InformeIndicadores "1" *-- "0..*" BE_IndicadorItem : Indicadores
+BE_ItemOrden "0..*" -- "1" BE_Producto : Producto
+BE_OrdenVenta "1" *-- "0..*" BE_ItemOrden : Items
+BE_Perfil "1" *-- "0..*" BE_Permiso : Permisos
 BE_PermisoCompuesto ..|> I_ComponenteAcceso
 BE_PermisoCompuesto ..> BE_PermisoSimple
 BE_PermisoSimple ..|> I_ComponenteAcceso
-BE_PuntoVerde "1" o-- "0..*" BE_Material : MaterialesAceptados
-BE_Recomendacion "1" o-- "0..1" BE_DeclaracionMaterial : Declaracion
-BE_Recomendacion "1" o-- "0..1" BE_GuiaReutilizacion : Guia
-BE_Recomendacion "1" o-- "0..1" BE_PuntoVerde : PuntoVerde
-BE_Rol "1" o-- "0..*" I_ComponenteAcceso : Componentes
+BE_PuntoVerde "1" *-- "0..*" BE_Material : MaterialesAceptados
+BE_Recomendacion "0..*" -- "1" BE_DeclaracionMaterial : Declaracion
+BE_Recomendacion "0..*" -- "1" BE_GuiaReutilizacion : Guia
+BE_Recomendacion "0..*" -- "1" BE_PuntoVerde : PuntoVerde
+BE_Rol "1" *-- "0..*" I_ComponenteAcceso : Componentes
 BE_Rol ..> BE_PermisoSimple
-BE_TablaConversion "1" o-- "0..1" BE_Material : Material
+BE_TablaConversion "0..*" -- "1" BE_Material : Material
 @enduml

@@ -93,13 +93,13 @@ class "BE_Beneficio" as BE_Beneficio <<BE>> {
   --
   +ToString(): string
 }
-BE_DeclaracionMaterial "1" o-- "0..1" BE_Material : Material
-BE_Recomendacion "1" o-- "0..1" BE_DeclaracionMaterial : Declaracion
-BE_Recomendacion "1" o-- "0..1" BE_GuiaReutilizacion : Guia
-BE_Recomendacion "1" o-- "0..1" BE_PuntoVerde : PuntoVerde
-BE_GuiaReutilizacion "1" o-- "0..1" BE_Material : Material
-BE_PuntoVerde "1" o-- "0..*" BE_Material : MaterialesAceptados
-BE_Acopio "1" o-- "0..1" BE_PuntoVerde : PuntoVerde
-BE_Acopio "1" o-- "0..1" BE_Material : Material
-BE_Canje "1" o-- "0..1" BE_Beneficio : Beneficio
+BE_DeclaracionMaterial "0..*" -- "1" BE_Material : Material
+BE_Recomendacion "0..*" -- "1" BE_DeclaracionMaterial : Declaracion
+BE_Recomendacion "0..*" -- "1" BE_GuiaReutilizacion : Guia
+BE_Recomendacion "0..*" -- "1" BE_PuntoVerde : PuntoVerde
+BE_GuiaReutilizacion "0..*" -- "1" BE_Material : Material
+BE_PuntoVerde "1" *-- "0..*" BE_Material : MaterialesAceptados
+BE_Acopio "0..*" -- "1" BE_PuntoVerde : PuntoVerde
+BE_Acopio "0..*" -- "1" BE_Material : Material
+BE_Canje "0..*" -- "1" BE_Beneficio : Beneficio
 @enduml

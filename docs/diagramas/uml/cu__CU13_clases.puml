@@ -60,6 +60,6 @@ class "BE_LiquidacionVendedor" as BE_LiquidacionVendedor <<BE>> {
   +FechaDisponible: DateTime?
   +FechaPago: DateTime?
 }
-BE_OrdenVenta "1" o-- "0..*" BE_ItemOrden : Items
-BE_ItemOrden "1" o-- "0..1" BE_Producto : Producto
+BE_OrdenVenta "1" *-- "0..*" BE_ItemOrden : Items
+BE_ItemOrden "0..*" -- "1" BE_Producto : Producto
 @enduml
