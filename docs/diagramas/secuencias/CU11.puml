@@ -1,0 +1,52 @@
+@startuml CU11
+title CU11 Publicar producto
+actor "Vendedor verificado" as ACT
+boundary FormPublicarProducto
+participant BLL_MARKETPLACE
+participant MP_GESTION
+participant MP_MARKETPLACE
+participant BLL_BITACORA
+participant MP_BITACORA
+database "SQL Server" as BD
+ACT -> FormPublicarProducto : completa datos y presiona Publicar
+FormPublicarProducto -> BLL_MARKETPLACE : PublicarProducto()
+BLL_MARKETPLACE -> MP_GESTION : ObtenerIdTarifaVigente()
+MP_GESTION -> BD : TARIFA_ID_VIGENTE
+BD --> MP_GESTION : resultado
+MP_GESTION --> BLL_MARKETPLACE : int?
+BLL_MARKETPLACE -> MP_GESTION : ObtenerIdTarifaVigente()
+MP_GESTION --> BLL_MARKETPLACE : int?
+BLL_MARKETPLACE -> MP_MARKETPLACE : AltaProducto()
+MP_MARKETPLACE -> BD : PRODUCTO_ALTA
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : int
+BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro()
+BLL_BITACORA -> MP_BITACORA : Alta()
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : resultado
+MP_BITACORA --> BLL_BITACORA : int
+BLL_BITACORA --> BLL_MARKETPLACE : void
+BLL_MARKETPLACE -> BLL_MARKETPLACE : EsVendedorVerificado()
+BLL_MARKETPLACE -> MP_MARKETPLACE : UltimoEstadoVerificacion()
+MP_MARKETPLACE -> BD : VERIFICACION_ULTIMO_ESTADO
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : string
+BLL_MARKETPLACE --> BLL_MARKETPLACE : bool
+BLL_MARKETPLACE -> BLL_MARKETPLACE : Exigir(PROC_PUBLICAR_PRODUCTO)
+BLL_MARKETPLACE --> FormPublicarProducto : int
+FormPublicarProducto -> FormPublicarProducto : Refrescar()
+FormPublicarProducto -> BLL_MARKETPLACE : ListarProductosDeVendedor()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarProductosDeVendedor()
+MP_MARKETPLACE -> BD : PRODUCTOS_VENDEDOR_LISTAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
+BLL_MARKETPLACE --> FormPublicarProducto : DataTable
+FormPublicarProducto -> BLL_MARKETPLACE : ListarProductosPendientes()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarProductosPendientes()
+MP_MARKETPLACE -> BD : PRODUCTOS_PENDIENTES_LISTAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
+BLL_MARKETPLACE --> FormPublicarProducto : DataTable
+FormPublicarProducto --> FormPublicarProducto : void
+FormPublicarProducto --> ACT : muestra Producto publicado
+@enduml

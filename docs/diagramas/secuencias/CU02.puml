@@ -1,0 +1,58 @@
+@startuml CU02
+title CU02 Registrar recepción de material
+actor "Operador de punto verde" as ACT
+boundary FormRecepcionAcopio
+participant BLL_RECICLAJE
+participant MP_RECICLAJE
+participant BLL_ECOPUNTOS
+participant MP_ECOPUNTOS
+participant BLL_BITACORA
+participant MP_BITACORA
+participant MP_GESTION
+database "SQL Server" as BD
+ACT -> FormRecepcionAcopio : elige declaración, ingresa peso y presiona Registrar recepción
+FormRecepcionAcopio -> BLL_RECICLAJE : RegistrarRecepcion()
+BLL_RECICLAJE -> MP_RECICLAJE : ListarMaterialesAceptados()
+MP_RECICLAJE -> BD : PUNTO_VERDE_MATERIALES_LISTAR
+BD --> MP_RECICLAJE : resultado
+MP_RECICLAJE --> BLL_RECICLAJE : DataTable
+BLL_RECICLAJE -> MP_RECICLAJE : RegistrarAcopio()
+MP_RECICLAJE -> BD : ACOPIO_REGISTRAR
+BD --> MP_RECICLAJE : resultado
+MP_RECICLAJE --> BLL_RECICLAJE : int
+BLL_RECICLAJE -> BLL_ECOPUNTOS : Acreditar()
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo()
+MP_ECOPUNTOS -> BD : CUENTA_SALDO
+BD --> MP_ECOPUNTOS : resultado
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : AcreditarPuntos()
+MP_ECOPUNTOS -> BD : CUENTA_ACREDITAR
+BD --> MP_ECOPUNTOS : resultado
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
+BLL_ECOPUNTOS --> BLL_RECICLAJE : int
+BLL_RECICLAJE -> BLL_BITACORA : IngresarRegistro()
+BLL_BITACORA -> MP_BITACORA : Alta()
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : resultado
+MP_BITACORA --> BLL_BITACORA : int
+BLL_BITACORA --> BLL_RECICLAJE : void
+BLL_RECICLAJE -> BLL_RECICLAJE : CalcularPuntos()
+BLL_RECICLAJE -> MP_GESTION : ObtenerPuntosPorKgVigente()
+MP_GESTION -> BD : CONVERSION_PUNTOS_POR_KG_VIGENTE
+BD --> MP_GESTION : resultado
+MP_GESTION --> BLL_RECICLAJE : decimal?
+BLL_RECICLAJE --> BLL_RECICLAJE : int
+BLL_RECICLAJE -> BLL_RECICLAJE : Exigir(PROC_REGISTRAR_RECEPCION)
+BLL_RECICLAJE --> FormRecepcionAcopio : int
+FormRecepcionAcopio -> FormRecepcionAcopio : Refrescar()
+FormRecepcionAcopio -> BLL_RECICLAJE : ListarDeclaracionesPendientesDePuntoVerde()
+BLL_RECICLAJE -> MP_RECICLAJE : ListarDeclaracionesPendientesDePuntoVerde()
+MP_RECICLAJE -> BD : DECLARACION_LISTAR_PENDIENTES_PUNTO
+BD --> MP_RECICLAJE : resultado
+MP_RECICLAJE --> BLL_RECICLAJE : DataTable
+BLL_RECICLAJE --> FormRecepcionAcopio : DataTable
+FormRecepcionAcopio -> FormRecepcionAcopio : ActualizarPesoSugerido()
+FormRecepcionAcopio --> FormRecepcionAcopio : void
+FormRecepcionAcopio --> FormRecepcionAcopio : void
+FormRecepcionAcopio --> ACT : muestra Recepción registrada
+@enduml

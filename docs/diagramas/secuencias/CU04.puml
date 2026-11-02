@@ -1,0 +1,37 @@
+@startuml CU04
+title CU04 Consultar indicadores
+actor "Gerencia" as ACT
+boundary FormIndicadores
+participant BLL_GESTION
+participant MP_GESTION
+participant BLL_BITACORA
+participant MP_BITACORA
+database "SQL Server" as BD
+ACT -> FormIndicadores : escribe período y presiona Consultar indicadores
+FormIndicadores -> BLL_GESTION : ConsultarIndicadores()
+BLL_GESTION -> MP_GESTION : IndicadorAcopioPorMaterial()
+MP_GESTION -> BD : INDICADOR_ACOPIO_POR_MATERIAL
+BD --> MP_GESTION : resultado
+MP_GESTION --> BLL_GESTION : DataTable
+BLL_GESTION -> MP_GESTION : IndicadorVentas()
+MP_GESTION -> BD : INDICADOR_VENTAS
+BD --> MP_GESTION : resultado
+MP_GESTION --> BLL_GESTION : DataTable
+BLL_GESTION -> MP_GESTION : IndicadorCostoCanjes()
+MP_GESTION -> BD : INDICADOR_COSTO_CANJES
+BD --> MP_GESTION : resultado
+MP_GESTION --> BLL_GESTION : decimal
+BLL_GESTION -> MP_GESTION : AltaInforme()
+MP_GESTION -> BD : INFORME_ALTA
+BD --> MP_GESTION : resultado
+MP_GESTION --> BLL_GESTION : int
+BLL_GESTION -> BLL_BITACORA : IngresarRegistro()
+BLL_BITACORA -> MP_BITACORA : Alta()
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : resultado
+MP_BITACORA --> BLL_BITACORA : int
+BLL_BITACORA --> BLL_GESTION : void
+BLL_GESTION -> BLL_GESTION : Exigir(PROC_VER_INDICADORES)
+BLL_GESTION --> FormIndicadores : DataTable
+FormIndicadores --> ACT : muestra grilla de indicadores
+@enduml

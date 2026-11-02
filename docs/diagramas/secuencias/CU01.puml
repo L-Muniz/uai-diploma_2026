@@ -1,0 +1,153 @@
+@startuml CU01
+title CU01 Declarar material
+actor "Ciudadano" as ACT
+boundary FormDeclararMaterial
+participant BLL_RECICLAJE
+participant MP_CATALOGO
+participant MP_RECICLAJE
+participant BLL_BITACORA
+participant MP_BITACORA
+participant BLL_DATOS_USUARIO
+participant MP_DATOS_USUARIO
+participant BLL_ECOPUNTOS
+participant MP_ECOPUNTOS
+participant MP_GESTION
+database "SQL Server" as BD
+alt presiona Declarar
+ACT -> FormDeclararMaterial : presiona Declarar
+FormDeclararMaterial -> BLL_RECICLAJE : DeclararMaterial()
+BLL_RECICLAJE -> MP_CATALOGO : ListarMateriales()
+MP_CATALOGO -> BD : MATERIAL_LISTAR
+BD --> MP_CATALOGO : resultado
+MP_CATALOGO --> BLL_RECICLAJE : DataTable
+BLL_RECICLAJE -> MP_RECICLAJE : AltaDeclaracion()
+MP_RECICLAJE -> BD : DECLARACION_ALTA
+BD --> MP_RECICLAJE : resultado
+MP_RECICLAJE --> BLL_RECICLAJE : int
+BLL_RECICLAJE -> BLL_BITACORA : IngresarRegistro()
+BLL_BITACORA -> MP_BITACORA : Alta()
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : resultado
+MP_BITACORA --> BLL_BITACORA : int
+BLL_BITACORA --> BLL_RECICLAJE : void
+BLL_RECICLAJE -> MP_RECICLAJE : ListarGuiasPorMaterial()
+MP_RECICLAJE -> BD : GUIA_LISTAR_POR_MATERIAL
+BD --> MP_RECICLAJE : resultado
+MP_RECICLAJE --> BLL_RECICLAJE : DataTable
+BLL_RECICLAJE -> MP_RECICLAJE : ListarPuntosVerdesPorMaterial()
+MP_RECICLAJE -> BD : PUNTO_VERDE_LISTAR_POR_MATERIAL
+BD --> MP_RECICLAJE : resultado
+MP_RECICLAJE --> BLL_RECICLAJE : DataTable
+BLL_RECICLAJE -> BLL_RECICLAJE : MasCercano()
+BLL_RECICLAJE -> BLL_DATOS_USUARIO : Obtener()
+BLL_DATOS_USUARIO -> MP_DATOS_USUARIO : Obtener()
+MP_DATOS_USUARIO -> BD : DATOS_USUARIO_OBTENER
+BD --> MP_DATOS_USUARIO : resultado
+MP_DATOS_USUARIO -> BD : FECHA_NACIMIENTO
+BD --> MP_DATOS_USUARIO : resultado
+BD --> MP_DATOS_USUARIO : resultado
+MP_DATOS_USUARIO -> BD : LATITUD
+BD --> MP_DATOS_USUARIO : resultado
+BD --> MP_DATOS_USUARIO : resultado
+MP_DATOS_USUARIO -> BD : LONGITUD
+BD --> MP_DATOS_USUARIO : resultado
+BD --> MP_DATOS_USUARIO : resultado
+MP_DATOS_USUARIO -> BD : LOCALIDAD
+BD --> MP_DATOS_USUARIO : resultado
+BD --> MP_DATOS_USUARIO : resultado
+MP_DATOS_USUARIO --> BLL_DATOS_USUARIO : BE_DatosUsuario
+BLL_DATOS_USUARIO --> BLL_RECICLAJE : BE_DatosUsuario
+BLL_RECICLAJE --> BLL_RECICLAJE : DataRow
+BLL_RECICLAJE -> BLL_RECICLAJE : Exigir(PROC_DECLARAR_MATERIAL)
+BLL_RECICLAJE --> FormDeclararMaterial : OpcionesRecomendacion
+FormDeclararMaterial -> FormDeclararMaterial : Refrescar()
+FormDeclararMaterial -> BLL_RECICLAJE : ListarDeclaracionesDeUsuario()
+BLL_RECICLAJE -> MP_RECICLAJE : ListarDeclaracionesDeUsuario()
+MP_RECICLAJE -> BD : DECLARACION_LISTAR_POR_USUARIO
+BD --> MP_RECICLAJE : resultado
+MP_RECICLAJE --> BLL_RECICLAJE : DataTable
+BLL_RECICLAJE --> FormDeclararMaterial : DataTable
+FormDeclararMaterial -> BLL_ECOPUNTOS : ObtenerSaldo()
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo()
+MP_ECOPUNTOS -> BD : CUENTA_SALDO
+BD --> MP_ECOPUNTOS : resultado
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
+BLL_ECOPUNTOS --> FormDeclararMaterial : int
+FormDeclararMaterial --> FormDeclararMaterial : void
+FormDeclararMaterial --> ACT : muestra opción 1 y opción 2
+else presiona Reutilizar en casa (confirmar)
+ACT -> FormDeclararMaterial : presiona Reutilizar en casa (confirmar)
+FormDeclararMaterial -> BLL_RECICLAJE : ConfirmarReutilizacion()
+BLL_RECICLAJE -> MP_RECICLAJE : GuardarRecomendacion()
+MP_RECICLAJE -> BD : RECOMENDACION_GUARDAR
+BD --> MP_RECICLAJE : resultado
+MP_RECICLAJE --> BLL_RECICLAJE : void
+BLL_RECICLAJE -> BLL_ECOPUNTOS : Acreditar()
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo()
+MP_ECOPUNTOS -> BD : CUENTA_SALDO
+BD --> MP_ECOPUNTOS : resultado
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : AcreditarPuntos()
+MP_ECOPUNTOS -> BD : CUENTA_ACREDITAR
+BD --> MP_ECOPUNTOS : resultado
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
+BLL_ECOPUNTOS --> BLL_RECICLAJE : int
+BLL_RECICLAJE -> BLL_BITACORA : IngresarRegistro()
+BLL_BITACORA -> MP_BITACORA : Alta()
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : resultado
+MP_BITACORA --> BLL_BITACORA : int
+BLL_BITACORA --> BLL_RECICLAJE : void
+BLL_RECICLAJE -> BLL_RECICLAJE : CalcularPuntos()
+BLL_RECICLAJE -> MP_GESTION : ObtenerPuntosPorKgVigente()
+MP_GESTION -> BD : CONVERSION_PUNTOS_POR_KG_VIGENTE
+BD --> MP_GESTION : resultado
+MP_GESTION --> BLL_RECICLAJE : decimal?
+BLL_RECICLAJE --> BLL_RECICLAJE : int
+BLL_RECICLAJE -> BLL_RECICLAJE : Exigir(PROC_DECLARAR_MATERIAL)
+BLL_RECICLAJE --> FormDeclararMaterial : int
+FormDeclararMaterial -> FormDeclararMaterial : Refrescar()
+FormDeclararMaterial -> BLL_RECICLAJE : ListarDeclaracionesDeUsuario()
+BLL_RECICLAJE -> MP_RECICLAJE : ListarDeclaracionesDeUsuario()
+MP_RECICLAJE -> BD : DECLARACION_LISTAR_POR_USUARIO
+BD --> MP_RECICLAJE : resultado
+MP_RECICLAJE --> BLL_RECICLAJE : DataTable
+BLL_RECICLAJE --> FormDeclararMaterial : DataTable
+FormDeclararMaterial -> BLL_ECOPUNTOS : ObtenerSaldo()
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo()
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
+BLL_ECOPUNTOS --> FormDeclararMaterial : int
+FormDeclararMaterial --> FormDeclararMaterial : void
+FormDeclararMaterial --> ACT : muestra Reutilización confirmada
+else presiona Entregar en punto verde
+ACT -> FormDeclararMaterial : presiona Entregar en punto verde
+FormDeclararMaterial -> BLL_RECICLAJE : ElegirEntregaOficial()
+BLL_RECICLAJE -> MP_RECICLAJE : GuardarRecomendacion()
+MP_RECICLAJE -> BD : RECOMENDACION_GUARDAR
+BD --> MP_RECICLAJE : resultado
+MP_RECICLAJE --> BLL_RECICLAJE : void
+BLL_RECICLAJE -> BLL_BITACORA : IngresarRegistro()
+BLL_BITACORA -> MP_BITACORA : Alta()
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : resultado
+MP_BITACORA --> BLL_BITACORA : int
+BLL_BITACORA --> BLL_RECICLAJE : void
+BLL_RECICLAJE -> BLL_RECICLAJE : Exigir(PROC_DECLARAR_MATERIAL)
+BLL_RECICLAJE --> FormDeclararMaterial : void
+FormDeclararMaterial -> FormDeclararMaterial : Refrescar()
+FormDeclararMaterial -> BLL_RECICLAJE : ListarDeclaracionesDeUsuario()
+BLL_RECICLAJE -> MP_RECICLAJE : ListarDeclaracionesDeUsuario()
+MP_RECICLAJE -> BD : DECLARACION_LISTAR_POR_USUARIO
+BD --> MP_RECICLAJE : resultado
+MP_RECICLAJE --> BLL_RECICLAJE : DataTable
+BLL_RECICLAJE --> FormDeclararMaterial : DataTable
+FormDeclararMaterial -> BLL_ECOPUNTOS : ObtenerSaldo()
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo()
+MP_ECOPUNTOS -> BD : CUENTA_SALDO
+BD --> MP_ECOPUNTOS : resultado
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
+BLL_ECOPUNTOS --> FormDeclararMaterial : int
+FormDeclararMaterial --> FormDeclararMaterial : void
+FormDeclararMaterial --> ACT : muestra Entrega oficial registrada
+end
+@enduml

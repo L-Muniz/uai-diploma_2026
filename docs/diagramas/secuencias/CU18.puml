@@ -1,0 +1,75 @@
+@startuml CU18
+title CU18 Resolver reclamo
+actor "Área comercial" as ACT
+boundary FormReclamos
+participant BLL_MARKETPLACE
+participant MP_MARKETPLACE
+participant BLL_BITACORA
+participant MP_BITACORA
+database "SQL Server" as BD
+alt selecciona reclamo y presiona Reclamo procedente
+ACT -> FormReclamos : selecciona reclamo y presiona Reclamo procedente
+FormReclamos -> FormReclamos : Resolver()
+FormReclamos -> BLL_MARKETPLACE : ResolverReclamo()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ResolverReclamo()
+MP_MARKETPLACE -> BD : RECLAMO_RESOLVER
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : void
+BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro()
+BLL_BITACORA -> MP_BITACORA : Alta()
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : resultado
+MP_BITACORA --> BLL_BITACORA : int
+BLL_BITACORA --> BLL_MARKETPLACE : void
+BLL_MARKETPLACE -> BLL_MARKETPLACE : Exigir(PROC_RESOLVER_RECLAMO)
+BLL_MARKETPLACE --> FormReclamos : void
+FormReclamos -> FormReclamos : Refrescar()
+FormReclamos -> BLL_MARKETPLACE : ListarOrdenesComprador()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarOrdenesComprador()
+MP_MARKETPLACE -> BD : ORDENES_COMPRADOR_LISTAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
+BLL_MARKETPLACE --> FormReclamos : DataTable
+FormReclamos -> BLL_MARKETPLACE : ListarReclamosAbiertos()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarReclamosAbiertos()
+MP_MARKETPLACE -> BD : RECLAMOS_ABIERTOS_LISTAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
+BLL_MARKETPLACE --> FormReclamos : DataTable
+FormReclamos --> FormReclamos : void
+FormReclamos --> FormReclamos : void
+FormReclamos --> ACT : muestra Reclamo resuelto como procedente
+else selecciona reclamo y presiona Reclamo improcedente
+ACT -> FormReclamos : selecciona reclamo y presiona Reclamo improcedente
+FormReclamos -> FormReclamos : Resolver()
+FormReclamos -> BLL_MARKETPLACE : ResolverReclamo()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ResolverReclamo()
+MP_MARKETPLACE -> BD : RECLAMO_RESOLVER
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : void
+BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro()
+BLL_BITACORA -> MP_BITACORA : Alta()
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : resultado
+MP_BITACORA --> BLL_BITACORA : int
+BLL_BITACORA --> BLL_MARKETPLACE : void
+BLL_MARKETPLACE -> BLL_MARKETPLACE : Exigir(PROC_RESOLVER_RECLAMO)
+BLL_MARKETPLACE --> FormReclamos : void
+FormReclamos -> FormReclamos : Refrescar()
+FormReclamos -> BLL_MARKETPLACE : ListarOrdenesComprador()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarOrdenesComprador()
+MP_MARKETPLACE -> BD : ORDENES_COMPRADOR_LISTAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
+BLL_MARKETPLACE --> FormReclamos : DataTable
+FormReclamos -> BLL_MARKETPLACE : ListarReclamosAbiertos()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarReclamosAbiertos()
+MP_MARKETPLACE -> BD : RECLAMOS_ABIERTOS_LISTAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
+BLL_MARKETPLACE --> FormReclamos : DataTable
+FormReclamos --> FormReclamos : void
+FormReclamos --> FormReclamos : void
+FormReclamos --> ACT : muestra Reclamo resuelto como improcedente
+end
+@enduml

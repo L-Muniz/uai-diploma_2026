@@ -1,0 +1,45 @@
+@startuml CU03
+title CU03 Canjear Eco-Puntos
+actor "Ciudadano" as ACT
+boundary FormCanjeEcoPuntos
+participant BLL_ECOPUNTOS
+participant MP_ECOPUNTOS
+participant BLL_BITACORA
+participant MP_BITACORA
+database "SQL Server" as BD
+ACT -> FormCanjeEcoPuntos : presiona Canjear beneficio seleccionado y confirma Sí
+FormCanjeEcoPuntos -> BLL_ECOPUNTOS : Canjear()
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : RegistrarCanje()
+MP_ECOPUNTOS -> BD : CANJE_REGISTRAR
+BD --> MP_ECOPUNTOS : resultado
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
+BLL_ECOPUNTOS -> BLL_BITACORA : IngresarRegistro()
+BLL_BITACORA -> MP_BITACORA : Alta()
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : resultado
+MP_BITACORA --> BLL_BITACORA : int
+BLL_BITACORA --> BLL_ECOPUNTOS : void
+BLL_ECOPUNTOS -> BLL_ECOPUNTOS : Exigir(PROC_CANJEAR_PUNTOS)
+BLL_ECOPUNTOS --> FormCanjeEcoPuntos : int
+FormCanjeEcoPuntos -> FormCanjeEcoPuntos : Refrescar()
+FormCanjeEcoPuntos -> BLL_ECOPUNTOS : ObtenerSaldo()
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo()
+MP_ECOPUNTOS -> BD : CUENTA_SALDO
+BD --> MP_ECOPUNTOS : resultado
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
+BLL_ECOPUNTOS --> FormCanjeEcoPuntos : int
+FormCanjeEcoPuntos -> BLL_ECOPUNTOS : ListarBeneficios()
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : ListarBeneficiosActivos()
+MP_ECOPUNTOS -> BD : BENEFICIO_LISTAR_ACTIVOS
+BD --> MP_ECOPUNTOS : resultado
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : DataTable
+BLL_ECOPUNTOS --> FormCanjeEcoPuntos : DataTable
+FormCanjeEcoPuntos -> BLL_ECOPUNTOS : ListarMovimientos()
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : ListarMovimientos()
+MP_ECOPUNTOS -> BD : MOVIMIENTOS_LISTAR
+BD --> MP_ECOPUNTOS : resultado
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : DataTable
+BLL_ECOPUNTOS --> FormCanjeEcoPuntos : DataTable
+FormCanjeEcoPuntos --> FormCanjeEcoPuntos : void
+FormCanjeEcoPuntos --> ACT : muestra Canje realizado
+@enduml

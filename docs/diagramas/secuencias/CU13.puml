@@ -1,0 +1,67 @@
+@startuml CU13
+title CU13 Comprar producto
+actor "Comprador" as ACT
+boundary FormCompraMarketplace
+participant BLL_MARKETPLACE
+participant MP_MARKETPLACE
+participant BLL_BITACORA
+participant MP_BITACORA
+participant MP_GESTION
+database "SQL Server" as BD
+ACT -> FormCompraMarketplace : selecciona producto, cantidad y domicilio, presiona Pagar pedido y confirma Sí
+FormCompraMarketplace -> BLL_MARKETPLACE : Comprar()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ObtenerProducto()
+MP_MARKETPLACE -> BD : PRODUCTO_OBTENER
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE -> BD : ID_PRODUCTO
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE -> BD : ID_VENDEDOR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE -> BD : ID_TARIFA
+BD --> MP_MARKETPLACE : resultado
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE -> BD : NOMBRE
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE -> BD : DESCRIPCION
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE -> BD : CATEGORIA
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE -> BD : PRECIO
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE -> BD : STOCK
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE -> BD : ESTADO
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : BE_Producto
+BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro()
+BLL_BITACORA -> MP_BITACORA : Alta()
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : resultado
+MP_BITACORA --> BLL_BITACORA : int
+BLL_BITACORA --> BLL_MARKETPLACE : void
+BLL_MARKETPLACE -> MP_MARKETPLACE : RegistrarVentaAprobada()
+MP_MARKETPLACE -> BD : VENTA_REGISTRAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : int
+BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro()
+BLL_BITACORA --> BLL_MARKETPLACE : void
+BLL_MARKETPLACE -> BLL_MARKETPLACE : ObtenerComisionEstimada()
+BLL_MARKETPLACE -> MP_GESTION : ObtenerPorcentajeVigente()
+MP_GESTION -> BD : TARIFA_PORCENTAJE_VIGENTE
+BD --> MP_GESTION : resultado
+MP_GESTION --> BLL_MARKETPLACE : decimal?
+BLL_MARKETPLACE -> MP_GESTION : ObtenerPorcentajeVigente()
+MP_GESTION --> BLL_MARKETPLACE : decimal?
+BLL_MARKETPLACE --> BLL_MARKETPLACE : decimal
+BLL_MARKETPLACE -> BLL_MARKETPLACE : Exigir(PROC_COMPRAR)
+BLL_MARKETPLACE --> FormCompraMarketplace : int
+FormCompraMarketplace -> BLL_MARKETPLACE : ListarCatalogo()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarCatalogo()
+MP_MARKETPLACE -> BD : CATALOGO_LISTAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
+BLL_MARKETPLACE --> FormCompraMarketplace : DataTable
+FormCompraMarketplace -> FormCompraMarketplace : ActualizarResumen()
+FormCompraMarketplace --> FormCompraMarketplace : void
+FormCompraMarketplace --> ACT : muestra Pago aprobado y número de orden
+@enduml

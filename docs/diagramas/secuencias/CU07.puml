@@ -1,0 +1,43 @@
+@startuml CU07
+title CU07 Fijar comisión por categoría
+actor "Gerencia" as ACT
+boundary FormTarifas
+participant BLL_GESTION
+participant MP_GESTION
+participant BLL_BITACORA
+participant MP_BITACORA
+database "SQL Server" as BD
+ACT -> FormTarifas : escribe categoría y comisión y presiona Fijar comisión
+FormTarifas -> BLL_GESTION : ProponerTarifa()
+BLL_GESTION -> MP_GESTION : AltaDecision()
+MP_GESTION -> BD : DECISION_ALTA
+BD --> MP_GESTION : resultado
+MP_GESTION --> BLL_GESTION : int
+BLL_GESTION -> MP_GESTION : AltaTarifa()
+MP_GESTION -> BD : TARIFA_ALTA
+BD --> MP_GESTION : resultado
+MP_GESTION --> BLL_GESTION : int
+BLL_GESTION -> BLL_BITACORA : IngresarRegistro()
+BLL_BITACORA -> MP_BITACORA : Alta()
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : resultado
+MP_BITACORA --> BLL_BITACORA : int
+BLL_BITACORA --> BLL_GESTION : void
+BLL_GESTION -> BLL_GESTION : Exigir(PROC_GESTIONAR_TARIFAS)
+BLL_GESTION --> FormTarifas : int
+FormTarifas -> FormTarifas : Refrescar()
+FormTarifas -> BLL_GESTION : ListarTarifas()
+BLL_GESTION -> MP_GESTION : ListarTarifasVigentes()
+MP_GESTION -> BD : TARIFAS_LISTAR_VIGENTES
+BD --> MP_GESTION : resultado
+MP_GESTION --> BLL_GESTION : DataTable
+BLL_GESTION --> FormTarifas : DataTable
+FormTarifas -> BLL_GESTION : ListarConversiones()
+BLL_GESTION -> MP_GESTION : ListarConversionesVigentes()
+MP_GESTION -> BD : CONVERSIONES_LISTAR_VIGENTES
+BD --> MP_GESTION : resultado
+MP_GESTION --> BLL_GESTION : DataTable
+BLL_GESTION --> FormTarifas : DataTable
+FormTarifas --> FormTarifas : void
+FormTarifas --> ACT : muestra Comisión fijada
+@enduml

@@ -1,0 +1,39 @@
+@startuml CU12
+title CU12 Aprobar producto
+actor "Área comercial" as ACT
+boundary FormPublicarProducto
+participant BLL_MARKETPLACE
+participant MP_MARKETPLACE
+participant BLL_BITACORA
+participant MP_BITACORA
+database "SQL Server" as BD
+ACT -> FormPublicarProducto : selecciona producto y presiona Aprobar producto seleccionado
+FormPublicarProducto -> BLL_MARKETPLACE : AprobarProducto()
+BLL_MARKETPLACE -> MP_MARKETPLACE : AprobarProducto()
+MP_MARKETPLACE -> BD : PRODUCTO_APROBAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : void
+BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro()
+BLL_BITACORA -> MP_BITACORA : Alta()
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : resultado
+MP_BITACORA --> BLL_BITACORA : int
+BLL_BITACORA --> BLL_MARKETPLACE : void
+BLL_MARKETPLACE -> BLL_MARKETPLACE : Exigir(PROC_APROBAR_PRODUCTO)
+BLL_MARKETPLACE --> FormPublicarProducto : void
+FormPublicarProducto -> FormPublicarProducto : Refrescar()
+FormPublicarProducto -> BLL_MARKETPLACE : ListarProductosDeVendedor()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarProductosDeVendedor()
+MP_MARKETPLACE -> BD : PRODUCTOS_VENDEDOR_LISTAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
+BLL_MARKETPLACE --> FormPublicarProducto : DataTable
+FormPublicarProducto -> BLL_MARKETPLACE : ListarProductosPendientes()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarProductosPendientes()
+MP_MARKETPLACE -> BD : PRODUCTOS_PENDIENTES_LISTAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
+BLL_MARKETPLACE --> FormPublicarProducto : DataTable
+FormPublicarProducto --> FormPublicarProducto : void
+FormPublicarProducto --> ACT : muestra Producto aprobado
+@enduml

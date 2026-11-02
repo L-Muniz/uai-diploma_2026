@@ -1,0 +1,53 @@
+@startuml CU16
+title CU16 Liquidar vendedor
+actor "Área comercial" as ACT
+boundary FormLiquidacion
+participant BLL_MARKETPLACE
+participant MP_MARKETPLACE
+participant BLL_BITACORA
+participant MP_BITACORA
+database "SQL Server" as BD
+ACT -> FormLiquidacion : selecciona liquidación, presiona Ordenar transferencia y confirma Sí
+FormLiquidacion -> BLL_MARKETPLACE : PagarLiquidacion()
+BLL_MARKETPLACE -> MP_MARKETPLACE : PagarLiquidacion()
+MP_MARKETPLACE -> BD : LIQUIDACION_PAGAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : void
+BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro()
+BLL_BITACORA -> MP_BITACORA : Alta()
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : resultado
+MP_BITACORA --> BLL_BITACORA : int
+BLL_BITACORA --> BLL_MARKETPLACE : void
+BLL_MARKETPLACE -> BLL_MARKETPLACE : Exigir(PROC_LIQUIDAR)
+BLL_MARKETPLACE --> FormLiquidacion : void
+FormLiquidacion -> FormLiquidacion : IdSeleccionado()
+FormLiquidacion --> FormLiquidacion : int?
+FormLiquidacion -> FormLiquidacion : Refrescar()
+FormLiquidacion -> BLL_MARKETPLACE : ListarOrdenesComprador()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarOrdenesComprador()
+MP_MARKETPLACE -> BD : ORDENES_COMPRADOR_LISTAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
+BLL_MARKETPLACE --> FormLiquidacion : DataTable
+FormLiquidacion -> BLL_MARKETPLACE : ListarOrdenesVendedor()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarOrdenesVendedor()
+MP_MARKETPLACE -> BD : ORDENES_VENDEDOR_LISTAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
+BLL_MARKETPLACE --> FormLiquidacion : DataTable
+FormLiquidacion -> BLL_MARKETPLACE : ListarLiquidaciones()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarLiquidaciones()
+MP_MARKETPLACE -> BD : LIQUIDACIONES_LISTAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
+BLL_MARKETPLACE --> FormLiquidacion : DataTable
+FormLiquidacion -> BLL_MARKETPLACE : ListarLiquidacionesDeVendedor()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarLiquidacionesDeVendedor()
+MP_MARKETPLACE -> BD : LIQUIDACIONES_VENDEDOR_LISTAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
+BLL_MARKETPLACE --> FormLiquidacion : DataTable
+FormLiquidacion --> FormLiquidacion : void
+FormLiquidacion --> ACT : muestra Transferencia ordenada
+@enduml

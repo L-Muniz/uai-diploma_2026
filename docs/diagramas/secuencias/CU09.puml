@@ -1,0 +1,65 @@
+@startuml CU09
+title CU09 Solicitar verificación de vendedor
+actor "Ciudadano" as ACT
+boundary FormVerificacionVendedor
+participant BLL_MARKETPLACE
+participant MP_MARKETPLACE
+participant BLL_BITACORA
+participant MP_BITACORA
+participant BLL_DATOS_USUARIO
+participant MP_DATOS_USUARIO
+database "SQL Server" as BD
+ACT -> FormVerificacionVendedor : escribe referencia y presiona Solicitar verificación
+FormVerificacionVendedor -> BLL_MARKETPLACE : SolicitarVerificacion()
+BLL_MARKETPLACE -> MP_MARKETPLACE : UltimoEstadoVerificacion()
+MP_MARKETPLACE -> BD : VERIFICACION_ULTIMO_ESTADO
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : string
+BLL_MARKETPLACE -> MP_MARKETPLACE : AltaVerificacion()
+MP_MARKETPLACE -> BD : VERIFICACION_ALTA
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : int
+BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro()
+BLL_BITACORA -> MP_BITACORA : Alta()
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : resultado
+MP_BITACORA --> BLL_BITACORA : int
+BLL_BITACORA --> BLL_MARKETPLACE : void
+BLL_MARKETPLACE -> BLL_DATOS_USUARIO : ValidarMayorDeEdadVendedor()
+BLL_DATOS_USUARIO -> BLL_DATOS_USUARIO : EdadEn()
+BLL_DATOS_USUARIO --> BLL_DATOS_USUARIO : int
+BLL_DATOS_USUARIO -> BLL_DATOS_USUARIO : Obtener()
+BLL_DATOS_USUARIO -> MP_DATOS_USUARIO : Obtener()
+MP_DATOS_USUARIO -> BD : DATOS_USUARIO_OBTENER
+BD --> MP_DATOS_USUARIO : resultado
+MP_DATOS_USUARIO -> BD : FECHA_NACIMIENTO
+BD --> MP_DATOS_USUARIO : resultado
+BD --> MP_DATOS_USUARIO : resultado
+MP_DATOS_USUARIO -> BD : LATITUD
+BD --> MP_DATOS_USUARIO : resultado
+BD --> MP_DATOS_USUARIO : resultado
+MP_DATOS_USUARIO -> BD : LONGITUD
+BD --> MP_DATOS_USUARIO : resultado
+BD --> MP_DATOS_USUARIO : resultado
+MP_DATOS_USUARIO -> BD : LOCALIDAD
+BD --> MP_DATOS_USUARIO : resultado
+BD --> MP_DATOS_USUARIO : resultado
+MP_DATOS_USUARIO --> BLL_DATOS_USUARIO : BE_DatosUsuario
+BLL_DATOS_USUARIO --> BLL_DATOS_USUARIO : BE_DatosUsuario
+BLL_DATOS_USUARIO --> BLL_MARKETPLACE : void
+BLL_MARKETPLACE -> BLL_MARKETPLACE : Exigir(PROC_SOLICITAR_VERIFICACION)
+BLL_MARKETPLACE --> FormVerificacionVendedor : void
+FormVerificacionVendedor -> FormVerificacionVendedor : Refrescar()
+FormVerificacionVendedor -> BLL_MARKETPLACE : ObtenerEstadoVerificacion()
+BLL_MARKETPLACE -> MP_MARKETPLACE : UltimoEstadoVerificacion()
+MP_MARKETPLACE --> BLL_MARKETPLACE : string
+BLL_MARKETPLACE --> FormVerificacionVendedor : string
+FormVerificacionVendedor -> BLL_MARKETPLACE : ListarSolicitudesVerificacion()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarSolicitudesVerificacion()
+MP_MARKETPLACE -> BD : VERIFICACIONES_PENDIENTES_LISTAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
+BLL_MARKETPLACE --> FormVerificacionVendedor : DataTable
+FormVerificacionVendedor --> FormVerificacionVendedor : void
+FormVerificacionVendedor --> ACT : muestra Solicitud enviada
+@enduml

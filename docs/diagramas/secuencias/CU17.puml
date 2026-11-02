@@ -1,0 +1,39 @@
+@startuml CU17
+title CU17 Presentar reclamo
+actor "Comprador" as ACT
+boundary FormReclamos
+participant BLL_MARKETPLACE
+participant MP_MARKETPLACE
+participant BLL_BITACORA
+participant MP_BITACORA
+database "SQL Server" as BD
+ACT -> FormReclamos : selecciona orden, escribe motivo y presiona Presentar reclamo
+FormReclamos -> BLL_MARKETPLACE : PresentarReclamo()
+BLL_MARKETPLACE -> MP_MARKETPLACE : RegistrarReclamo()
+MP_MARKETPLACE -> BD : RECLAMO_REGISTRAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : int
+BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro()
+BLL_BITACORA -> MP_BITACORA : Alta()
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : resultado
+MP_BITACORA --> BLL_BITACORA : int
+BLL_BITACORA --> BLL_MARKETPLACE : void
+BLL_MARKETPLACE -> BLL_MARKETPLACE : Exigir(PROC_RECLAMAR)
+BLL_MARKETPLACE --> FormReclamos : int
+FormReclamos -> FormReclamos : Refrescar()
+FormReclamos -> BLL_MARKETPLACE : ListarOrdenesComprador()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarOrdenesComprador()
+MP_MARKETPLACE -> BD : ORDENES_COMPRADOR_LISTAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
+BLL_MARKETPLACE --> FormReclamos : DataTable
+FormReclamos -> BLL_MARKETPLACE : ListarReclamosAbiertos()
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarReclamosAbiertos()
+MP_MARKETPLACE -> BD : RECLAMOS_ABIERTOS_LISTAR
+BD --> MP_MARKETPLACE : resultado
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
+BLL_MARKETPLACE --> FormReclamos : DataTable
+FormReclamos --> FormReclamos : void
+FormReclamos --> ACT : muestra Reclamo presentado
+@enduml
