@@ -1,10 +1,10 @@
 @startuml CU17
 title CU17 Presentar reclamo
 actor Comprador
-participant "Interfaz (FormReclamos)" as IU
+boundary "FormReclamos" as IU
 participant "BLL_MARKETPLACE" as BLL
 participant "MP_MARKETPLACE" as DAL
-database "Base de datos (SQL Server)" as BD
+database "SQL Server" as BD
 Comprador -> IU : presentar reclamo (orden, motivo)
 IU -> BLL : PresentarReclamo(comprador, idOrden, motivo)
 BLL -> BLL : Exigir(PROC_RECLAMAR)

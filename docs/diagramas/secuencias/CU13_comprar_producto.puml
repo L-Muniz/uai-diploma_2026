@@ -1,11 +1,11 @@
 @startuml CU13
 title CU13 Comprar producto
 actor Comprador
-participant "Interfaz (FormCompraMarketplace)" as IU
+boundary "FormCompraMarketplace" as IU
 participant "BLL_MARKETPLACE" as BLL
 participant "MP_MARKETPLACE" as DAL
 participant "IPasarelaPago" as PAS
-database "Base de datos (SQL Server)" as BD
+database "SQL Server" as BD
 Comprador -> IU : confirmar pedido (producto, cantidad, domicilio)
 IU -> BLL : Comprar(comprador, idProducto, cantidad, direccion, pasarela)
 BLL -> BLL : Exigir(PROC_COMPRAR)

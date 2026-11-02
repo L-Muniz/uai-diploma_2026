@@ -1,11 +1,11 @@
 @startuml CU01
 title CU01 Declarar material
 actor Ciudadano
-participant "Interfaz (FormDeclararMaterial)" as IU
+boundary "FormDeclararMaterial" as IU
 participant "BLL_RECICLAJE" as BLL
 participant "MP_RECICLAJE" as DAL
 participant "BLL_ECOPUNTOS" as EP
-database "Base de datos (SQL Server)" as BD
+database "SQL Server" as BD
 Ciudadano -> IU : declarar(material, cantidad)
 IU -> BLL : DeclararMaterial(usuario, idMaterial, cantidad)
 BLL -> DAL : AltaDeclaracion(idUsuario, idMaterial, cantidad)

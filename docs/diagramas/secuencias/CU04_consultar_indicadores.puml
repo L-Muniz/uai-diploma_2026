@@ -1,10 +1,10 @@
 @startuml CU04
 title CU04 Consultar indicadores
 actor Gerencia
-participant "Interfaz (FormIndicadores)" as IU
+boundary "FormIndicadores" as IU
 participant "BLL_GESTION" as BLL
 participant "MP_GESTION" as DAL
-database "Base de datos (SQL Server)" as BD
+database "SQL Server" as BD
 Gerencia -> IU : consultar(período)
 IU -> BLL : ConsultarIndicadores(usuario, periodo)
 BLL -> BLL : Exigir(PROC_VER_INDICADORES)

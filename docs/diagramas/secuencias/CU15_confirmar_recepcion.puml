@@ -1,10 +1,10 @@
 @startuml CU15
 title CU15 Confirmar recepción de pedido
 actor Comprador
-participant "Interfaz (FormLiquidacion)" as IU
+boundary "FormLiquidacion" as IU
 participant "BLL_MARKETPLACE" as BLL
 participant "MP_MARKETPLACE" as DAL
-database "Base de datos (SQL Server)" as BD
+database "SQL Server" as BD
 Comprador -> IU : confirmar recepción (orden)
 IU -> BLL : ConfirmarRecepcion(comprador, idOrden)
 BLL -> BLL : Exigir(PROC_CONFIRMAR_RECEPCION)

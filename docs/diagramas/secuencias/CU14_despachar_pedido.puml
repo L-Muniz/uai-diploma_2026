@@ -1,10 +1,10 @@
 @startuml CU14
 title CU14 Despachar pedido
 actor Vendedor
-participant "Interfaz (FormLiquidacion)" as IU
+boundary "FormLiquidacion" as IU
 participant "BLL_MARKETPLACE" as BLL
 participant "MP_MARKETPLACE" as DAL
-database "Base de datos (SQL Server)" as BD
+database "SQL Server" as BD
 Vendedor -> IU : marcar despachada (orden)
 IU -> BLL : MarcarDespachada(vendedor, idOrden)
 BLL -> BLL : Exigir(PROC_DESPACHAR)

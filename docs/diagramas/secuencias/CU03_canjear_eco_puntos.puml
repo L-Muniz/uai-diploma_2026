@@ -1,10 +1,10 @@
 @startuml CU03
 title CU03 Canjear Eco-Puntos
 actor Ciudadano
-participant "Interfaz (FormCanjeEcoPuntos)" as IU
+boundary "FormCanjeEcoPuntos" as IU
 participant "BLL_ECOPUNTOS" as BLL
 participant "MP_ECOPUNTOS" as DAL
-database "Base de datos (SQL Server)" as BD
+database "SQL Server" as BD
 Ciudadano -> IU : ver beneficios
 IU -> BLL : ListarBeneficios()
 BLL -> DAL : ListarBeneficiosActivos()

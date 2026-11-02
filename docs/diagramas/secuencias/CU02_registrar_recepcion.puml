@@ -1,11 +1,11 @@
 @startuml CU02
 title CU02 Registrar recepción de material
 actor "Operador de punto verde" as Op
-participant "Interfaz (FormRecepcionAcopio)" as IU
+boundary "FormRecepcionAcopio" as IU
 participant "BLL_RECICLAJE" as BLL
 participant "MP_RECICLAJE" as DAL
 participant "BLL_ECOPUNTOS" as EP
-database "Base de datos (SQL Server)" as BD
+database "SQL Server" as BD
 Op -> IU : elegir punto verde y declaración, ingresar peso
 IU -> BLL : RegistrarRecepcion(operador, idPuntoVerde, idDeclaracion, idUsuario, idMaterial, peso)
 BLL -> DAL : ListarMaterialesAceptados(idPuntoVerde)
