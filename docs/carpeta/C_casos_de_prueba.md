@@ -3,7 +3,7 @@
 Cada caso de prueba indica las condiciones, la entrada y el resultado esperado. Se aplican como pruebas de regresión en cada iteración.
 
 
-Base de pruebas: `ProyectoD`, con los scripts 01, 02 y 03 de `Proyecto/Scripts/Entrega3` ya ejecutados.
+Base de pruebas: `ProyectoD`, con los scripts 01 a 05 de `Proyecto/Scripts/Entrega3` ya ejecutados (el script 04 amplía la bitácora y el 05 carga los datos de prueba y los dígitos verificadores).
 Usuarios de prueba: uno por rol (CIUDADANO, OPERADOR_PUNTO_VERDE, GERENCIA, AREA_COMERCIAL) y un ADMIN.
 Para el monto de la pasarela simulada: hasta $100.000 aprueba; por encima rechaza.
 
@@ -74,7 +74,7 @@ Para el monto de la pasarela simulada: hasta $100.000 aprueba; por encima rechaz
 | CP-46 | Suscribirse a materiales | Usuario con rol que tenga PROC_SUSCRIBIRSE_MATERIALES | Marcar Papel y Vidrio, guardar | Se listan las guías de esos materiales |
 | CP-47 | Estadísticas de ventas | Vendedor con ventas en el período | Consultar período | Resumen y ventas por producto con los valores del período |
 | CP-48 | Período invertido | Cualquier vendedor | Desde mayor que hasta | Error de período |
-| CP-49 | Menú según rol | Usuarios de cada rol | Revisar el menú Procesos de negocio | Cada rol ve solo sus opciones; ADMIN ve todas |
+| CP-49 | Menú según rol | Usuarios de cada rol | Revisar la barra de menú (Reciclar, Tienda, Mi cuenta y Gestión) | Cada rol ve solo sus opciones; ADMIN ve todas |
 | CP-50 | Acceso denegado en BLL | Rol sin permiso | Ejecutar una operación desde el código | UnauthorizedAccessException con el código del permiso |
 
 ## Pendientes del plan de entregas (no son casos de prueba todavía)
