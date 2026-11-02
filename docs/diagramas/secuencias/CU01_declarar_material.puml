@@ -1,0 +1,26 @@
+@startuml CU01
+title CU01 Declarar material
+actor Ciudadano
+participant "FormDeclararMaterial" as IU
+participant "BLL_RECICLAJE" as BLL
+participant "MP_RECICLAJE" as DAL
+participant "BLL_ECOPUNTOS" as EP
+Ciudadano -> IU : declarar(material, cantidad)
+IU -> BLL : DeclararMaterial(usuario, idMaterial, cantidad)
+BLL -> DAL : AltaDeclaracion(idUsuario, idMaterial, cantidad)
+DAL --> BLL : idDeclaracion
+BLL -> DAL : ListarGuiasPorMaterial(idMaterial)
+BLL -> DAL : ListarPuntosVerdesPorMaterial(idMaterial)
+BLL -> BLL : MasCercano(usuario, puntos)
+BLL --> IU : OpcionesRecomendacion
+alt reutilizar en casa
+  Ciudadano -> IU : confirmar reutilización
+  IU -> BLL : ConfirmarReutilizacion(usuario, opciones)
+  BLL -> DAL : GuardarRecomendacion(REUTILIZAR, REUTILIZADA)
+  BLL -> EP : Acreditar(idUsuario, puntos, RECICLAJE)
+else entregar en punto verde
+  Ciudadano -> IU : elegir entrega oficial
+  IU -> BLL : ElegirEntregaOficial(usuario, opciones)
+  BLL -> DAL : GuardarRecomendacion(ENTREGA, PENDIENTE_ENTREGA)
+end
+@enduml

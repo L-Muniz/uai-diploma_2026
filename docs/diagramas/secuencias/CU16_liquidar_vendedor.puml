@@ -1,0 +1,13 @@
+@startuml CU16
+title CU16 Liquidar vendedor
+actor "Área comercial" as Area
+participant "FormLiquidacion" as IU
+participant "BLL_MARKETPLACE" as BLL
+participant "MP_MARKETPLACE" as DAL
+Area -> IU : pagar liquidación (idLiquidacion)
+IU -> BLL : PagarLiquidacion(responsable, idLiquidacion)
+BLL -> BLL : Exigir(PROC_LIQUIDAR)
+BLL -> DAL : PagarLiquidacion(idLiquidacion)
+DAL --> BLL : DISPONIBLE pasa a PAGADA
+BLL --> IU : transferencia ordenada
+@enduml

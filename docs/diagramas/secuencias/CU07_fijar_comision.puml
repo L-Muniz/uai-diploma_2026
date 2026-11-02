@@ -1,0 +1,14 @@
+@startuml CU07
+title CU07 Fijar comisión por categoría
+actor Gerencia
+participant "FormTarifas" as IU
+participant "BLL_GESTION" as BLL
+participant "MP_GESTION" as DAL
+Gerencia -> IU : fijar comisión (categoría, porcentaje)
+IU -> BLL : ProponerTarifa(usuario, categoria, porcentaje)
+BLL -> BLL : Exigir(PROC_GESTIONAR_TARIFAS)
+BLL -> DAL : AltaDecision(null, usuario, null, CAMBIO_TARIFA)
+DAL --> BLL : idDecision
+BLL -> DAL : AltaTarifa(idDecision, categoria, porcentaje)
+BLL --> IU : tarifa vigente desde hoy
+@enduml

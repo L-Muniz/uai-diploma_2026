@@ -1,0 +1,17 @@
+@startuml CU04
+title CU04 Consultar indicadores
+actor Gerencia
+participant "FormIndicadores" as IU
+participant "BLL_GESTION" as BLL
+participant "MP_GESTION" as DAL
+Gerencia -> IU : consultar(período)
+IU -> BLL : ConsultarIndicadores(usuario, periodo)
+BLL -> BLL : Exigir(PROC_VER_INDICADORES)
+BLL -> DAL : IndicadorAcopioPorMaterial(periodo)
+BLL -> DAL : IndicadorVentas(periodo)
+BLL -> DAL : IndicadorCostoCanjes(periodo)
+BLL -> DAL : AltaInforme(usuario, INDICADORES_MENSUALES, periodo)
+DAL --> BLL : idInforme
+BLL --> IU : tabla de indicadores
+IU --> Gerencia : indicadores del período
+@enduml

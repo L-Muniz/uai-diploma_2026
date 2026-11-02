@@ -1,0 +1,18 @@
+@startuml CU03
+title CU03 Canjear Eco-Puntos
+actor Ciudadano
+participant "FormCanjeEcoPuntos" as IU
+participant "BLL_ECOPUNTOS" as BLL
+participant "MP_ECOPUNTOS" as DAL
+Ciudadano -> IU : ver beneficios
+IU -> BLL : ListarBeneficios()
+BLL -> DAL : ListarBeneficiosActivos()
+DAL --> BLL : beneficios (sin costo para la empresa)
+Ciudadano -> IU : canjear(beneficio)
+IU -> BLL : Canjear(usuario, idBeneficio)
+BLL -> BLL : Exigir(PROC_CANJEAR_PUNTOS)
+BLL -> DAL : RegistrarCanje(idUsuario, idBeneficio)
+DAL --> BLL : idCanje (descuenta puntos y registra el movimiento)
+BLL --> IU : canje realizado
+IU --> Ciudadano : saldo actualizado
+@enduml

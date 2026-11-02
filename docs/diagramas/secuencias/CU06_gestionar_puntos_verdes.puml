@@ -1,0 +1,21 @@
+@startuml CU06
+title CU06 Gestionar puntos verdes
+actor Gerencia
+participant "FormPuntosVerdes" as IU
+participant "BLL_GESTION" as BLL
+participant "MP_RECICLAJE" as DAR
+participant "MP_GESTION" as DAG
+Gerencia -> IU : guardar punto verde (datos, materiales, validado por referente)
+IU -> BLL : GuardarPuntoVerde(usuario, pv, materiales, validadoPorReferente)
+BLL -> BLL : Exigir(PROC_GESTIONAR_PUNTOS_VERDES)
+alt validado por el referente
+  BLL -> DAR : AltaPuntoVerde(pv) / ModificarPuntoVerde(pv)
+  DAR --> BLL : idPuntoVerde
+  BLL -> DAR : GuardarMaterialesAceptados(idPuntoVerde, materiales)
+  BLL -> DAG : AltaDecision(null, usuario, idPuntoVerde, ALTA o MODIFICACION)
+  DAG --> BLL : idDecision
+  BLL --> IU : punto verde guardado
+else sin validación
+  BLL --> IU : error: el referente debe validar la locación
+end
+@enduml

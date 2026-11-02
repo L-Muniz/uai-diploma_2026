@@ -1,0 +1,20 @@
+@startuml CU02
+title CU02 Registrar recepción de material
+actor "Operador de punto verde" as Op
+participant "FormRecepcionAcopio" as IU
+participant "BLL_RECICLAJE" as BLL
+participant "MP_RECICLAJE" as DAL
+participant "BLL_ECOPUNTOS" as EP
+Op -> IU : elegir punto verde y declaración, ingresar peso
+IU -> BLL : RegistrarRecepcion(operador, idPuntoVerde, idDeclaracion, idUsuario, idMaterial, peso)
+BLL -> DAL : ListarMaterialesAceptados(idPuntoVerde)
+DAL --> BLL : materiales aceptados
+alt material aceptado
+  BLL -> DAL : RegistrarAcopio(idDeclaracion, idPuntoVerde, idMaterial, peso)
+  DAL --> BLL : idAcopio (declaración ENTREGADA)
+  BLL -> EP : Acreditar(idUsuario, puntos, ACOPIO)
+  BLL --> IU : puntos acreditados
+else material no aceptado
+  BLL --> IU : error: el punto verde no acepta el material
+end
+@enduml

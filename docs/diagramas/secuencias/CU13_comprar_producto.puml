@@ -1,0 +1,22 @@
+@startuml CU13
+title CU13 Comprar producto
+actor Comprador
+participant "FormCompraMarketplace" as IU
+participant "BLL_MARKETPLACE" as BLL
+participant "MP_MARKETPLACE" as DAL
+participant "IPasarelaPago" as PAS
+Comprador -> IU : confirmar pedido (producto, cantidad, domicilio)
+IU -> BLL : Comprar(comprador, idProducto, cantidad, direccion, pasarela)
+BLL -> BLL : Exigir(PROC_COMPRAR)
+BLL -> DAL : ObtenerProducto(idProducto)
+DAL --> BLL : producto ACTIVO con stock
+BLL -> PAS : Cobrar(monto, referencia)
+PAS --> BLL : ResultadoCobro
+alt cobro aprobado
+  BLL -> DAL : RegistrarVentaAprobada(item, comprador, vendedor, direccion, referencia, comision)
+  DAL --> BLL : idOrden (ORDEN, DETALLE, PAGO, COMISION y LIQUIDACION RETENIDA)
+  BLL --> IU : orden registrada
+else cobro rechazado
+  BLL --> IU : error: pago rechazado, sin orden
+end
+@enduml
