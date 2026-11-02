@@ -1,7 +1,13 @@
 @startuml
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
-title Capa SERVICE (parte 2 de 3)
+title Capa SERVICE
+class "BE_InformeIndicadores" as BE_InformeIndicadores <<BE>> {
+  +Version: string
+  +Periodo: string
+  +FechaGeneracion: DateTime
+  +Generado: string
+}
 class "BE_Perfil" as BE_Perfil <<BE>> {
   +ID: int
   +Nombre: string
@@ -19,12 +25,41 @@ class "BE_Perfil" as BE_Perfil <<BE>> {
   +ContarPermisosTotal(): int
   +ToString(): string
 }
+class "BE_USUARIO" as BE_USUARIO <<BE>> {
+  +Username: string
+  +HashedPassword: string
+  +ID: int
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+  --
+  +ToString(): string
+}
 interface "ISV_IdiomaObserver" as ISV_IdiomaObserver <<SERVICE>> {
   +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
 }
 interface "ISV_ProveedorTraduccion" as ISV_ProveedorTraduccion <<SERVICE>> {
   +ObtenerTraduccion(string clave, string codigoIdioma): string
   +ObtenerIdiomasDisponibles(): List<string>
+}
+class "SV_ArchivoInvalidoException" as SV_ArchivoInvalidoException <<SERVICE>> {
+}
+class "SV_DigitoVerificadorHorizontal" as SV_DigitoVerificadorHorizontal <<SERVICE>> {
+  +CalcularDV(string datos): int
+  +VerificarDV(string datos, int dvAlmacenado): bool
+  +ObtenerDVString(string datos): string
+}
+class "SV_DigitoVerificadorVertical" as SV_DigitoVerificadorVertical <<SERVICE>> {
+  +CalcularDVAtributo(string valorAtributo, int posicionAtributo): int
+  +VerificarDVAtributo(string valorAtributo, int posicionAtributo, int dvAlmacenado): bool
+  +VerificarDVVEntidad(Dictionary<string, string> atributos, Dictionary<string, int> dvvAlmacenados): bool
+}
+class "SV_Encriptacion" as SV_Encriptacion <<SERVICE>> {
+  +Encriptar(string textoPlano): string
+  +Desencriptar(string textoEncriptado): string
+  +EstaEncriptado(string texto): bool
+  +EncriptarArchivo(string rutaArchivo): void
+  +LeerArchivoDesencriptado(string rutaArchivo): string
 }
 class "SV_GeneradorPdf" as SV_GeneradorPdf <<SERVICE>> {
   +GenerarTabla(string ruta, string titulo, string subtitulo, string[] columnas, IList<string[]> filas, string pie = null): void
@@ -72,15 +107,33 @@ class "SV_PerfilComposite" as SV_PerfilComposite <<SERVICE>> {
   +ObtenerTodosLosPerfiles(List<BE_Perfil> raices): List<BE_Perfil>
   +ObtenerProfundidadMaxima(List<BE_Perfil> raices): int
 }
-BE_Perfil -[hidden]down- ISV_IdiomaObserver
+class "SV_Serializacion" as SV_Serializacion <<SERVICE>> {
+  +GuardarInforme(string ruta, BE_InformeIndicadores informe): void
+  +CargarInforme(string ruta): BE_InformeIndicadores
+}
+class "SV_Singleton" as SV_Singleton <<SERVICE>> {
+  +GetInstance(): SV_Singleton
+  +LimpiarSesion(): void
+}
+BE_InformeIndicadores -[hidden]down- BE_Perfil
+BE_Perfil -[hidden]down- BE_USUARIO
 ISV_IdiomaObserver -[hidden]down- ISV_ProveedorTraduccion
-ISV_ProveedorTraduccion -[hidden]down- SV_GeneradorPdf
+ISV_ProveedorTraduccion -[hidden]down- SV_ArchivoInvalidoException
+SV_DigitoVerificadorHorizontal -[hidden]down- SV_DigitoVerificadorVertical
+SV_DigitoVerificadorVertical -[hidden]down- SV_Encriptacion
 SV_GeneradorPdf -[hidden]down- SV_Hash
-SV_IdiomaManager -[hidden]down- SV_IdiomaObserverBase
+SV_Hash -[hidden]down- SV_IdiomaManager
 SV_IdiomaObserverBase -[hidden]down- SV_Mensajes
 SV_Mensajes -[hidden]down- SV_PerfilComposite
-BE_Perfil -[hidden]right- SV_IdiomaManager
+SV_Serializacion -[hidden]down- SV_Singleton
+BE_InformeIndicadores -[hidden]right- ISV_IdiomaObserver
+ISV_IdiomaObserver -[hidden]right- SV_DigitoVerificadorHorizontal
+SV_DigitoVerificadorHorizontal -[hidden]right- SV_GeneradorPdf
+SV_GeneradorPdf -[hidden]right- SV_IdiomaObserverBase
+SV_IdiomaObserverBase -[hidden]right- SV_Serializacion
 SV_IdiomaManager --> ISV_IdiomaObserver
 SV_IdiomaManager --> ISV_ProveedorTraduccion
 SV_PerfilComposite --> BE_Perfil
+SV_Serializacion --> BE_InformeIndicadores
+SV_Singleton "0..*" --> "1" BE_USUARIO : Usuario
 @enduml
