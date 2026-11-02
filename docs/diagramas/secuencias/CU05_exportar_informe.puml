@@ -1,10 +1,11 @@
 @startuml CU05
 title CU05 Exportar informe de indicadores
 actor Gerencia
-participant "FormIndicadores" as IU
+participant "Interfaz (FormIndicadores)" as IU
 participant "BLL_REPORTES" as BLL
 participant "BLL_GESTION" as GES
 participant "SV_GeneradorPdf / SV_Serializacion" as SV
+database "Base de datos (SQL Server)" as BD
 Gerencia -> IU : exportar PDF
 IU -> BLL : ExportarIndicadoresPdf(usuario, periodo, ruta)
 BLL -> GES : ConsultarIndicadores(usuario, periodo)

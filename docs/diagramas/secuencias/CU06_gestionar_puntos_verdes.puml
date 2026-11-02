@@ -1,18 +1,22 @@
 @startuml CU06
 title CU06 Gestionar puntos verdes
 actor Gerencia
-participant "FormPuntosVerdes" as IU
+participant "Interfaz (FormPuntosVerdes)" as IU
 participant "BLL_GESTION" as BLL
 participant "MP_RECICLAJE" as DAR
 participant "MP_GESTION" as DAG
+database "Base de datos (SQL Server)" as BD
 Gerencia -> IU : guardar punto verde (datos, materiales, validado por referente)
 IU -> BLL : GuardarPuntoVerde(usuario, pv, materiales, validadoPorReferente)
 BLL -> BLL : Exigir(PROC_GESTIONAR_PUNTOS_VERDES)
 alt validado por el referente
   BLL -> DAR : AltaPuntoVerde(pv) / ModificarPuntoVerde(pv)
+DAR -> BD : PUNTO_VERDE_ALTA
   DAR --> BLL : idPuntoVerde
   BLL -> DAR : GuardarMaterialesAceptados(idPuntoVerde, materiales)
+DAR -> BD : PUNTO_VERDE_MATERIALES_GUARDAR
   BLL -> DAG : AltaDecision(null, usuario, idPuntoVerde, ALTA o MODIFICACION)
+DAG -> BD : DECISION_ALTA
   DAG --> BLL : idDecision
   BLL --> IU : punto verde guardado
 else sin validación

@@ -1,14 +1,16 @@
 @startuml CU11
 title CU11 Publicar producto
 actor Vendedor
-participant "FormPublicarProducto" as IU
+participant "Interfaz (FormPublicarProducto)" as IU
 participant "BLL_MARKETPLACE" as BLL
 participant "BLL_GESTION" as GES
 participant "MP_MARKETPLACE" as DAL
+database "Base de datos (SQL Server)" as BD
 Vendedor -> IU : publicar (nombre, categoría, precio, stock)
 IU -> BLL : PublicarProducto(vendedor, nombre, descripcion, categoria, precio, stock)
 BLL -> BLL : Exigir(PROC_PUBLICAR_PRODUCTO) y EsVendedorVerificado()
 BLL -> GES : ObtenerIdTarifaVigente(categoria)
 BLL -> DAL : AltaProducto(producto) (queda PENDIENTE)
+DAL -> BD : PRODUCTO_ALTA
 BLL --> IU : producto pendiente de aprobación
 @enduml

@@ -1,7 +1,7 @@
 @startuml CU09
 title CU09 Solicitar verificación de vendedor
 actor Ciudadano
-participant "FormVerificacionVendedor" as IU
+participant "Interfaz (FormVerificacionVendedor)" as IU
 participant "BLL_MARKETPLACE" as BLL
 participant "BLL_DATOS_USUARIO" as BD
 participant "MP_MARKETPLACE" as DAL
@@ -10,9 +10,11 @@ IU -> BLL : SolicitarVerificacion(usuario, documentoRef)
 BLL -> BLL : Exigir(PROC_SOLICITAR_VERIFICACION)
 BLL -> BD : ValidarMayorDeEdadVendedor(usuario)
 BLL -> DAL : UltimoEstadoVerificacion(idUsuario)
+DAL -> BD : VERIFICACION_ULTIMO_ESTADO
 DAL --> BLL : último estado
 alt sin solicitud pendiente ni aprobada
   BLL -> DAL : AltaVerificacion(idUsuario, PENDIENTE, documentoRef)
+DAL -> BD : VERIFICACION_ALTA
   BLL --> IU : solicitud enviada
 else pendiente o aprobada
   BLL --> IU : error: ya tiene una solicitud pendiente o está verificado

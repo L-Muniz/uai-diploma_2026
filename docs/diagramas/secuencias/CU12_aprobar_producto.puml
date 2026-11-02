@@ -1,13 +1,15 @@
 @startuml CU12
 title CU12 Aprobar producto
 actor "Área comercial" as Area
-participant "FormPublicarProducto" as IU
+participant "Interfaz (FormPublicarProducto)" as IU
 participant "BLL_MARKETPLACE" as BLL
 participant "MP_MARKETPLACE" as DAL
+database "Base de datos (SQL Server)" as BD
 Area -> IU : aprobar (producto pendiente)
 IU -> BLL : AprobarProducto(responsable, idProducto)
 BLL -> BLL : Exigir(PROC_APROBAR_PRODUCTO)
 BLL -> DAL : AprobarProducto(idProducto)
+DAL -> BD : PRODUCTO_APROBAR
 DAL --> BLL : ESTADO = ACTIVO
 BLL --> IU : producto visible en el catálogo
 @enduml
