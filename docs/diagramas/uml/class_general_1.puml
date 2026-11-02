@@ -1,0 +1,183 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+title Capa BE (parte 1 de 3)
+class "BE_Acopio" as BE_Acopio <<BE>> {
+  +ID: int
+  +IDDeclaracion: int?
+  +PesoKg: decimal
+  +FechaRecepcion: DateTime
+  +Estado: string
+}
+class "BE_BITACORA" as BE_BITACORA <<BE>> {
+  +ID: int
+  +Descripcion: string
+  +Fecha: DateTime
+  --
+  +ToString(): string
+}
+class "BE_Beneficio" as BE_Beneficio <<BE>> {
+  +ID: int
+  +Tipo: string
+  +Descripcion: string
+  +PuntosRequeridos: int
+  +CostoEmpresa: decimal
+  +Activo: bool
+  --
+  +ToString(): string
+}
+class "BE_CambiosEntidad" as BE_CambiosEntidad <<BE>> {
+  +ID: int
+  +TipoEntidad: string
+  +IdEntidad: int
+  +NombreAtributo: string
+  +ValorAnterior: string
+  +ValorNuevo: string
+  +FechaCambio: DateTime
+  +Descripcion: string
+  --
+  +ToString(): string
+}
+class "BE_Canje" as BE_Canje <<BE>> {
+  +ID: int
+  +IDUsuario: int
+  +PuntosUsados: int
+  +Fecha: DateTime
+  +Estado: string
+}
+class "BE_Comision" as BE_Comision <<BE>> {
+  +ID: int
+  +IDOrden: int
+  +Porcentaje: decimal
+  +Monto: decimal
+  +Fecha: DateTime
+}
+class "BE_ComponenteAcceso" as BE_ComponenteAcceso <<BE>> {
+  +ID: int
+  +Tipo: string
+  +Nombre: string
+  +Codigo: string
+  +Descripcion: string
+  +EsHeredado: bool
+  +Origen: string
+  +EsPermiso: bool
+  +EsRol: bool
+  +EsPerfil: bool
+  +SePuedeDesasignar: bool
+  +ProvieneDePerfil: bool
+  +ProvieneDeRolPadre: bool
+  +OrigenDirecto: string
+  +Etiqueta: string
+  --
+  +OrigenDesdePerfil(string nombrePerfil): string
+  +OrigenDesdePerfiles(IList<string> nombresPerfil): string
+  +OrigenDesdeRolPadre(string nombreRolPadre): string
+  +CombinarOrigenes(IList<string> origenes): string
+  +ToString(): string
+}
+class "BE_CuentaEcoPuntos" as BE_CuentaEcoPuntos <<BE>> {
+  +ID: int
+  +IDUsuario: int
+  +Saldo: int
+  +Nivel: int
+}
+class "BE_DatosUsuario" as BE_DatosUsuario <<BE>> {
+  +IDUsuario: int
+  +FechaNacimiento: DateTime?
+  +Latitud: decimal?
+  +Longitud: decimal?
+  +Localidad: string
+}
+class "BE_Decision" as BE_Decision <<BE>> {
+  +ID: int
+  +IDInforme: int?
+  +IDUsuario: int
+  +IDPuntoVerde: int?
+  +Tipo: string
+  +Descripcion: string
+  +Fecha: DateTime
+}
+class "BE_DeclaracionMaterial" as BE_DeclaracionMaterial <<BE>> {
+  +ID: int
+  +IDUsuario: int
+  +Cantidad: decimal
+  +Fecha: DateTime
+  +Estado: string
+}
+class "BE_DigitoVerificadorVertical" as BE_DigitoVerificadorVertical <<BE>> {
+  +ID: int
+  +IdEntidad: int
+  +TipoEntidad: string
+  +DVUsername: int
+  +DVHashedPassword: int
+  +DVBloqueado: int
+  +FechaCreacion: DateTime
+  --
+  +ToString(): string
+}
+class "BE_GuiaReutilizacion" as BE_GuiaReutilizacion <<BE>> {
+  +ID: int
+  +Titulo: string
+  +Pasos: string
+  +Dificultad: string
+}
+class "BE_Idioma" as BE_Idioma <<BE>> {
+  +Codigo: string
+  +Nombre: string
+  --
+  +ToString(): string
+}
+class "BE_Material" as BE_Material <<BE>> {
+  +ID: int
+  +Nombre: string
+  +Categoria: string
+  +UnidadMedida: string
+  --
+  +ToString(): string
+}
+class "BE_PuntoVerde" as BE_PuntoVerde <<BE>> {
+  +ID: int
+  +Nombre: string
+  +Direccion: string
+  +Latitud: decimal?
+  +Longitud: decimal?
+  +Horario: string
+  +Activo: bool
+  --
+  +ToString(): string
+}
+class "BE_USUARIO" as BE_USUARIO <<BE>> {
+  +Username: string
+  +HashedPassword: string
+  +ID: int
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+  --
+  +ToString(): string
+}
+BE_Acopio -[hidden]down- BE_BITACORA
+BE_BITACORA -[hidden]down- BE_Beneficio
+BE_Beneficio -[hidden]down- BE_CambiosEntidad
+BE_CambiosEntidad -[hidden]down- BE_Canje
+BE_Canje -[hidden]down- BE_Comision
+BE_Comision -[hidden]down- BE_ComponenteAcceso
+BE_ComponenteAcceso -[hidden]down- BE_CuentaEcoPuntos
+BE_CuentaEcoPuntos -[hidden]down- BE_DatosUsuario
+BE_Decision -[hidden]down- BE_DeclaracionMaterial
+BE_DeclaracionMaterial -[hidden]down- BE_DigitoVerificadorVertical
+BE_DigitoVerificadorVertical -[hidden]down- BE_GuiaReutilizacion
+BE_GuiaReutilizacion -[hidden]down- BE_Idioma
+BE_Idioma -[hidden]down- BE_Material
+BE_Material -[hidden]down- BE_PuntoVerde
+BE_PuntoVerde -[hidden]down- BE_USUARIO
+BE_Acopio -[hidden]right- BE_Decision
+BE_Acopio "0..*" --> "1" BE_PuntoVerde : PuntoVerde
+BE_Acopio "0..*" --> "1" BE_Material : Material
+BE_BITACORA "0..*" --> "1" BE_USUARIO : Usuario
+BE_CambiosEntidad "0..*" --> "1" BE_USUARIO : UsuarioModifico
+BE_Canje "0..*" --> "1" BE_Beneficio : Beneficio
+BE_DeclaracionMaterial "0..*" --> "1" BE_Material : Material
+BE_GuiaReutilizacion "0..*" --> "1" BE_Material : Material
+BE_PuntoVerde "1" o-- "0..*" BE_Material : MaterialesAceptados
+@enduml

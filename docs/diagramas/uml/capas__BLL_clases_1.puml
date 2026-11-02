@@ -1,7 +1,7 @@
 @startuml
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
-title Capa BLL
+title Capa BLL (parte 1 de 2)
 class "BE_BITACORA" as BE_BITACORA <<BE>> {
   +ID: int
   +Descripcion: string
@@ -84,12 +84,6 @@ class "BE_Idioma" as BE_Idioma <<BE>> {
   --
   +ToString(): string
 }
-class "BE_InformeIndicadores" as BE_InformeIndicadores <<BE>> {
-  +Version: string
-  +Periodo: string
-  +FechaGeneracion: DateTime
-  +Generado: string
-}
 class "BE_Material" as BE_Material <<BE>> {
   +ID: int
   +Nombre: string
@@ -149,12 +143,6 @@ class "BE_Rol" as BE_Rol <<BE>> {
   +TienePermisoPorCodigo(string codigo): bool
   +ContarPermisosTotal(): int
   +ToString(): string
-}
-class "BE_Snapshot" as BE_Snapshot <<BE>> {
-  +ID: int
-  +Nombre: string
-  +Descripcion: string
-  +Fecha: DateTime
 }
 class "BE_USUARIO" as BE_USUARIO <<BE>> {
   +Username: string
@@ -318,110 +306,37 @@ class "BLL_PERFIL" as BLL_PERFIL <<BLL>> {
   +QuitarPermisoDelPerfil(int idPerfil, int idPermiso): void
   +ObtenerPerfilesCandidatosComoPadre(int idPerfilHijo): List<BE_Perfil>
 }
-class "BLL_PERMISO" as BLL_PERMISO <<BLL>> {
-  +CrearPermiso(BE_Permiso permiso): void
-  +ActualizarPermiso(BE_Permiso permiso): void
-  +EliminarPermiso(int idPermiso): void
-  +ObtenerTodosLosPermisos(): List<BE_Permiso>
-  +ObtenerPermisoPorId(int idPermiso): BE_Permiso
-  +AgregarComponente(int idPermisoCompuesto, int idPermisoComponente): void
-  +QuitarComponente(int idPermisoCompuesto, int idPermisoComponente): void
-  +ObtenerComponentes(int idPermisoCompuesto): List<BE_Permiso>
-  +MarcarComoCompuesto(int idPermiso): void
-}
-class "BLL_RECICLAJE" as BLL_RECICLAJE <<BLL>> {
-  +IDDeclaracion: int
-  +IDMaterial: int
-  +Material: string
-  +Cantidad: decimal
-  +IDGuia: int?
-  +TituloGuia: string
-  +PasosGuia: string
-  +IDPuntoVerde: int?
-  +NombrePuntoVerde: string
-  +DireccionPuntoVerde: string
-  --
-  +ListarMateriales(): DataTable
-  +ListarPuntosVerdes(): DataTable
-  +ListarDeclaracionesDeUsuario(int idUsuario): DataTable
-  +ListarDeclaracionesPendientes(): DataTable
-  +ListarDeclaracionesPendientesDePuntoVerde(int idPuntoVerde): DataTable
-  +DeclararMaterial(BE_USUARIO usuario, int idMaterial, decimal cantidad): OpcionesRecomendacion
-  +ConfirmarReutilizacion(BE_USUARIO usuario, OpcionesRecomendacion opciones): int
-  +ElegirEntregaOficial(BE_USUARIO usuario, OpcionesRecomendacion opciones): void
-  +ListarMaterialesAceptados(int idPuntoVerde): DataTable
-  +RegistrarRecepcion(BE_USUARIO operador, int idPuntoVerde, int? idDeclaracion, int idUsuarioCiudadano, int idMaterial, decimal pesoKg): int
-}
-class "BLL_REPORTES" as BLL_REPORTES <<BLL>> {
-  +ExportarIndicadoresPdf(BE_USUARIO usuario, string periodo, string ruta): void
-  +ExportarIndicadoresXml(BE_USUARIO usuario, string periodo, string ruta): void
-  +ImportarIndicadoresXml(string ruta): BE_InformeIndicadores
-  +ExportarEstadisticasPdf(BE_USUARIO vendedor, DateTime desde, DateTime hasta, string ruta): void
-}
-class "BLL_ROL" as BLL_ROL <<BLL>> {
-  +ObtenerRolesPrincipales(): List<BE_Rol>
-  +ObtenerTodosLosRoles(): List<BE_Rol>
-  +ObtenerPermisosDelRol(int idRol): List<BE_Permiso>
-  +ObtenerComponentesDelRol(int idRol): List<BE_ComponenteAcceso>
-  +ObtenerComponentesDisponiblesParaAsignar(int idRol): List<BE_ComponenteAcceso>
-  +ObtenerTodosLosPermisos(): List<BE_Permiso>
-  +CrearRol(BE_Rol rol): void
-  +ActualizarRol(BE_Rol rol): void
-  +DesasignarComponente(int idRol, BE_ComponenteAcceso componente): void
-  +AsignarComponente(int idRol, BE_ComponenteAcceso componente): void
-  +EliminarRol(int idRol): void
-  +AgregarPermisoAlRol(int idRol, int idPermiso): void
-  +QuitarPermisoDelRol(int idRol, int idPermiso): void
-  +ObtenerRolPorID(int idRol): BE_Rol
-}
-class "BLL_Rollback" as BLL_Rollback <<BLL>> {
-  +ListarSnapshots(): List<BE_Snapshot>
-}
-class "BLL_USUARIO" as BLL_USUARIO <<BLL>> {
-  +Login(string username, string password): BE_USUARIO
-  +Logout(): void
-  +CrearUsuario(string username, string password): void
-  +DesbloquearUsuario(BE_USUARIO usuario): void
-  +ActualizarUsuario(BE_USUARIO usuario): void
-  +EsRolAdministrador(string rol): bool
-  +ObtenerIntentosMaximos(): int
-  +ListarUsuarios(): List<BE_USUARIO>
-  +EditarUsuario(int idUsuario, string nuevoUsername, string nuevaPassword = null): void
-  +EliminarUsuario(int idUsuario): void
-  +AsignarRolUsuario(int idUsuario, int idRol, string nombreRol): void
-  +ObtenerDVVDelUsuario(int idUsuario): BE_DigitoVerificadorVertical
-}
-class "CriteriosBusqueda" as CriteriosBusqueda <<BLL>> {
-  +IdUsuario: int?
-  +FechaDesde: DateTime?
-  +FechaHasta: DateTime?
-  +Descripcion: string
-}
 interface "IPasarelaPago" as IPasarelaPago <<BLL>> {
   +Cobrar(decimal monto, string referencia): ResultadoCobro
 }
-class "OpcionesRecomendacion" as OpcionesRecomendacion <<BLL>> {
-  +IDDeclaracion: int
-  +IDMaterial: int
-  +Material: string
-  +Cantidad: decimal
-  +IDGuia: int?
-  +TituloGuia: string
-  +PasosGuia: string
-  +IDPuntoVerde: int?
-  +NombrePuntoVerde: string
-  +DireccionPuntoVerde: string
-}
-class "PasarelaSimulada" as PasarelaSimulada <<BLL>> {
-  +Cobrar(decimal monto, string referencia): ResultadoCobro
-}
-class "ResultadoCobro" as ResultadoCobro <<BLL>> {
-  +Aprobado: bool
-  +Referencia: string
-  +Motivo: string
-}
-class "TipoEvento" as TipoEvento <<BLL>> {
-}
+BE_BITACORA -[hidden]down- BE_Beneficio
+BE_Beneficio -[hidden]down- BE_CambiosEntidad
+BE_CambiosEntidad -[hidden]down- BE_ComponenteAcceso
+BE_ComponenteAcceso -[hidden]down- BE_DatosUsuario
+BE_DatosUsuario -[hidden]down- BE_DigitoVerificadorVertical
+BE_DigitoVerificadorVertical -[hidden]down- BE_GuiaReutilizacion
+BE_GuiaReutilizacion -[hidden]down- BE_Idioma
+BE_Idioma -[hidden]down- BE_Material
+BE_Material -[hidden]down- BE_Perfil
+BE_Perfil -[hidden]down- BE_Permiso
+BE_Permiso -[hidden]down- BE_PuntoVerde
+BE_PuntoVerde -[hidden]down- BE_Rol
+BE_Rol -[hidden]down- BE_USUARIO
+BE_USUARIO -[hidden]down- BLL_AUTORIZACION
+BLL_BITACORA -[hidden]down- BLL_BackupRestore
+BLL_BackupRestore -[hidden]down- BLL_CATALOGO
+BLL_CATALOGO -[hidden]down- BLL_ControlCambios
+BLL_ControlCambios -[hidden]down- BLL_DATOS_USUARIO
+BLL_DATOS_USUARIO -[hidden]down- BLL_ECOPUNTOS
+BLL_ECOPUNTOS -[hidden]down- BLL_ESTADISTICAS
+BLL_ESTADISTICAS -[hidden]down- BLL_GESTION
+BLL_GESTION -[hidden]down- BLL_GESTOR
+BLL_GESTOR -[hidden]down- BLL_Idioma
+BLL_Idioma -[hidden]down- BLL_IntegridadDatos
+BLL_IntegridadDatos -[hidden]down- BLL_MARKETPLACE
+BLL_MARKETPLACE -[hidden]down- BLL_PERFIL
+BLL_PERFIL -[hidden]down- IPasarelaPago
+BE_BITACORA -[hidden]right- BLL_BITACORA
 BE_BITACORA "0..*" --> "1" BE_USUARIO : Usuario
 BE_CambiosEntidad "0..*" --> "1" BE_USUARIO : UsuarioModifico
 BE_GuiaReutilizacion "0..*" --> "1" BE_Material : Material
@@ -430,8 +345,6 @@ BE_PuntoVerde "1" o-- "0..*" BE_Material : MaterialesAceptados
 BLL_AUTORIZACION --> BE_USUARIO
 BLL_BITACORA --> BE_BITACORA
 BLL_BITACORA --> BE_USUARIO
-BLL_BITACORA --> CriteriosBusqueda
-BLL_BITACORA --> TipoEvento
 BLL_CATALOGO --> BE_Beneficio
 BLL_CATALOGO --> BE_GuiaReutilizacion
 BLL_CATALOGO --> BE_Material
@@ -453,17 +366,4 @@ BLL_MARKETPLACE --> IPasarelaPago
 BLL_PERFIL --> BE_ComponenteAcceso
 BLL_PERFIL --> BE_Perfil
 BLL_PERFIL --> BE_Permiso
-BLL_PERMISO --> BE_Permiso
-BLL_RECICLAJE --> BE_USUARIO
-BLL_RECICLAJE --> OpcionesRecomendacion
-BLL_REPORTES --> BE_InformeIndicadores
-BLL_REPORTES --> BE_USUARIO
-BLL_ROL --> BE_ComponenteAcceso
-BLL_ROL --> BE_Permiso
-BLL_ROL --> BE_Rol
-BLL_Rollback --> BE_Snapshot
-BLL_USUARIO --> BE_DigitoVerificadorVertical
-BLL_USUARIO --> BE_USUARIO
-IPasarelaPago --> ResultadoCobro
-PasarelaSimulada --> ResultadoCobro
 @enduml

@@ -1,0 +1,50 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+title Capa GUI (parte 2 de 3)
+class "FormIndicadores" as FormIndicadores <<GUI>> {
+}
+class "FormIntegridad" as FormIntegridad <<GUI>> {
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+class "FormLiquidacion" as FormLiquidacion <<GUI>> {
+}
+class "FormMateriales" as FormMateriales <<GUI>> {
+}
+class "FormMiPerfil" as FormMiPerfil <<GUI>> {
+}
+class "FormPermisoABM" as FormPermisoABM <<GUI>> {
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+class "FormPublicarProducto" as FormPublicarProducto <<GUI>> {
+}
+class "FormPuntosVerdes" as FormPuntosVerdes <<GUI>> {
+}
+class "FormRecepcionAcopio" as FormRecepcionAcopio <<GUI>> {
+}
+class "FormReclamos" as FormReclamos <<GUI>> {
+}
+class "FormRoles" as FormRoles <<GUI>> {
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+class "FormSnapshots" as FormSnapshots <<GUI>> {
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+class "FormSuscripciones" as FormSuscripciones <<GUI>> {
+}
+class "FormTarifas" as FormTarifas <<GUI>> {
+}
+FormIndicadores -[hidden]down- FormIntegridad
+FormIntegridad -[hidden]down- FormLiquidacion
+FormLiquidacion -[hidden]down- FormMateriales
+FormMateriales -[hidden]down- FormMiPerfil
+FormMiPerfil -[hidden]down- FormPermisoABM
+FormPermisoABM -[hidden]down- FormPublicarProducto
+FormPuntosVerdes -[hidden]down- FormRecepcionAcopio
+FormRecepcionAcopio -[hidden]down- FormReclamos
+FormReclamos -[hidden]down- FormRoles
+FormRoles -[hidden]down- FormSnapshots
+FormSnapshots -[hidden]down- FormSuscripciones
+FormSuscripciones -[hidden]down- FormTarifas
+FormIndicadores -[hidden]right- FormPuntosVerdes
+@enduml

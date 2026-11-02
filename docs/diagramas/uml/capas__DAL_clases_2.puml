@@ -1,0 +1,72 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+title Capa DAL (parte 2 de 2)
+class "BE_Permiso" as BE_Permiso <<BE>> {
+  +ID: int
+  +Nombre: string
+  +Descripcion: string
+  +Codigo: string
+  +EsCompuesto: bool
+  --
+  +ToString(): string
+  +Equals(object obj): bool
+  +GetHashCode(): int
+}
+class "BE_Rol" as BE_Rol <<BE>> {
+  +ID: int
+  +Nombre: string
+  +Descripcion: string
+  --
+  +AgregarComponente(I_ComponenteAcceso componente): void
+  +QuitarComponente(I_ComponenteAcceso componente): void
+  +ObtenerTodosLosPermisos(): HashSet<BE_PermisoSimple>
+  +TienePermiso(BE_PermisoSimple permiso): bool
+  +TienePermisoPorCodigo(string codigo): bool
+  +ContarPermisosTotal(): int
+  +ToString(): string
+}
+class "BE_USUARIO" as BE_USUARIO <<BE>> {
+  +Username: string
+  +HashedPassword: string
+  +ID: int
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+  --
+  +ToString(): string
+}
+class "MP_ROL" as MP_ROL <<DAL>> {
+  +Alta(BE_Rol obj): int
+  +Borrar(BE_Rol obj): int
+  +Editar(BE_Rol obj): int
+  +Listar(): List<BE_Rol>
+  +ListarTodos(): List<BE_Rol>
+  +ObtenerPorId(int idRol): BE_Rol
+  +ObtenerPermisos(int idRol): List<BE_Permiso>
+  +ObtenerTodosLosPermisos(): List<BE_Permiso>
+  +AgregarPermiso(int idRol, int idPermiso): void
+  +QuitarPermiso(int idRol, int idPermiso): void
+  +ObtenerPorID(int idRol): BE_Rol
+}
+class "MP_USUARIO" as MP_USUARIO <<DAL>> {
+  +Alta(BE_USUARIO obj): int
+  +Borrar(BE_USUARIO obj): int
+  +BuscarPorUserName(string username): BE_USUARIO
+  +BuscarPorId(int id): BE_USUARIO
+  +Editar(BE_USUARIO obj): int
+  +AsignarRol(int idUsuario, int idRol): int
+  +Listar(): List<BE_USUARIO>
+  +BloquearUsuario(BE_USUARIO usuario): int
+  +DesbloquearUsuario(BE_USUARIO usuario): int
+  +ActualizarDVHorizontal(BE_USUARIO usuario): int
+  +ObtenerRolUsuario(int idUsuario): string
+}
+BE_Permiso -[hidden]down- BE_Rol
+BE_Rol -[hidden]down- BE_USUARIO
+MP_ROL -[hidden]down- MP_USUARIO
+BE_Permiso -[hidden]right- MP_ROL
+MP_ROL --> BE_Permiso
+MP_ROL --> BE_Rol
+MP_USUARIO --> BE_USUARIO
+@enduml

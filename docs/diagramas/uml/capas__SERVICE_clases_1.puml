@@ -1,7 +1,7 @@
 @startuml
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
-title Capa SERVICE
+title Capa SERVICE (parte 1 de 1)
 class "BE_InformeIndicadores" as BE_InformeIndicadores <<BE>> {
   +Version: string
   +Periodo: string
@@ -115,6 +115,22 @@ class "SV_Singleton" as SV_Singleton <<SERVICE>> {
   +GetInstance(): SV_Singleton
   +LimpiarSesion(): void
 }
+BE_InformeIndicadores -[hidden]down- BE_Perfil
+BE_Perfil -[hidden]down- BE_USUARIO
+BE_USUARIO -[hidden]down- ISV_IdiomaObserver
+ISV_IdiomaObserver -[hidden]down- ISV_ProveedorTraduccion
+ISV_ProveedorTraduccion -[hidden]down- SV_ArchivoInvalidoException
+SV_ArchivoInvalidoException -[hidden]down- SV_DigitoVerificadorHorizontal
+SV_DigitoVerificadorHorizontal -[hidden]down- SV_DigitoVerificadorVertical
+SV_DigitoVerificadorVertical -[hidden]down- SV_Encriptacion
+SV_GeneradorPdf -[hidden]down- SV_Hash
+SV_Hash -[hidden]down- SV_IdiomaManager
+SV_IdiomaManager -[hidden]down- SV_IdiomaObserverBase
+SV_IdiomaObserverBase -[hidden]down- SV_Mensajes
+SV_Mensajes -[hidden]down- SV_PerfilComposite
+SV_PerfilComposite -[hidden]down- SV_Serializacion
+SV_Serializacion -[hidden]down- SV_Singleton
+BE_InformeIndicadores -[hidden]right- SV_GeneradorPdf
 SV_IdiomaManager --> ISV_IdiomaObserver
 SV_IdiomaManager --> ISV_ProveedorTraduccion
 SV_PerfilComposite --> BE_Perfil

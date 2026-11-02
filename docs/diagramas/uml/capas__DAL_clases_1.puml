@@ -1,7 +1,7 @@
 @startuml
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
-title Capa DAL
+title Capa DAL (parte 1 de 2)
 class "ACCESO" as ACCESO <<DAL>> {
   +Abrir(): void
   +Cerrar(): void
@@ -133,19 +133,6 @@ class "BE_PuntoVerde" as BE_PuntoVerde <<BE>> {
   +Horario: string
   +Activo: bool
   --
-  +ToString(): string
-}
-class "BE_Rol" as BE_Rol <<BE>> {
-  +ID: int
-  +Nombre: string
-  +Descripcion: string
-  --
-  +AgregarComponente(I_ComponenteAcceso componente): void
-  +QuitarComponente(I_ComponenteAcceso componente): void
-  +ObtenerTodosLosPermisos(): HashSet<BE_PermisoSimple>
-  +TienePermiso(BE_PermisoSimple permiso): bool
-  +TienePermisoPorCodigo(string codigo): bool
-  +ContarPermisosTotal(): int
   +ToString(): string
 }
 class "BE_USUARIO" as BE_USUARIO <<BE>> {
@@ -295,32 +282,32 @@ class "MP_RECICLAJE" as MP_RECICLAJE <<DAL>> {
   +GuardarRecomendacion(int idDeclaracion, int? idGuia, int? idPuntoVerde, string opcionElegida, string nuevoEstado): void
   +RegistrarAcopio(int? idDeclaracion, int idPuntoVerde, int idMaterial, decimal pesoKg): int
 }
-class "MP_ROL" as MP_ROL <<DAL>> {
-  +Alta(BE_Rol obj): int
-  +Borrar(BE_Rol obj): int
-  +Editar(BE_Rol obj): int
-  +Listar(): List<BE_Rol>
-  +ListarTodos(): List<BE_Rol>
-  +ObtenerPorId(int idRol): BE_Rol
-  +ObtenerPermisos(int idRol): List<BE_Permiso>
-  +ObtenerTodosLosPermisos(): List<BE_Permiso>
-  +AgregarPermiso(int idRol, int idPermiso): void
-  +QuitarPermiso(int idRol, int idPermiso): void
-  +ObtenerPorID(int idRol): BE_Rol
-}
-class "MP_USUARIO" as MP_USUARIO <<DAL>> {
-  +Alta(BE_USUARIO obj): int
-  +Borrar(BE_USUARIO obj): int
-  +BuscarPorUserName(string username): BE_USUARIO
-  +BuscarPorId(int id): BE_USUARIO
-  +Editar(BE_USUARIO obj): int
-  +AsignarRol(int idUsuario, int idRol): int
-  +Listar(): List<BE_USUARIO>
-  +BloquearUsuario(BE_USUARIO usuario): int
-  +DesbloquearUsuario(BE_USUARIO usuario): int
-  +ActualizarDVHorizontal(BE_USUARIO usuario): int
-  +ObtenerRolUsuario(int idUsuario): string
-}
+ACCESO -[hidden]down- BE_BITACORA
+BE_BITACORA -[hidden]down- BE_Beneficio
+BE_Beneficio -[hidden]down- BE_CambiosEntidad
+BE_CambiosEntidad -[hidden]down- BE_DatosUsuario
+BE_DatosUsuario -[hidden]down- BE_DigitoVerificadorVertical
+BE_DigitoVerificadorVertical -[hidden]down- BE_GuiaReutilizacion
+BE_GuiaReutilizacion -[hidden]down- BE_ItemOrden
+BE_ItemOrden -[hidden]down- BE_Material
+BE_Material -[hidden]down- BE_Perfil
+BE_Perfil -[hidden]down- BE_Permiso
+BE_Permiso -[hidden]down- BE_Producto
+BE_Producto -[hidden]down- BE_PuntoVerde
+BE_PuntoVerde -[hidden]down- BE_USUARIO
+MAPPER -[hidden]down- MP_BITACORA
+MP_BITACORA -[hidden]down- MP_CATALOGO
+MP_CATALOGO -[hidden]down- MP_CambiosEntidad
+MP_CambiosEntidad -[hidden]down- MP_DATOS_USUARIO
+MP_DATOS_USUARIO -[hidden]down- MP_DigitoVerificadorVertical
+MP_DigitoVerificadorVertical -[hidden]down- MP_ECOPUNTOS
+MP_ECOPUNTOS -[hidden]down- MP_ESTADISTICAS
+MP_ESTADISTICAS -[hidden]down- MP_GESTION
+MP_GESTION -[hidden]down- MP_MARKETPLACE
+MP_MARKETPLACE -[hidden]down- MP_PERFIL
+MP_PERFIL -[hidden]down- MP_PERMISO
+MP_PERMISO -[hidden]down- MP_RECICLAJE
+ACCESO -[hidden]right- MAPPER
 BE_BITACORA "0..*" --> "1" BE_USUARIO : Usuario
 BE_CambiosEntidad "0..*" --> "1" BE_USUARIO : UsuarioModifico
 BE_GuiaReutilizacion "0..*" --> "1" BE_Material : Material
@@ -345,9 +332,4 @@ MP_PERFIL --> BE_Perfil
 MP_PERFIL --> BE_Permiso
 MP_PERMISO --> BE_Permiso
 MP_RECICLAJE --> BE_PuntoVerde
-MP_ROL --|> MAPPER
-MP_ROL --> BE_Permiso
-MP_ROL --> BE_Rol
-MP_USUARIO --|> MAPPER
-MP_USUARIO --> BE_USUARIO
 @enduml

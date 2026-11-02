@@ -1,7 +1,7 @@
 @startuml
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
-title Capa GUI
+title Capa GUI (parte 3 de 3)
 class "BE_USUARIO" as BE_USUARIO <<BE>> {
   +Username: string
   +HashedPassword: string
@@ -11,86 +11,6 @@ class "BE_USUARIO" as BE_USUARIO <<BE>> {
   +Rol: string
   --
   +ToString(): string
-}
-class "Bitacora" as Bitacora <<GUI>> {
-  +ID: int
-  +Usuario: string
-  +TipoEvento: string
-  +Descripcion: string
-  +Fecha: DateTime
-  --
-  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
-}
-class "DataGridViewSortHelper" as DataGridViewSortHelper <<GUI>> {
-  +HabilitarOrdenamiento(DataGridView dgv): void
-}
-class "FormAgregarIdioma" as FormAgregarIdioma <<GUI>> {
-  +IdiomaAgregado: bool
-  +Clave: string
-  +Traduccion: string
-  --
-  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
-}
-class "FormAuditoria" as FormAuditoria <<GUI>> {
-  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
-}
-class "FormAyuda" as FormAyuda <<GUI>> {
-}
-class "FormBackups" as FormBackups <<GUI>> {
-  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
-}
-class "FormBeneficios" as FormBeneficios <<GUI>> {
-}
-class "FormCambiarIdioma" as FormCambiarIdioma <<GUI>> {
-}
-class "FormCanjeEcoPuntos" as FormCanjeEcoPuntos <<GUI>> {
-}
-class "FormCompraMarketplace" as FormCompraMarketplace <<GUI>> {
-}
-class "FormDeclararMaterial" as FormDeclararMaterial <<GUI>> {
-}
-class "FormEstadisticasVentas" as FormEstadisticasVentas <<GUI>> {
-}
-class "FormGestionUsuarios" as FormGestionUsuarios <<GUI>> {
-  +ID: int
-  +Nombre: string
-  +Etiqueta: string
-  --
-  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
-}
-class "FormGuias" as FormGuias <<GUI>> {
-}
-class "FormIndicadores" as FormIndicadores <<GUI>> {
-}
-class "FormIntegridad" as FormIntegridad <<GUI>> {
-  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
-}
-class "FormLiquidacion" as FormLiquidacion <<GUI>> {
-}
-class "FormMateriales" as FormMateriales <<GUI>> {
-}
-class "FormMiPerfil" as FormMiPerfil <<GUI>> {
-}
-class "FormPermisoABM" as FormPermisoABM <<GUI>> {
-  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
-}
-class "FormPublicarProducto" as FormPublicarProducto <<GUI>> {
-}
-class "FormPuntosVerdes" as FormPuntosVerdes <<GUI>> {
-}
-class "FormRecepcionAcopio" as FormRecepcionAcopio <<GUI>> {
-}
-class "FormReclamos" as FormReclamos <<GUI>> {
-}
-class "FormRoles" as FormRoles <<GUI>> {
-  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
-}
-class "FormSnapshots" as FormSnapshots <<GUI>> {
-  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
-}
-class "FormSuscripciones" as FormSuscripciones <<GUI>> {
-}
-class "FormTarifas" as FormTarifas <<GUI>> {
 }
 class "FormUnico" as FormUnico <<GUI>> {
 }
@@ -166,5 +86,15 @@ class "UITheme" as UITheme <<GUI>> {
   +EstilizarGrid(DataGridView grid): void
   +EstilizarMenu(MenuStrip menu): void
 }
+BE_USUARIO -[hidden]down- FormUnico
+FormUnico -[hidden]down- FormVerificacionVendedor
+FormVerificacionVendedor -[hidden]down- ItemLista
+ItemLista -[hidden]down- LogInOut
+LogInOut -[hidden]down- MainForm
+ManejoErrores -[hidden]down- Register
+Register -[hidden]down- SortableBindingList
+SortableBindingList -[hidden]down- UIHelper
+UIHelper -[hidden]down- UITheme
+BE_USUARIO -[hidden]right- ManejoErrores
 MainForm --> BE_USUARIO
 @enduml
