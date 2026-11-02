@@ -17,7 +17,10 @@ namespace GUI
             this.usuario = usuario;
             if (!BLL_AUTORIZACION.TienePermiso(usuario, "PROC_CONFIRMAR_RECEPCION")) tabControl.TabPages.Remove(tabCompras);
             if (!BLL_AUTORIZACION.TienePermiso(usuario, "PROC_DESPACHAR")) tabControl.TabPages.Remove(tabVentas);
-            if (!BLL_AUTORIZACION.TienePermiso(usuario, "PROC_LIQUIDAR")) tabControl.TabPages.Remove(tabLiquidaciones);
+            // El área comercial liquida (ve las disponibles y paga); el vendedor solo ve sus propias liquidaciones.
+            bool puedeLiquidar = BLL_AUTORIZACION.TienePermiso(usuario, "PROC_LIQUIDAR");
+            if (!puedeLiquidar && !BLL_AUTORIZACION.TienePermiso(usuario, "PROC_DESPACHAR")) tabControl.TabPages.Remove(tabLiquidaciones);
+            btnPagar.Visible = puedeLiquidar;
             Refrescar();
         }
 
@@ -25,7 +28,9 @@ namespace GUI
         {
             UIHelper.CargarGrilla(dgvCompras, bllMarketplace.ListarOrdenesComprador(usuario.ID));
             UIHelper.CargarGrilla(dgvVentas, bllMarketplace.ListarOrdenesVendedor(usuario.ID));
-            UIHelper.CargarGrilla(dgvLiquidaciones, bllMarketplace.ListarLiquidaciones("DISPONIBLE"));
+            UIHelper.CargarGrilla(dgvLiquidaciones, btnPagar.Visible
+                ? bllMarketplace.ListarLiquidaciones("DISPONIBLE")
+                : bllMarketplace.ListarLiquidacionesDeVendedor(usuario.ID));
         }
 
         private int? IdSeleccionado(DataGridView grilla)

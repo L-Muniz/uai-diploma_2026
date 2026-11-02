@@ -22,6 +22,9 @@ namespace GUI
         {
             lblSaldo.Text = $"Saldo: {bllEcoPuntos.ObtenerSaldo(usuario.ID)} Eco-Puntos";
             UIHelper.CargarGrilla(dgvBeneficios, bllEcoPuntos.ListarBeneficios());
+            // El costo para la empresa no corresponde al ciudadano (cliente).
+            if (dgvBeneficios.Columns.Contains("CostoEmpresa"))
+                dgvBeneficios.Columns["CostoEmpresa"].Visible = false;
             UIHelper.CargarGrilla(dgvMovimientos, bllEcoPuntos.ListarMovimientos(usuario.ID));
         }
 

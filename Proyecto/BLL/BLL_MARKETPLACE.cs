@@ -47,6 +47,8 @@ namespace BLL
             new BLL_DATOS_USUARIO().ValidarMayorDeEdadVendedor(usuario);
             if (string.IsNullOrWhiteSpace(documentoRef))
                 throw new ArgumentException("Ingrese la referencia de la documentación.");
+            if (string.Equals(dal.UltimoEstadoVerificacion(usuario.ID), "PENDIENTE", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Ya tiene una solicitud pendiente de revisión. Espere la resolución del área comercial.");
 
             dal.AltaVerificacion(usuario.ID, "PENDIENTE", documentoRef);
             bllBitacora.IngresarRegistro(usuario, "Solicitó verificación para vender en la tienda.");
@@ -204,6 +206,12 @@ namespace BLL
         public DataTable ListarLiquidaciones(string estado)
         {
             return dal.ListarLiquidaciones(estado);
+        }
+
+        // Liquidaciones de las ventas propias del vendedor, en cualquier estado.
+        public DataTable ListarLiquidacionesDeVendedor(int idVendedor)
+        {
+            return dal.ListarLiquidacionesDeVendedor(idVendedor);
         }
 
         public void PagarLiquidacion(BE_USUARIO responsable, int idLiquidacion)

@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using BE;
 using BLL;
@@ -27,6 +28,15 @@ namespace GUI
             dgvSolicitudes.Visible = puedeResolver;
             btnAprobar.Visible = puedeResolver;
             btnRechazar.Visible = puedeResolver;
+
+            if (!puedeSolicitar)
+            {
+                // El área comercial no solicita: la lista de pendientes sube y los botones van debajo.
+                lblSolicitudes.Location = new Point(16, 44);
+                dgvSolicitudes.Location = new Point(16, 66);
+                btnAprobar.Location = new Point(16, dgvSolicitudes.Bottom + 10);
+                btnRechazar.Location = new Point(180, dgvSolicitudes.Bottom + 10);
+            }
             Refrescar();
         }
 
@@ -34,6 +44,8 @@ namespace GUI
         {
             string estado = bllMarketplace.ObtenerEstadoVerificacion(usuario.ID) ?? "sin solicitud registrada";
             lblEstado.Text = $"Estado: {estado}";
+            // Con una solicitud pendiente no se puede enviar otra (evita duplicados).
+            btnSolicitar.Enabled = btnSolicitar.Visible && estado != "PENDIENTE";
             UIHelper.CargarGrilla(dgvSolicitudes, bllMarketplace.ListarSolicitudesVerificacion());
         }
 

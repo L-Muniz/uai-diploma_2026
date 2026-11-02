@@ -50,6 +50,12 @@ namespace BLL
             return dal.ListarDeclaracionesPendientes();
         }
 
+        // Declaraciones que el ciudadano dejó para entregar en este punto verde (CU02).
+        public DataTable ListarDeclaracionesPendientesDePuntoVerde(int idPuntoVerde)
+        {
+            return dal.ListarDeclaracionesPendientesDePuntoVerde(idPuntoVerde);
+        }
+
         // CU01 paso 1-4: valida la declaración, la registra y devuelve la mejor guía y el punto verde más cercano disponibles.
         public OpcionesRecomendacion DeclararMaterial(BE_USUARIO usuario, int idMaterial, decimal cantidad)
         {

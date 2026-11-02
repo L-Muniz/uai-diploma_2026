@@ -16,13 +16,21 @@ namespace GUI
             InitializeComponent();
             this.operador = operador;
             UIHelper.CargarCombo(cboPuntoVerde, bllReciclaje.ListarPuntosVerdes(), "Nombre", "ID");
-            Refrescar();
+            cboPuntoVerde.SelectedIndexChanged += (s, e) => Refrescar();
             dgvPendientes.SelectionChanged += (s, e) => ActualizarPesoSugerido();
+            Refrescar();
         }
 
+        // Muestra solo las declaraciones pendientes del punto verde seleccionado.
         private void Refrescar()
         {
-            UIHelper.CargarGrilla(dgvPendientes, bllReciclaje.ListarDeclaracionesPendientes());
+            if (cboPuntoVerde.SelectedValue == null)
+            {
+                dgvPendientes.DataSource = null;
+                return;
+            }
+            UIHelper.CargarGrilla(dgvPendientes,
+                bllReciclaje.ListarDeclaracionesPendientesDePuntoVerde(Convert.ToInt32(cboPuntoVerde.SelectedValue)));
             ActualizarPesoSugerido();
         }
 

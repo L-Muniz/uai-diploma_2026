@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using BE;
@@ -28,6 +29,13 @@ namespace GUI
             lblPendientes.Visible = puedeAprobar;
             dgvPendientes.Visible = puedeAprobar;
             btnAprobar.Visible = puedeAprobar;
+            if (!puedePublicar)
+            {
+                // El área comercial solo aprueba: la lista de pendientes sube y el botón queda debajo.
+                lblPendientes.Location = new Point(16, 44);
+                dgvPendientes.Location = new Point(16, 66);
+                btnAprobar.Location = new Point(16, dgvPendientes.Bottom + 10);
+            }
 
             // Solo un vendedor verificado puede publicar (CU07).
             btnPublicar.Enabled = puedePublicar && bllMarketplace.EsVendedorVerificado(usuario.ID);

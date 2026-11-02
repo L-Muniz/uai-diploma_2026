@@ -114,6 +114,16 @@ namespace DAL
             return id;
         }
 
+        public DataTable ListarDeclaracionesPendientesDePuntoVerde(int idPuntoVerde)
+        {
+            ACCESO acc = new ACCESO();
+            acc.Abrir();
+            List<SqlParameter> p = new List<SqlParameter> { acc.CrearParametro("@ID_PUNTO_VERDE", idPuntoVerde) };
+            DataTable dt = acc.Leer("DECLARACION_LISTAR_PENDIENTES_PUNTO", p);
+            acc.Cerrar();
+            return dt;
+        }
+
         public DataTable ListarDeclaracionesPendientes()
         {
             ACCESO acc = new ACCESO();

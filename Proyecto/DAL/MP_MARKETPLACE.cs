@@ -223,6 +223,16 @@ namespace DAL
             acc.Cerrar();
         }
 
+        public DataTable ListarLiquidacionesDeVendedor(int idVendedor)
+        {
+            ACCESO acc = new ACCESO();
+            acc.Abrir();
+            List<SqlParameter> p = new List<SqlParameter> { acc.CrearParametro("@ID_VENDEDOR", idVendedor) };
+            DataTable dt = acc.Leer("LIQUIDACIONES_VENDEDOR_LISTAR", p);
+            acc.Cerrar();
+            return dt;
+        }
+
         public DataTable ListarLiquidaciones(string estado)
         {
             ACCESO acc = new ACCESO();
