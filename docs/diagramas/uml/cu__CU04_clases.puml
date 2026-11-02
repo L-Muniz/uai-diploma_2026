@@ -85,6 +85,6 @@ class "BE_Beneficio" as BE_Beneficio <<BE>> {
 }
 BE_Acopio "0..*" --> "1" BE_PuntoVerde : PuntoVerde
 BE_Acopio "0..*" --> "1" BE_Material : Material
-BE_PuntoVerde "1" *-- "0..*" BE_Material : MaterialesAceptados
+BE_PuntoVerde "1" o-- "0..*" BE_Material : MaterialesAceptados
 BE_Canje "0..*" --> "1" BE_Beneficio : Beneficio
 @enduml

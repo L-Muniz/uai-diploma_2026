@@ -348,7 +348,7 @@ BE_OrdenVenta "1" *-- "0..*" BE_ItemOrden : Items
 BE_Perfil "1" o-- "0..*" BE_Permiso : Permisos
 BE_PermisoCompuesto "1" *-- "0..*" I_ComponenteAcceso : Componentes
 BE_PermisoCompuesto ..> BE_PermisoSimple
-BE_PuntoVerde "1" *-- "0..*" BE_Material : MaterialesAceptados
+BE_PuntoVerde "1" o-- "0..*" BE_Material : MaterialesAceptados
 BE_Recomendacion "0..*" --> "1" BE_DeclaracionMaterial : Declaracion
 BE_Recomendacion "0..*" --> "1" BE_GuiaReutilizacion : Guia
 BE_Recomendacion "0..*" --> "1" BE_PuntoVerde : PuntoVerde

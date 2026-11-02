@@ -1,6 +1,16 @@
 @startuml
 skinparam classAttributeIconSize 0
 title Capa GUI
+class "BE_USUARIO" as BE_USUARIO <<BE>> {
+  +Username: string
+  +HashedPassword: string
+  +ID: int
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+  --
+  +ToString(): string
+}
 class "Bitacora" as Bitacora <<GUI>> {
   +ID: int
   +Usuario: string
@@ -155,4 +165,5 @@ class "UITheme" as UITheme <<GUI>> {
   +EstilizarGrid(DataGridView grid): void
   +EstilizarMenu(MenuStrip menu): void
 }
+MainForm ..> BE_USUARIO
 @enduml

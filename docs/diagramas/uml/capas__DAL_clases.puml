@@ -17,6 +17,146 @@ class "ACCESO" as ACCESO <<DAL>> {
   +CrearParametroObj(string key, object value): SqlParameter
   +GetConexion(): SqlConnection
 }
+class "BE_BITACORA" as BE_BITACORA <<BE>> {
+  +ID: int
+  +Descripcion: string
+  +Fecha: DateTime
+  --
+  +ToString(): string
+}
+class "BE_Beneficio" as BE_Beneficio <<BE>> {
+  +ID: int
+  +Tipo: string
+  +Descripcion: string
+  +PuntosRequeridos: int
+  +CostoEmpresa: decimal
+  +Activo: bool
+  --
+  +ToString(): string
+}
+class "BE_CambiosEntidad" as BE_CambiosEntidad <<BE>> {
+  +ID: int
+  +TipoEntidad: string
+  +IdEntidad: int
+  +NombreAtributo: string
+  +ValorAnterior: string
+  +ValorNuevo: string
+  +FechaCambio: DateTime
+  +Descripcion: string
+  --
+  +ToString(): string
+}
+class "BE_DatosUsuario" as BE_DatosUsuario <<BE>> {
+  +IDUsuario: int
+  +FechaNacimiento: DateTime?
+  +Latitud: decimal?
+  +Longitud: decimal?
+  +Localidad: string
+}
+class "BE_DigitoVerificadorVertical" as BE_DigitoVerificadorVertical <<BE>> {
+  +ID: int
+  +IdEntidad: int
+  +TipoEntidad: string
+  +DVUsername: int
+  +DVHashedPassword: int
+  +DVBloqueado: int
+  +FechaCreacion: DateTime
+  --
+  +ToString(): string
+}
+class "BE_GuiaReutilizacion" as BE_GuiaReutilizacion <<BE>> {
+  +ID: int
+  +Titulo: string
+  +Pasos: string
+  +Dificultad: string
+}
+class "BE_ItemOrden" as BE_ItemOrden <<BE>> {
+  +Cantidad: int
+  +PrecioUnitario: decimal
+}
+class "BE_Material" as BE_Material <<BE>> {
+  +ID: int
+  +Nombre: string
+  +Categoria: string
+  +UnidadMedida: string
+  --
+  +ToString(): string
+}
+class "BE_Perfil" as BE_Perfil <<BE>> {
+  +ID: int
+  +Nombre: string
+  +Descripcion: string
+  +IdPadrePerfil: int?
+  --
+  +AgregarPermiso(BE_Permiso permiso): void
+  +AgregarSubperfil(BE_Perfil subperfil): void
+  +QuitarSubperfil(BE_Perfil subperfil): void
+  +ObtenerPermisosHeredados(): HashSet<BE_Permiso>
+  +ObtenerTodosLosPermisos(): HashSet<BE_Permiso>
+  +TienePermiso(BE_Permiso permiso): bool
+  +TienePermisoPorCodigo(string codigo): bool
+  +ObtenerProfundidad(): int
+  +ContarPermisosTotal(): int
+  +ToString(): string
+}
+class "BE_Permiso" as BE_Permiso <<BE>> {
+  +ID: int
+  +Nombre: string
+  +Descripcion: string
+  +Codigo: string
+  +EsCompuesto: bool
+  --
+  +ToString(): string
+  +Equals(object obj): bool
+  +GetHashCode(): int
+}
+class "BE_Producto" as BE_Producto <<BE>> {
+  +ID: int
+  +IDVendedor: int
+  +IDTarifa: int?
+  +Nombre: string
+  +Descripcion: string
+  +Categoria: string
+  +Precio: decimal
+  +Stock: int
+  +Estado: string
+  --
+  +ToString(): string
+}
+class "BE_PuntoVerde" as BE_PuntoVerde <<BE>> {
+  +ID: int
+  +Nombre: string
+  +Direccion: string
+  +Latitud: decimal?
+  +Longitud: decimal?
+  +Horario: string
+  +Activo: bool
+  --
+  +ToString(): string
+}
+class "BE_Rol" as BE_Rol <<BE>> {
+  +ID: int
+  +Nombre: string
+  +Descripcion: string
+  --
+  +AgregarComponente(I_ComponenteAcceso componente): void
+  +QuitarComponente(I_ComponenteAcceso componente): void
+  +ObtenerTodosLosPermisos(): HashSet<BE_PermisoSimple>
+  +TienePermiso(BE_PermisoSimple permiso): bool
+  +TienePermisoPorCodigo(string codigo): bool
+  +ContarPermisosTotal(): int
+  +ToString(): string
+}
+class "BE_USUARIO" as BE_USUARIO <<BE>> {
+  +Username: string
+  +HashedPassword: string
+  +ID: int
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+  --
+  +ToString(): string
+}
 class "MAPPER" as MAPPER <<DAL>> {
 }
 class "MP_BITACORA" as MP_BITACORA <<DAL>> {
@@ -180,10 +320,33 @@ class "MP_USUARIO" as MP_USUARIO <<DAL>> {
   +ActualizarDVHorizontal(BE_USUARIO usuario): int
   +ObtenerRolUsuario(int idUsuario): string
 }
+BE_BITACORA "0..*" --> "1" BE_USUARIO : Usuario
+BE_CambiosEntidad "0..*" --> "1" BE_USUARIO : UsuarioModifico
+BE_GuiaReutilizacion "0..*" --> "1" BE_Material : Material
+BE_ItemOrden "0..*" --> "1" BE_Producto : Producto
+BE_Perfil "1" o-- "0..*" BE_Permiso : Permisos
+BE_PuntoVerde "1" o-- "0..*" BE_Material : MaterialesAceptados
 MP_BITACORA --|> MAPPER
+MP_BITACORA ..> BE_BITACORA
+MP_BITACORA ..> BE_USUARIO
+MP_CATALOGO ..> BE_Beneficio
+MP_CATALOGO ..> BE_GuiaReutilizacion
+MP_CATALOGO ..> BE_Material
 MP_CambiosEntidad --|> MAPPER
+MP_CambiosEntidad ..> BE_CambiosEntidad
+MP_DATOS_USUARIO ..> BE_DatosUsuario
 MP_DigitoVerificadorVertical --|> MAPPER
+MP_DigitoVerificadorVertical ..> BE_DigitoVerificadorVertical
+MP_MARKETPLACE ..> BE_ItemOrden
+MP_MARKETPLACE ..> BE_Producto
 MP_PERFIL --|> MAPPER
+MP_PERFIL ..> BE_Perfil
+MP_PERFIL ..> BE_Permiso
+MP_PERMISO ..> BE_Permiso
+MP_RECICLAJE ..> BE_PuntoVerde
 MP_ROL --|> MAPPER
+MP_ROL ..> BE_Permiso
+MP_ROL ..> BE_Rol
 MP_USUARIO --|> MAPPER
+MP_USUARIO ..> BE_USUARIO
 @enduml

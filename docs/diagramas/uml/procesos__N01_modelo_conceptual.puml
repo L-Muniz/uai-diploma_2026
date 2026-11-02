@@ -107,7 +107,7 @@ class "BE_TablaConversion" as BE_TablaConversion <<BE>> {
 }
 BE_Acopio "0..*" --> "1" BE_PuntoVerde : PuntoVerde
 BE_Acopio "0..*" --> "1" BE_Material : Material
-BE_PuntoVerde "1" *-- "0..*" BE_Material : MaterialesAceptados
+BE_PuntoVerde "1" o-- "0..*" BE_Material : MaterialesAceptados
 BE_Canje "0..*" --> "1" BE_Beneficio : Beneficio
 BE_TablaConversion "0..*" --> "1" BE_Material : Material
 @enduml

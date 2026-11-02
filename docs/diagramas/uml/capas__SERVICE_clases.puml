@@ -1,6 +1,39 @@
 @startuml
 skinparam classAttributeIconSize 0
 title Capa SERVICE
+class "BE_InformeIndicadores" as BE_InformeIndicadores <<BE>> {
+  +Version: string
+  +Periodo: string
+  +FechaGeneracion: DateTime
+  +Generado: string
+}
+class "BE_Perfil" as BE_Perfil <<BE>> {
+  +ID: int
+  +Nombre: string
+  +Descripcion: string
+  +IdPadrePerfil: int?
+  --
+  +AgregarPermiso(BE_Permiso permiso): void
+  +AgregarSubperfil(BE_Perfil subperfil): void
+  +QuitarSubperfil(BE_Perfil subperfil): void
+  +ObtenerPermisosHeredados(): HashSet<BE_Permiso>
+  +ObtenerTodosLosPermisos(): HashSet<BE_Permiso>
+  +TienePermiso(BE_Permiso permiso): bool
+  +TienePermisoPorCodigo(string codigo): bool
+  +ObtenerProfundidad(): int
+  +ContarPermisosTotal(): int
+  +ToString(): string
+}
+class "BE_USUARIO" as BE_USUARIO <<BE>> {
+  +Username: string
+  +HashedPassword: string
+  +ID: int
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+  --
+  +ToString(): string
+}
 interface "ISV_IdiomaObserver" as ISV_IdiomaObserver <<SERVICE>> {
   +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
 }
@@ -83,4 +116,7 @@ class "SV_Singleton" as SV_Singleton <<SERVICE>> {
 }
 SV_IdiomaManager ..> ISV_IdiomaObserver
 SV_IdiomaManager ..> ISV_ProveedorTraduccion
+SV_PerfilComposite ..> BE_Perfil
+SV_Serializacion ..> BE_InformeIndicadores
+SV_Singleton "0..*" --> "1" BE_USUARIO : Usuario
 @enduml

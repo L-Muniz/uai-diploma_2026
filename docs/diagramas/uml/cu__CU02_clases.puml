@@ -61,5 +61,5 @@ class "BE_MovimientoEcoPuntos" as BE_MovimientoEcoPuntos <<BE>> {
 BE_DeclaracionMaterial "0..*" --> "1" BE_Material : Material
 BE_Acopio "0..*" --> "1" BE_PuntoVerde : PuntoVerde
 BE_Acopio "0..*" --> "1" BE_Material : Material
-BE_PuntoVerde "1" *-- "0..*" BE_Material : MaterialesAceptados
+BE_PuntoVerde "1" o-- "0..*" BE_Material : MaterialesAceptados
 @enduml

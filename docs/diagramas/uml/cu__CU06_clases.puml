@@ -46,5 +46,5 @@ class "BE_InformeGestion" as BE_InformeGestion <<BE>> {
   +Periodo: string
   +FechaGeneracion: DateTime
 }
-BE_PuntoVerde "1" *-- "0..*" BE_Material : MaterialesAceptados
+BE_PuntoVerde "1" o-- "0..*" BE_Material : MaterialesAceptados
 @enduml
