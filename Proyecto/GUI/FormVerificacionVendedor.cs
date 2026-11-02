@@ -31,7 +31,8 @@ namespace GUI
 
             if (!puedeSolicitar)
             {
-                // El área comercial no solicita: la lista de pendientes sube y los botones van debajo.
+                // El área comercial no solicita: el título cambia, la lista de pendientes sube y los botones van debajo.
+                lblTitulo.Text = "Aprobación de vendedores";
                 lblSolicitudes.Location = new Point(16, 44);
                 dgvSolicitudes.Location = new Point(16, 66);
                 btnAprobar.Location = new Point(16, dgvSolicitudes.Bottom + 10);
@@ -44,8 +45,8 @@ namespace GUI
         {
             string estado = bllMarketplace.ObtenerEstadoVerificacion(usuario.ID) ?? "sin solicitud registrada";
             lblEstado.Text = $"Estado: {estado}";
-            // Con una solicitud pendiente no se puede enviar otra (evita duplicados).
-            btnSolicitar.Enabled = btnSolicitar.Visible && estado != "PENDIENTE";
+            // Con una solicitud pendiente, o ya aprobada, no se puede enviar otra. Si fue rechazada, sí.
+            btnSolicitar.Enabled = btnSolicitar.Visible && estado != "PENDIENTE" && estado != "APROBADA";
             UIHelper.CargarGrilla(dgvSolicitudes, bllMarketplace.ListarSolicitudesVerificacion());
         }
 

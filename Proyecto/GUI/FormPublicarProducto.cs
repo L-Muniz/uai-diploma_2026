@@ -31,7 +31,8 @@ namespace GUI
             btnAprobar.Visible = puedeAprobar;
             if (!puedePublicar)
             {
-                // El área comercial solo aprueba: la lista de pendientes sube y el botón queda debajo.
+                // El área comercial solo aprueba: el título cambia, la lista de pendientes sube y el botón queda debajo.
+                lblTitulo.Text = "Aprobación de productos";
                 lblPendientes.Location = new Point(16, 44);
                 dgvPendientes.Location = new Point(16, 66);
                 btnAprobar.Location = new Point(16, dgvPendientes.Bottom + 10);

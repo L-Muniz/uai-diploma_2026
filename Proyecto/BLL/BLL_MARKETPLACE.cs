@@ -47,8 +47,12 @@ namespace BLL
             new BLL_DATOS_USUARIO().ValidarMayorDeEdadVendedor(usuario);
             if (string.IsNullOrWhiteSpace(documentoRef))
                 throw new ArgumentException("Ingrese la referencia de la documentación.");
-            if (string.Equals(dal.UltimoEstadoVerificacion(usuario.ID), "PENDIENTE", StringComparison.OrdinalIgnoreCase))
+            string ultimoEstado = dal.UltimoEstadoVerificacion(usuario.ID);
+            if (string.Equals(ultimoEstado, "PENDIENTE", StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("Ya tiene una solicitud pendiente de revisión. Espere la resolución del área comercial.");
+            if (string.Equals(ultimoEstado, "APROBADA", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Ya está verificado como vendedor.");
+            // Si la solicitud fue rechazada, puede volver a pedirla con más documentación.
 
             dal.AltaVerificacion(usuario.ID, "PENDIENTE", documentoRef);
             bllBitacora.IngresarRegistro(usuario, "Solicitó verificación para vender en la tienda.");
