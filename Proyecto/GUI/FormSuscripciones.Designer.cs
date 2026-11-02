@@ -21,6 +21,8 @@ namespace GUI
             this.btnGuardar = new System.Windows.Forms.Button();
             this.lblGuias = new System.Windows.Forms.Label();
             this.dgvGuias = new System.Windows.Forms.DataGridView();
+            this.lblPasosGuia = new System.Windows.Forms.Label();
+            this.txtPasosGuia = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvGuias)).BeginInit();
             this.SuspendLayout();
             //
@@ -80,14 +82,35 @@ namespace GUI
             this.dgvGuias.Name = "dgvGuias";
             this.dgvGuias.ReadOnly = true;
             this.dgvGuias.RowHeadersVisible = false;
-            this.dgvGuias.Size = new System.Drawing.Size(614, 240);
+            this.dgvGuias.Size = new System.Drawing.Size(614, 150);
             this.dgvGuias.TabIndex = 5;
+            //
+            // lblPasosGuia
+            //
+            this.lblPasosGuia.AutoSize = true;
+            this.lblPasosGuia.Location = new System.Drawing.Point(16, 426);
+            this.lblPasosGuia.Name = "lblPasosGuia";
+            this.lblPasosGuia.Size = new System.Drawing.Size(200, 15);
+            this.lblPasosGuia.TabIndex = 6;
+            this.lblPasosGuia.Text = "Pasos de la guía seleccionada:";
+            //
+            // txtPasosGuia
+            //
+            this.txtPasosGuia.Location = new System.Drawing.Point(16, 446);
+            this.txtPasosGuia.Multiline = true;
+            this.txtPasosGuia.Name = "txtPasosGuia";
+            this.txtPasosGuia.ReadOnly = true;
+            this.txtPasosGuia.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtPasosGuia.Size = new System.Drawing.Size(614, 76);
+            this.txtPasosGuia.TabIndex = 7;
             //
             // FormSuscripciones
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(650, 530);
+            this.ClientSize = new System.Drawing.Size(650, 540);
+            this.Controls.Add(this.txtPasosGuia);
+            this.Controls.Add(this.lblPasosGuia);
             this.Controls.Add(this.dgvGuias);
             this.Controls.Add(this.lblGuias);
             this.Controls.Add(this.btnGuardar);
@@ -107,5 +130,7 @@ namespace GUI
         private System.Windows.Forms.Button btnGuardar;
         private System.Windows.Forms.Label lblGuias;
         private System.Windows.Forms.DataGridView dgvGuias;
+        private System.Windows.Forms.Label lblPasosGuia;
+        private System.Windows.Forms.TextBox txtPasosGuia;
     }
 }

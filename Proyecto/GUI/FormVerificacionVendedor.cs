@@ -17,11 +17,16 @@ namespace GUI
             this.usuario = usuario;
             bool puedeSolicitar = BLL_AUTORIZACION.TienePermiso(usuario, "PROC_SOLICITAR_VERIFICACION");
             bool puedeResolver = BLL_AUTORIZACION.TienePermiso(usuario, "PROC_RESOLVER_VERIFICACION");
-            txtDocumento.Enabled = puedeSolicitar;
-            btnSolicitar.Enabled = puedeSolicitar;
-            dgvSolicitudes.Enabled = puedeResolver;
-            btnAprobar.Enabled = puedeResolver;
-            btnRechazar.Enabled = puedeResolver;
+
+            // Cada rol ve solo su parte: el vendedor solicita y el área comercial resuelve.
+            lblEstado.Visible = puedeSolicitar;
+            lblDocumento.Visible = puedeSolicitar;
+            txtDocumento.Visible = puedeSolicitar;
+            btnSolicitar.Visible = puedeSolicitar;
+            lblSolicitudes.Visible = puedeResolver;
+            dgvSolicitudes.Visible = puedeResolver;
+            btnAprobar.Visible = puedeResolver;
+            btnRechazar.Visible = puedeResolver;
             Refrescar();
         }
 

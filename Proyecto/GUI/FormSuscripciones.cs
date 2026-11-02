@@ -18,6 +18,7 @@ namespace GUI
         {
             InitializeComponent();
             this.usuario = usuario;
+            dgvGuias.SelectionChanged += (s, e) => MostrarPasos();
             CargarMateriales();
             Refrescar();
         }
@@ -35,6 +36,15 @@ namespace GUI
         private void Refrescar()
         {
             UIHelper.CargarGrilla(dgvGuias, bllDatos.ListarGuiasSuscriptas(usuario));
+            // Los pasos se leen en el cuadro de abajo: en la grilla quedan ilegibles.
+            if (dgvGuias.Columns.Contains("Pasos"))
+                dgvGuias.Columns["Pasos"].Visible = false;
+            MostrarPasos();
+        }
+
+        private void MostrarPasos()
+        {
+            txtPasosGuia.Text = dgvGuias.CurrentRow == null ? "" : dgvGuias.CurrentRow.Cells["Pasos"].Value?.ToString() ?? "";
         }
 
         private void btnGuardar_Click(object sender, EventArgs e)

@@ -19,10 +19,19 @@ namespace GUI
             this.usuario = usuario;
             bool puedePublicar = BLL_AUTORIZACION.TienePermiso(usuario, "PROC_PUBLICAR_PRODUCTO");
             bool puedeAprobar = BLL_AUTORIZACION.TienePermiso(usuario, "PROC_APROBAR_PRODUCTO");
-            btnPublicar.Enabled = puedePublicar;
+
+            // El área comercial solo aprueba; el ciudadano solo publica. Cada uno ve su parte.
+            foreach (Control control in new Control[] { lblNombre, txtNombre, lblCategoria, txtCategoria, lblDescripcion,
+                         txtDescripcion, lblPrecio, txtPrecio, lblStock, numStock, lblComision, btnPublicar,
+                         btnActualizar, lblMisProductos, dgvMisProductos })
+                control.Visible = puedePublicar;
+            lblPendientes.Visible = puedeAprobar;
+            dgvPendientes.Visible = puedeAprobar;
+            btnAprobar.Visible = puedeAprobar;
+
+            // Solo un vendedor verificado puede publicar (CU07).
+            btnPublicar.Enabled = puedePublicar && bllMarketplace.EsVendedorVerificado(usuario.ID);
             btnActualizar.Enabled = puedePublicar;
-            dgvPendientes.Enabled = puedeAprobar;
-            btnAprobar.Enabled = puedeAprobar;
             dgvMisProductos.SelectionChanged += (s, e) => CargarProductoSeleccionado();
             txtCategoria.TextChanged += (s, e) => MostrarComision();
             MostrarComision();

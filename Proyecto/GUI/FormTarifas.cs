@@ -17,12 +17,33 @@ namespace GUI
             this.usuario = usuario;
             UIHelper.CargarCombo(cboMaterial, bllGestion.ListarMateriales(), "Nombre", "ID");
             Refrescar();
+            dgvConversiones.SelectionChanged += (s, e) => CargarConversionSeleccionada();
+            CargarConversionSeleccionada();
         }
 
         private void Refrescar()
         {
             UIHelper.CargarGrilla(dgvTarifas, bllGestion.ListarTarifas());
             UIHelper.CargarGrilla(dgvConversiones, bllGestion.ListarConversiones());
+        }
+
+        // Al elegir una fila de conversiones, el material y los puntos por kg pasan a los controles de abajo.
+        private void CargarConversionSeleccionada()
+        {
+            if (dgvConversiones.CurrentRow == null) return;
+
+            string material = dgvConversiones.CurrentRow.Cells["Material"].Value?.ToString();
+            for (int i = 0; i < cboMaterial.Items.Count; i++)
+            {
+                if (string.Equals(cboMaterial.GetItemText(cboMaterial.Items[i]), material, StringComparison.OrdinalIgnoreCase))
+                {
+                    cboMaterial.SelectedIndex = i;
+                    break;
+                }
+            }
+
+            txtPuntosKg.Text = Convert.ToDecimal(dgvConversiones.CurrentRow.Cells["PuntosPorKg"].Value)
+                                      .ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
         }
 
         private void btnProponerTarifa_Click(object sender, EventArgs e)

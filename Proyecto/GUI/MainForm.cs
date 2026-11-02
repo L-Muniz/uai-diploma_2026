@@ -108,11 +108,19 @@ namespace GUI
                             subMenu.Visible = false;
                     }
 
+                    // Agregar idioma es una tarea de administración.
+                    if (!esAdmin && clave == "AGREGAR_IDIOMA")
+                        subMenu.Visible = false;
+
                     AplicarControlesMenu(subMenu, rol);
                 }
             }
 
             if (!esAdmin && item.Tag?.ToString() == "ADMINISTRACION")
+                item.Visible = false;
+
+            // Ver (auditoría, bitácora, backups y snapshots) es solo para administradores y auditores.
+            if (!esAdmin && !esAuditor && item.Tag?.ToString() == "VER")
                 item.Visible = false;
         }
 

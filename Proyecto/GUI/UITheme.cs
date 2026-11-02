@@ -164,10 +164,15 @@ namespace GUI
             {
                 if (c is GroupBox grp)
                 {
-                    grp.BackColor = FondoTarjeta;
+                    grp.BackColor = AcentoClaro;
                     grp.ForeColor = Texto;
                     grp.Font = FuenteTitulo;
                     EstilizarControlesHijos(grp);
+                }
+                else if (c is Label etiqueta)
+                {
+                    // Las etiquetas sueltas sobre el fondo de la imagen toman el color de la marca.
+                    etiqueta.BackColor = AcentoClaro;
                 }
             }
         }

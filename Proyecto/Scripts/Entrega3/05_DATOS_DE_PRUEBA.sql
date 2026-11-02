@@ -124,6 +124,15 @@ GO
 
 -- ---------- verificación y productos de ciudadano2 (vendedor verificado) ----------
 
+-- Si estos productos quedaron asignados a otro usuario en una carga anterior, se corrige el dueño.
+UPDATE P
+SET P.ID_VENDEDOR = U.ID_USUARIO
+FROM dbo.PRODUCTO P, dbo.USUARIO U
+WHERE U.USERNAME = 'ciudadano2'
+  AND P.NOMBRE IN (N'Cuaderno de papel reciclado', N'Bolso de tela reciclada', N'Vaso de vidrio reusado')
+  AND P.ID_VENDEDOR <> U.ID_USUARIO;
+GO
+
 IF NOT EXISTS (SELECT 1 FROM dbo.VERIFICACION_VENDEDOR V JOIN dbo.USUARIO U ON U.ID_USUARIO = V.ID_USUARIO WHERE U.USERNAME = 'ciudadano2')
     INSERT INTO dbo.VERIFICACION_VENDEDOR (ID_USUARIO, ESTADO, DOCUMENTO_REF)
     SELECT ID_USUARIO, N'APROBADA', N'DNI verificado (datos de prueba)' FROM dbo.USUARIO WHERE USERNAME = 'ciudadano2';
