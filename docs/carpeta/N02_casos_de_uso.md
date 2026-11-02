@@ -1,6 +1,6 @@
 # N02. Especificación de casos de uso
 
-Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos alternan una acción del usuario y una respuesta del sistema, tal como se ve en la pantalla. Lo que el sistema hace por dentro (consultas, registros de bitácora) figura en el diagrama de secuencia, no en el flujo.
+Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos alternan una acción del usuario y una respuesta del sistema, tal como se ve en la pantalla. Los rótulos de botones y los mensajes son los que muestra la aplicación. Lo que el sistema hace por dentro (consultas, registros de bitácora) figura en el diagrama de secuencia.
 
 ## CU01 Declarar material
 
@@ -10,25 +10,24 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 **Flujo principal**
 
-1. Usuario: abre "Declarar material" y elige el material en la lista.
-2. Sistema: muestra el material seleccionado y habilita el campo de cantidad.
-3. Usuario: escribe la cantidad en kilogramos y presiona "Declarar".
-4. Sistema: muestra la opción 1 (reutilizar en casa, con la guía del material) y la opción 2 (entregar en el punto verde más cercano).
-5. Usuario: presiona "Reutilizar en casa".
-6. Sistema: muestra "Reutilización confirmada" y los Eco-Puntos acreditados.
+1. Usuario: elige el material en la lista "Material" y escribe la cantidad en "Cantidad (kg)".
+2. Usuario: presiona "Declarar".
+3. Sistema: muestra la "Opción 1: reutilizar en casa" con la guía del material y la "Opción 2: entregar en el punto verde más cercano".
+4. Usuario: presiona "Reutilizar en casa (confirmar)".
+5. Sistema: muestra "Reutilización confirmada. Saldo actual: {saldo} Eco-Puntos."
 
 **Flujos alternativos**
 
-- 4a. El material no tiene guía cargada.
-  - 4a.1 Sistema: muestra "No hay una guía de reutilización para este material" y deshabilita "Reutilizar en casa".
-  - 4a.2 Usuario: presiona "Entregar en punto verde".
-  - 4a.3 Sistema: muestra "Entrega registrada: pendiente de recepción en {punto verde}".
-- 5a. Usuario presiona "Entregar en punto verde" (en lugar de reutilizar).
-  - 5a.1 Sistema: muestra "Entrega registrada: pendiente de recepción en {punto verde}".
-- 3a. Cantidad no válida (vacía, cero o negativa).
-  - 3a.1 Sistema: muestra "La cantidad debe ser mayor a cero" y mantiene los datos cargados.
-- 1a. Usuario presiona "Declarar" sin elegir material.
-  - 1a.1 Sistema: muestra "Seleccione un material".
+- 1a. El material no tiene guía cargada.
+  - 1a.1 Sistema: muestra "Opción 1: reutilizar en casa (declare un material primero)." y deshabilita "Reutilizar en casa (confirmar)".
+  - 1a.2 Usuario: presiona "Entregar en punto verde".
+  - 1a.3 Sistema: muestra "Entrega oficial registrada. Los Eco-Puntos se acreditarán cuando el punto verde confirme el peso."
+- 4a. Usuario presiona "Entregar en punto verde" en lugar de reutilizar.
+  - 4a.1 Sistema: muestra "Entrega oficial registrada. Los Eco-Puntos se acreditarán cuando el punto verde confirme el peso."
+- 2a. Cantidad vacía, cero o negativa.
+  - 2a.1 Sistema: muestra "La cantidad debe ser mayor a cero."
+- 2b. Usuario presiona "Declarar" sin elegir material.
+  - 2b.1 Sistema: muestra "Seleccione un material."
 
 ## CU02 Registrar recepción de material
 
@@ -38,23 +37,23 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 **Flujo principal**
 
-1. Usuario: abre "Recepción en punto verde" y elige el punto verde en la lista.
-2. Sistema: muestra las declaraciones pendientes de ese punto verde.
+1. Usuario: elige el punto verde en la lista "Punto verde".
+2. Sistema: muestra en "Declaraciones pendientes de entrega" las declaraciones de ese punto verde.
 3. Usuario: selecciona una declaración.
-4. Sistema: muestra el peso declarado por el ciudadano en el campo "Peso".
+4. Sistema: muestra en "Peso pesado (kg)" el peso que declaró el ciudadano.
 5. Usuario: confirma o corrige el peso y presiona "Registrar recepción".
 6. Sistema: muestra "Recepción registrada. Se acreditaron {puntos} Eco-Puntos al ciudadano." y la declaración sale de la lista.
 
 **Flujos alternativos**
 
-- 3a. El punto verde no tiene declaraciones pendientes.
-  - 3a.1 Sistema: la lista queda vacía y no habilita el registro.
+- 2a. El punto verde no tiene declaraciones pendientes.
+  - 2a.1 Sistema: la lista queda vacía.
 - 5a. Usuario presiona "Registrar recepción" sin seleccionar una declaración.
-  - 5a.1 Sistema: muestra "Seleccione una declaración pendiente".
+  - 5a.1 Sistema: muestra "Seleccione una declaración pendiente."
 - 5b. El punto verde no acepta el material de la declaración.
-  - 5b.1 Sistema: muestra "El punto verde no acepta este material" y no registra la recepción.
-- 5c. Peso no válido.
-  - 5c.1 Sistema: muestra "Peso: ingrese un número válido" y mantiene la declaración seleccionada.
+  - 5b.1 Sistema: muestra "El punto verde no acepta este material. Se rechaza la carga."
+- 5c. Peso vacío, cero o no numérico.
+  - 5c.1 Sistema: muestra "El peso debe ser mayor a cero." o "Peso: ingrese un número válido.".
 
 ## CU03 Canjear Eco-Puntos
 
@@ -65,20 +64,22 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 **Flujo principal**
 
 1. Usuario: abre "Canjear Eco-Puntos".
-2. Sistema: muestra su saldo y la lista de beneficios disponibles (cupón o envío bonificado, con sus puntos requeridos).
-3. Usuario: selecciona un beneficio y presiona "Canjear".
-4. Sistema: pregunta "¿Canjear {beneficio}?".
+2. Sistema: muestra "Saldo: {saldo} Eco-Puntos", la lista "Beneficios disponibles" y los "Movimientos de mi cuenta".
+3. Usuario: selecciona un beneficio y presiona "Canjear beneficio seleccionado".
+4. Sistema: pregunta "¿Canjear \"{descripción}\"?" con los botones "Sí" y "No".
 5. Usuario: presiona "Sí".
-6. Sistema: muestra "Canje realizado. Su cupón o envío bonificado quedó registrado." y actualiza el saldo.
+6. Sistema: muestra "Canje realizado. Su cupón o envío bonificado quedó registrado." y actualiza el saldo y los movimientos.
 
 **Flujos alternativos**
 
-- 3a. Usuario presiona "Canjear" sin seleccionar un beneficio.
-  - 3a.1 Sistema: muestra "Seleccione un beneficio".
+- 3a. Usuario presiona "Canjear beneficio seleccionado" sin seleccionar un beneficio.
+  - 3a.1 Sistema: muestra "Seleccione un beneficio."
 - 5a. Usuario presiona "No".
-  - 5a.1 Sistema: vuelve a la lista sin cambios.
+  - 5a.1 Sistema: vuelve a la pantalla sin cambios.
 - 5b. Saldo insuficiente.
-  - 5b.1 Sistema: muestra "Saldo insuficiente para este beneficio".
+  - 5b.1 Sistema: muestra "Saldo insuficiente de Eco-Puntos."
+- 5c. El beneficio dejó de estar disponible.
+  - 5c.1 Sistema: muestra "El beneficio no está disponible."
 
 ## CU04 Consultar indicadores
 
@@ -88,17 +89,15 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 **Flujo principal**
 
-1. Usuario: abre "Indicadores".
-2. Sistema: muestra el campo "Período" con el mes actual.
-3. Usuario: escribe el período (formato aaaa-mm) y presiona "Consultar indicadores".
-4. Sistema: muestra la grilla con el acopio por material, las ventas y el costo de los canjes del período.
+1. Usuario: abre "Indicadores de acopio y ventas".
+2. Sistema: muestra el campo "Período (aaaa-mm):".
+3. Usuario: escribe el período y presiona "Consultar indicadores".
+4. Sistema: muestra la grilla de indicadores del período (acopio por material, ventas y costo de canjes).
 
 **Flujos alternativos**
 
 - 3a. Período con formato incorrecto.
-  - 3a.1 Sistema: muestra "Ingrese el período en formato aaaa-mm" y no cambia la grilla.
-- 4a. No hay datos para el período.
-  - 4a.1 Sistema: muestra la grilla con todos los valores en cero.
+  - 3a.1 Sistema: muestra "El período debe tener el formato aaaa-mm."
 
 ## CU05 Exportar informe de indicadores
 
@@ -108,22 +107,22 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 **Flujo principal (PDF)**
 
-1. Usuario: presiona "Exportar PDF".
-2. Sistema: muestra el diálogo para guardar el archivo con el nombre "Indicadores_{período}.pdf".
+1. Usuario: presiona "Exportar a PDF".
+2. Sistema: muestra el diálogo para guardar con el nombre "Indicadores_{período}.pdf".
 3. Usuario: elige la carpeta y presiona "Guardar".
-4. Sistema: muestra "Informe guardado en PDF".
+4. Sistema: muestra "Informe PDF generado."
 
 **Flujo alternativo (XML)**
 
-- 1a. Usuario presiona "Exportar XML".
-  - 1a.1 Sistema: muestra el diálogo para guardar el archivo "Indicadores_{período}.xml".
+- 1a. Usuario presiona "Guardar XML".
+  - 1a.1 Sistema: muestra el diálogo para guardar con el nombre "Indicadores_{período}.xml".
   - 1a.2 Usuario: elige la carpeta y presiona "Guardar".
-  - 1a.3 Sistema: muestra "Informe guardado en XML".
+  - 1a.3 Sistema: muestra "Informe guardado en XML."
 
 **Flujos alternativos comunes**
 
-- 3a. Usuario presiona "Cancelar" en el diálogo.
-  - 3a.1 Sistema: cierra el diálogo y no guarda el archivo.
+- 2a. Usuario cierra el diálogo sin guardar.
+  - 2a.1 Sistema: no guarda el archivo y vuelve a la pantalla.
 
 ## CU06 Gestionar puntos verdes
 
@@ -133,21 +132,21 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 **Flujo principal**
 
-1. Usuario: abre "Red de puntos verdes".
-2. Sistema: muestra la lista de puntos verdes.
-3. Usuario: completa nombre, dirección, horario, marca los materiales que acepta y marca "Validado por el referente de cooperativas".
-4. Usuario: presiona "Guardar".
-5. Sistema: muestra "Punto verde guardado" y actualiza la lista.
+1. Usuario: abre "Red de puntos verdes y materiales".
+2. Usuario: completa "Nombre", "Dirección", "Latitud", "Longitud", "Horario" y marca los "Materiales aceptados".
+3. Usuario: marca "Locación validada por el referente de cooperativas" y presiona "Guardar".
+4. Sistema: muestra "Punto verde guardado (ID {id}). La decisión quedó registrada."
 
 **Flujos alternativos**
 
-- 2a. Usuario elige un punto verde de la lista.
-  - 2a.1 Sistema: carga sus datos y materiales en el formulario.
-  - 2a.2 Usuario: modifica los datos y continúa en el paso 4.
-- 4a. La casilla de validación del referente no está marcada.
-  - 4a.1 Sistema: muestra "El referente debe validar la locación" y no guarda.
-- 4b. Falta un dato obligatorio (nombre o dirección).
-  - 4b.1 Sistema: muestra "Complete el dato obligatorio: {campo}".
+- 2a. Usuario presiona "Nuevo" para cargar otro punto verde.
+  - 2a.1 Sistema: limpia el formulario.
+- 3a. Usuario presiona "Guardar" sin marcar la validación del referente.
+  - 3a.1 Sistema: muestra "La locación debe ser validada por el referente de cooperativas."
+- 3b. Nombre vacío.
+  - 3b.1 Sistema: muestra "Ingrese el nombre del punto verde."
+- 3c. Dirección vacía.
+  - 3c.1 Sistema: muestra "Ingrese la dirección."
 
 ## CU07 Fijar comisión por categoría
 
@@ -157,17 +156,17 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 **Flujo principal**
 
-1. Usuario: abre "Tarifas y conversión".
-2. Sistema: muestra la lista de comisiones vigentes.
-3. Usuario: escribe la categoría y el porcentaje, y presiona "Fijar comisión".
-4. Sistema: muestra "Comisión fijada. Rige desde hoy."
+1. Usuario: abre "Tarifas de comisión y conversión".
+2. Sistema: muestra "Comisión vigente por categoría:".
+3. Usuario: escribe la "Categoría" y la "Comisión %" y presiona "Fijar comisión".
+4. Sistema: muestra "Comisión fijada (tarifa {id}). Rige desde hoy y queda registrada como decisión."
 
 **Flujos alternativos**
 
-- 3a. Porcentaje fuera del rango permitido (0,01 % a 50 %).
-  - 3a.1 Sistema: muestra "El porcentaje debe estar entre 0,01 % y 50 %".
+- 3a. Comisión menor o igual a 0 o mayor a 50.
+  - 3a.1 Sistema: muestra "La comisión debe estar entre 0,01% y 50%."
 - 3b. Categoría vacía.
-  - 3b.1 Sistema: muestra "Ingrese la categoría".
+  - 3b.1 Sistema: muestra "Ingrese la categoría."
 
 ## CU08 Fijar conversión de puntos
 
@@ -177,41 +176,43 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 **Flujo principal**
 
-1. Usuario: abre "Tarifas y conversión".
-2. Sistema: muestra la grilla de conversiones vigentes.
+1. Usuario: abre "Tarifas de comisión y conversión".
+2. Sistema: muestra la grilla "Conversión vigente de Eco-Puntos".
 3. Usuario: selecciona una fila de la grilla.
-4. Sistema: carga el material y sus puntos por kilo en los controles de abajo.
-5. Usuario: corrige los puntos por kilo y presiona "Fijar conversión".
-6. Sistema: muestra "Conversión fijada. Queda registrada como decisión."
+4. Sistema: carga el material en "Material" y sus puntos en "Puntos por kg".
+5. Usuario: corrige "Puntos por kg" y presiona "Fijar conversión".
+6. Sistema: muestra "Conversión fijada (ID {id}). Queda registrada como decisión."
 
 **Flujos alternativos**
 
-- 5a. Puntos por kilo no válidos.
-  - 5a.1 Sistema: muestra "Puntos por kg: ingrese un número válido".
-- 3a. Usuario elige el material en la lista desplegable sin seleccionar la grilla.
-  - 3a.1 Sistema: muestra los puntos vigentes de ese material en el campo correspondiente.
+- 5a. Puntos por kg vacíos, cero o no numéricos.
+  - 5a.1 Sistema: muestra "Los puntos por kg deben ser mayores a cero." o "Puntos por kg: ingrese un número válido.".
+- 5b. No hay material seleccionado.
+  - 5b.1 Sistema: muestra "Seleccione un material."
 
 ## CU09 Solicitar verificación de vendedor
 
 **Actor principal:** Ciudadano.
-**Precondiciones:** el usuario tiene sesión iniciada y es mayor de 18 años según la fecha de nacimiento de su perfil.
+**Precondiciones:** el usuario tiene sesión iniciada y cargó su fecha de nacimiento en "Mi perfil".
 **Postcondiciones:** queda una solicitud pendiente de revisión por el área comercial.
 
 **Flujo principal**
 
 1. Usuario: abre "Verificación de vendedor".
-2. Sistema: muestra su estado actual (sin solicitud, pendiente, aprobada o rechazada) y el campo "Documentación (ref.)".
+2. Sistema: muestra "Estado: {estado}" y el campo "Documentación (ref.):".
 3. Usuario: escribe la referencia de la documentación y presiona "Solicitar verificación".
-4. Sistema: muestra "Solicitud enviada. El área comercial la revisará." y el estado pasa a pendiente.
+4. Sistema: muestra "Solicitud enviada. El área comercial la revisará."
 
 **Flujos alternativos**
 
-- 2a. El estado es pendiente o aprobada.
+- 2a. El estado es pendiente o aprobado.
   - 2a.1 Sistema: deshabilita "Solicitar verificación".
 - 3a. Referencia vacía.
-  - 3a.1 Sistema: muestra "Ingrese la referencia de la documentación".
-- 3b. El usuario no tiene la edad mínima.
-  - 3b.1 Sistema: muestra "Debe tener 18 años para vender".
+  - 3a.1 Sistema: muestra "Ingrese la referencia de la documentación."
+- 3b. No cargó la fecha de nacimiento.
+  - 3b.1 Sistema: muestra "Cargue su fecha de nacimiento en Mi perfil para solicitar la verificación."
+- 3c. Tiene menos de 18 años.
+  - 3c.1 Sistema: muestra "Para vender debe tener al menos 18 años."
 
 ## CU10 Resolver verificación de vendedor
 
@@ -222,7 +223,7 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 **Flujo principal**
 
 1. Usuario: abre "Verificación de vendedor".
-2. Sistema: muestra la lista de solicitudes pendientes (usuario, fecha y referencia de documentación).
+2. Sistema: muestra "Solicitudes pendientes (área comercial):" con la lista de solicitudes.
 3. Usuario: selecciona una solicitud y presiona "Aprobar seleccionada".
 4. Sistema: muestra "Vendedor verificado." y quita la solicitud de la lista.
 
@@ -230,34 +231,34 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 - 3a. Usuario presiona "Rechazar seleccionada".
   - 3a.1 Sistema: muestra "Solicitud rechazada." y quita la solicitud de la lista.
-- 3b. Usuario presiona los botones sin seleccionar una solicitud.
-  - 3b.1 Sistema: muestra "Seleccione una solicitud".
-- 2a. No hay solicitudes pendientes.
-  - 2a.1 Sistema: muestra la lista vacía.
+- 3b. Usuario presiona "Aprobar seleccionada" o "Rechazar seleccionada" sin seleccionar una solicitud.
+  - 3b.1 Sistema: muestra "Seleccione una solicitud."
 
 ## CU11 Publicar producto
 
 **Actor principal:** Vendedor verificado.
-**Precondiciones:** el usuario tiene el estado de vendedor aprobado (CU10).
+**Precondiciones:** el vendedor tiene el estado de verificado (CU10).
 **Postcondiciones:** el producto queda publicado en estado pendiente de aprobación.
 
 **Flujo principal**
 
-1. Usuario: abre "Publicar producto".
-2. Sistema: muestra el formulario de publicación, la comisión estimada para la categoría y la lista de sus publicaciones.
-3. Usuario: completa nombre, categoría, descripción, precio y stock, y presiona "Publicar".
-4. Sistema: muestra "Producto {id} publicado. Queda pendiente de aprobación del área comercial." y lo agrega a la lista de sus publicaciones.
+1. Usuario: abre "Publicar producto sustentable".
+2. Sistema: muestra la comisión estimada ("Comisión estimada: {porcentaje}%") y "Mis publicaciones:".
+3. Usuario: completa "Nombre", "Categoría", "Descripción", "Precio" y "Stock", y presiona "Publicar".
+4. Sistema: muestra "Producto {id} publicado. Queda pendiente de aprobación del área comercial."
 
 **Flujos alternativos**
 
-- 3a. Usuario selecciona una publicación propia de la lista.
+- 3a. Usuario selecciona una publicación propia de "Mis publicaciones".
   - 3a.1 Sistema: carga su nombre, categoría, precio y stock.
-  - 3a.2 Usuario: modifica precio o stock y presiona "Actualizar".
-  - 3a.3 Sistema: muestra "Precio y stock actualizados".
+  - 3a.2 Usuario: modifica "Precio" o "Stock" y presiona "Actualizar precio y stock".
+  - 3a.3 Sistema: muestra "Precio y stock actualizados."
 - 3b. El vendedor no está verificado.
   - 3b.1 Sistema: deshabilita "Publicar".
-- 3c. Precio igual o menor a cero, o stock negativo.
-  - 3c.1 Sistema: muestra "El precio debe ser mayor a cero" o "El stock no puede ser negativo".
+- 3c. Nombre o categoría vacíos.
+  - 3c.1 Sistema: muestra "Ingrese el nombre del producto." o "Ingrese la categoría.".
+- 3d. Precio igual o menor a cero, o stock negativo.
+  - 3d.1 Sistema: muestra "El precio debe ser mayor a cero." o "El stock no puede ser negativo.".
 
 ## CU12 Aprobar producto
 
@@ -267,15 +268,15 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 **Flujo principal**
 
-1. Usuario: abre "Aprobar productos".
-2. Sistema: muestra la lista de productos pendientes (producto, categoría, precio, stock y vendedor).
-3. Usuario: selecciona un producto y presiona "Aprobar".
-4. Sistema: muestra "Producto aprobado. Ya está visible en el catálogo." y lo quita de la lista.
+1. Usuario: abre "Publicar producto sustentable".
+2. Sistema: muestra "Pendientes de aprobación (área comercial):" con la lista de productos.
+3. Usuario: selecciona un producto y presiona "Aprobar producto seleccionado".
+4. Sistema: muestra "Producto aprobado. Ya está visible en el catálogo." y quita el producto de la lista.
 
 **Flujos alternativos**
 
-- 3a. Usuario presiona "Aprobar" sin seleccionar un producto.
-  - 3a.1 Sistema: muestra "Seleccione un producto pendiente".
+- 3a. Usuario presiona "Aprobar producto seleccionado" sin seleccionar un producto.
+  - 3a.1 Sistema: muestra "Seleccione un producto pendiente."
 
 ## CU13 Comprar producto
 
@@ -285,47 +286,49 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 **Flujo principal**
 
-1. Usuario: abre "Comprar".
+1. Usuario: abre "Comprar en la tienda sustentable".
 2. Sistema: muestra el catálogo de productos aprobados con stock.
-3. Usuario: selecciona un producto, elige la cantidad y escribe el domicilio de entrega.
+3. Usuario: selecciona un producto, elige "Cantidad" y escribe el "Domicilio envío".
 4. Sistema: muestra el resumen "{cantidad} x {producto} = {total}".
 5. Usuario: presiona "Pagar pedido".
-6. Sistema: pregunta "¿Confirmar el pedido?" con el resumen.
+6. Sistema: pregunta "¿Confirmar el pedido?" con el resumen, con los botones "Sí" y "No".
 7. Usuario: presiona "Sí".
 8. Sistema: muestra "Pago aprobado. Orden {id} registrada. Se le notificará cuando el vendedor la despache." y actualiza el catálogo.
 
 **Flujos alternativos**
 
 - 5a. Usuario presiona "Pagar pedido" sin seleccionar un producto.
-  - 5a.1 Sistema: muestra "Seleccione un producto".
+  - 5a.1 Sistema: muestra "Seleccione un producto."
 - 5b. Domicilio vacío.
-  - 5b.1 Sistema: muestra "Ingrese el domicilio de entrega".
+  - 5b.1 Sistema: muestra "Ingrese el domicilio de entrega."
 - 7a. Usuario presiona "No".
   - 7a.1 Sistema: vuelve al catálogo sin registrar el pedido.
-- 8a. El cobro es rechazado.
-  - 8a.1 Sistema: muestra "El pago fue rechazado. No se registró el pedido."
-- 3a. Cantidad mayor al stock disponible.
-  - 3a.1 Sistema: muestra "Stock insuficiente".
-- 3b. El producto es propio del usuario.
-  - 3b.1 Sistema: muestra "No puede comprar sus propios productos".
+- 7b. El cobro es rechazado.
+  - 7b.1 Sistema: muestra "El pago fue rechazado: {motivo}".
+- 7c. Cantidad mayor al stock disponible.
+  - 7c.1 Sistema: muestra "Stock insuficiente para completar la compra."
+- 7d. El producto es propio del usuario.
+  - 7d.1 Sistema: muestra "No puede comprar sus propios productos."
 
 ## CU14 Despachar pedido
 
 **Actor principal:** Vendedor.
-**Precondiciones:** el vendedor tiene una venta confirmada y pagada (CU13).
+**Precondiciones:** el vendedor tiene una venta pagada (CU13).
 **Postcondiciones:** la orden queda despachada y espera la confirmación del comprador.
 
 **Flujo principal**
 
-1. Usuario: abre "Pedidos y liquidaciones" y elige la pestaña de ventas.
-2. Sistema: muestra la lista de ventas del vendedor con su estado.
-3. Usuario: selecciona una venta pendiente de despacho y presiona "Marcar como despachada".
-4. Sistema: muestra "Orden marcada como despachada." y actualiza su estado.
+1. Usuario: abre "Pedidos y liquidaciones" y elige la pestaña "Mis ventas".
+2. Sistema: muestra la lista de ventas del vendedor.
+3. Usuario: selecciona una venta y presiona "Marcar como despachada".
+4. Sistema: muestra "Orden marcada como despachada."
 
 **Flujos alternativos**
 
 - 3a. Usuario presiona "Marcar como despachada" sin seleccionar una venta.
-  - 3a.1 Sistema: muestra "Seleccione una venta".
+  - 3a.1 Sistema: muestra "Seleccione una venta."
+- 3b. La orden ya no está pendiente de despacho.
+  - 3b.1 Sistema: muestra "La orden no está pendiente de despacho o no le pertenece."
 
 ## CU15 Confirmar recepción de pedido
 
@@ -335,15 +338,17 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 **Flujo principal**
 
-1. Usuario: abre "Pedidos y liquidaciones" y elige la pestaña de compras.
-2. Sistema: muestra la lista de compras con su estado.
-3. Usuario: selecciona una compra despachada y presiona "Confirmar recepción".
-4. Sistema: muestra "Recepción confirmada. El saldo quedó disponible para liquidar." y actualiza el estado.
+1. Usuario: abre "Pedidos y liquidaciones" y elige la pestaña "Mis compras".
+2. Sistema: muestra la lista de compras.
+3. Usuario: selecciona una compra y presiona "Confirmar recepción conforme".
+4. Sistema: muestra "Recepción confirmada. El saldo quedó disponible para liquidar."
 
 **Flujos alternativos**
 
-- 3a. Usuario presiona "Confirmar recepción" sin seleccionar una compra.
-  - 3a.1 Sistema: muestra "Seleccione una compra".
+- 3a. Usuario presiona "Confirmar recepción conforme" sin seleccionar una compra.
+  - 3a.1 Sistema: muestra "Seleccione una compra."
+- 3b. La orden no está despachada.
+  - 3b.1 Sistema: muestra "La orden no está despachada o no le pertenece."
 
 ## CU16 Liquidar vendedor
 
@@ -353,39 +358,43 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 **Flujo principal**
 
-1. Usuario: abre "Pedidos y liquidaciones" y elige la pestaña de liquidaciones.
-2. Sistema: muestra las liquidaciones disponibles, con el monto neto de cada una.
-3. Usuario: selecciona una liquidación y presiona "Pagar".
-4. Sistema: pregunta "¿Ordenar la transferencia al vendedor por el saldo neto?".
+1. Usuario: abre "Pedidos y liquidaciones" y elige la pestaña "Liquidaciones".
+2. Sistema: muestra las liquidaciones disponibles.
+3. Usuario: selecciona una liquidación y presiona "Ordenar transferencia al vendedor".
+4. Sistema: pregunta "¿Ordenar la transferencia al vendedor por el saldo neto?" con los botones "Sí" y "No".
 5. Usuario: presiona "Sí".
-6. Sistema: muestra "Transferencia ordenada. La liquidación quedó pagada." y la quita de la lista.
+6. Sistema: muestra "Transferencia ordenada. La liquidación quedó pagada." y quita la liquidación de la lista.
 
 **Flujos alternativos**
 
-- 3a. Usuario presiona "Pagar" sin seleccionar una liquidación.
-  - 3a.1 Sistema: muestra "Seleccione una liquidación".
+- 3a. Usuario presiona "Ordenar transferencia al vendedor" sin seleccionar una liquidación.
+  - 3a.1 Sistema: muestra "Seleccione una liquidación."
 - 5a. Usuario presiona "No".
   - 5a.1 Sistema: vuelve a la lista sin cambios.
+- 5b. La liquidación ya no está disponible.
+  - 5b.1 Sistema: muestra "La liquidación no está disponible para pagar."
 
 ## CU17 Presentar reclamo
 
 **Actor principal:** Comprador (ciudadano).
-**Precondiciones:** la orden fue despachada y el comprador no confirmó la recepción.
+**Precondiciones:** el comprador tiene una orden despachada.
 **Postcondiciones:** queda registrado el reclamo y la liquidación del vendedor queda congelada.
 
 **Flujo principal**
 
-1. Usuario: abre "Reclamos" y elige la pestaña "Presentar".
-2. Sistema: muestra sus órdenes despachadas.
-3. Usuario: selecciona una orden, escribe el motivo y presiona "Presentar reclamo".
-4. Sistema: muestra "Reclamo {id} registrado."
+1. Usuario: abre "Reclamos" y elige la pestaña "Presentar reclamo".
+2. Sistema: muestra las órdenes del comprador.
+3. Usuario: selecciona una orden, escribe el "Motivo:" y presiona "Presentar reclamo".
+4. Sistema: muestra "Reclamo {id} presentado. El saldo del vendedor quedó congelado hasta su resolución."
 
 **Flujos alternativos**
 
-- 3a. Motivo vacío.
-  - 3a.1 Sistema: muestra "Describa el motivo del reclamo".
-- 3b. Usuario presiona "Presentar reclamo" sin seleccionar una orden.
-  - 3b.1 Sistema: muestra "Seleccione una orden".
+- 3a. Usuario presiona "Presentar reclamo" sin seleccionar una orden.
+  - 3a.1 Sistema: muestra "Seleccione la orden a reclamar."
+- 3b. Motivo vacío.
+  - 3b.1 Sistema: muestra "Describa el motivo del reclamo."
+- 3c. La orden no es despachada o no es propia.
+  - 3c.1 Sistema: muestra "Solo puede reclamar órdenes despachadas propias."
 
 ## CU18 Resolver reclamo
 
@@ -395,14 +404,16 @@ Cada caso de uso tiene un flujo principal y sus flujos alternativos. Los pasos a
 
 **Flujo principal**
 
-1. Usuario: abre "Reclamos" y elige la pestaña "Resolver".
-2. Sistema: muestra la lista de reclamos abiertos (orden, comprador, motivo y fecha).
-3. Usuario: selecciona un reclamo y presiona "Procedente" o "Improcedente".
-4. Sistema: muestra "Reclamo resuelto" y lo quita de la lista.
+1. Usuario: abre "Reclamos" y elige la pestaña "Resolver reclamos".
+2. Sistema: muestra la lista de reclamos abiertos.
+3. Usuario: selecciona un reclamo y presiona "Reclamo procedente".
+4. Sistema: muestra "Reclamo procedente: la orden se devolvió, el stock se restituyó y la liquidación se canceló." y quita el reclamo de la lista.
 
 **Flujos alternativos**
 
-- 3a. Usuario presiona un botón sin seleccionar un reclamo.
-  - 3a.1 Sistema: muestra "Seleccione un reclamo".
-- 2a. No hay reclamos abiertos.
-  - 2a.1 Sistema: muestra la lista vacía.
+- 3a. Usuario presiona "Reclamo improcedente".
+  - 3a.1 Sistema: muestra "Reclamo improcedente: la liquidación volvió a retenida hasta la confirmación del comprador."
+- 3b. Usuario presiona un botón sin seleccionar un reclamo.
+  - 3b.1 Sistema: muestra "Seleccione un reclamo."
+- 3c. El reclamo ya no está abierto.
+  - 3c.1 Sistema: muestra "El reclamo no está abierto."
