@@ -165,5 +165,5 @@ class "UITheme" as UITheme <<GUI>> {
   +EstilizarGrid(DataGridView grid): void
   +EstilizarMenu(MenuStrip menu): void
 }
-MainForm ..> BE_USUARIO
+MainForm --> BE_USUARIO
 @enduml

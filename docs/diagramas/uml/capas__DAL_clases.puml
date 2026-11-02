@@ -327,26 +327,26 @@ BE_ItemOrden "0..*" --> "1" BE_Producto : Producto
 BE_Perfil "1" o-- "0..*" BE_Permiso : Permisos
 BE_PuntoVerde "1" o-- "0..*" BE_Material : MaterialesAceptados
 MP_BITACORA --|> MAPPER
-MP_BITACORA ..> BE_BITACORA
-MP_BITACORA ..> BE_USUARIO
-MP_CATALOGO ..> BE_Beneficio
-MP_CATALOGO ..> BE_GuiaReutilizacion
-MP_CATALOGO ..> BE_Material
+MP_BITACORA --> BE_BITACORA
+MP_BITACORA --> BE_USUARIO
+MP_CATALOGO --> BE_Beneficio
+MP_CATALOGO --> BE_GuiaReutilizacion
+MP_CATALOGO --> BE_Material
 MP_CambiosEntidad --|> MAPPER
-MP_CambiosEntidad ..> BE_CambiosEntidad
-MP_DATOS_USUARIO ..> BE_DatosUsuario
+MP_CambiosEntidad --> BE_CambiosEntidad
+MP_DATOS_USUARIO --> BE_DatosUsuario
 MP_DigitoVerificadorVertical --|> MAPPER
-MP_DigitoVerificadorVertical ..> BE_DigitoVerificadorVertical
-MP_MARKETPLACE ..> BE_ItemOrden
-MP_MARKETPLACE ..> BE_Producto
+MP_DigitoVerificadorVertical --> BE_DigitoVerificadorVertical
+MP_MARKETPLACE --> BE_ItemOrden
+MP_MARKETPLACE --> BE_Producto
 MP_PERFIL --|> MAPPER
-MP_PERFIL ..> BE_Perfil
-MP_PERFIL ..> BE_Permiso
-MP_PERMISO ..> BE_Permiso
-MP_RECICLAJE ..> BE_PuntoVerde
+MP_PERFIL --> BE_Perfil
+MP_PERFIL --> BE_Permiso
+MP_PERMISO --> BE_Permiso
+MP_RECICLAJE --> BE_PuntoVerde
 MP_ROL --|> MAPPER
-MP_ROL ..> BE_Permiso
-MP_ROL ..> BE_Rol
+MP_ROL --> BE_Permiso
+MP_ROL --> BE_Rol
 MP_USUARIO --|> MAPPER
-MP_USUARIO ..> BE_USUARIO
+MP_USUARIO --> BE_USUARIO
 @enduml

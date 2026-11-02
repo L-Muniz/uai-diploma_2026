@@ -114,9 +114,9 @@ class "SV_Singleton" as SV_Singleton <<SERVICE>> {
   +GetInstance(): SV_Singleton
   +LimpiarSesion(): void
 }
-SV_IdiomaManager ..> ISV_IdiomaObserver
-SV_IdiomaManager ..> ISV_ProveedorTraduccion
-SV_PerfilComposite ..> BE_Perfil
-SV_Serializacion ..> BE_InformeIndicadores
+SV_IdiomaManager --> ISV_IdiomaObserver
+SV_IdiomaManager --> ISV_ProveedorTraduccion
+SV_PerfilComposite --> BE_Perfil
+SV_Serializacion --> BE_InformeIndicadores
 SV_Singleton "0..*" --> "1" BE_USUARIO : Usuario
 @enduml
