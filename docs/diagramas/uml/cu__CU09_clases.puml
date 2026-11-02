@@ -1,5 +1,6 @@
 @startuml
 skinparam classAttributeIconSize 0
+skinparam linetype ortho
 title CU09 - Clases afectadas
 class "BE_USUARIO" as BE_USUARIO <<BE>> {
   +Username: string

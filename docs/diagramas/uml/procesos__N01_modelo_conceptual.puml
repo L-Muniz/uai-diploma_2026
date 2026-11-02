@@ -1,5 +1,6 @@
 @startuml
 skinparam classAttributeIconSize 0
+skinparam linetype ortho
 title N01 - Gestión de la red de puntos verdes y tarifas
 class "BE_USUARIO" as BE_USUARIO <<BE>> {
   +Username: string

@@ -1,5 +1,6 @@
 @startuml
 skinparam classAttributeIconSize 0
+skinparam linetype ortho
 title Capa BE
 class "BE_Acopio" as BE_Acopio <<BE>> {
   +ID: int

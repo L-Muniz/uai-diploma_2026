@@ -1,5 +1,6 @@
 @startuml
 skinparam classAttributeIconSize 0
+skinparam linetype ortho
 title Capa SERVICE
 class "BE_InformeIndicadores" as BE_InformeIndicadores <<BE>> {
   +Version: string

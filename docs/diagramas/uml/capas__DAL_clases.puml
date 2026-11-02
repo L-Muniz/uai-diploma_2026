@@ -1,5 +1,6 @@
 @startuml
 skinparam classAttributeIconSize 0
+skinparam linetype ortho
 title Capa DAL
 class "ACCESO" as ACCESO <<DAL>> {
   +Abrir(): void
