@@ -8,32 +8,32 @@ participant BLL_BITACORA
 participant MP_BITACORA
 database "SQL Server" as BD
 ACT -> FormReclamos : selecciona orden, escribe motivo y presiona Presentar reclamo
-FormReclamos -> BLL_MARKETPLACE : PresentarReclamo()
-BLL_MARKETPLACE -> MP_MARKETPLACE : RegistrarReclamo()
+FormReclamos -> BLL_MARKETPLACE : PresentarReclamo(BE_USUARIO comprador, int idOrden, string motivo)
+BLL_MARKETPLACE -> MP_MARKETPLACE : RegistrarReclamo(int idOrden, int idUsuario, string motivo)
 MP_MARKETPLACE -> BD : RECLAMO_REGISTRAR
-BD --> MP_MARKETPLACE : resultado
-MP_MARKETPLACE --> BLL_MARKETPLACE : int
-BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro()
-BLL_BITACORA -> MP_BITACORA : Alta()
+BD --> MP_MARKETPLACE : object
+MP_MARKETPLACE --> BLL_MARKETPLACE : int id
+BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string descripcion)
+BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj)
 MP_BITACORA -> BD : REGISTRO
-BD --> MP_BITACORA : resultado
-MP_BITACORA --> BLL_BITACORA : int
+BD --> MP_BITACORA : int
+MP_BITACORA --> BLL_BITACORA : int filas
 BLL_BITACORA --> BLL_MARKETPLACE : void
 BLL_MARKETPLACE -> BLL_MARKETPLACE : Exigir(PROC_RECLAMAR)
-BLL_MARKETPLACE --> FormReclamos : int
+BLL_MARKETPLACE --> FormReclamos : int idReclamo
 FormReclamos -> FormReclamos : Refrescar()
-FormReclamos -> BLL_MARKETPLACE : ListarOrdenesComprador()
-BLL_MARKETPLACE -> MP_MARKETPLACE : ListarOrdenesComprador()
+FormReclamos -> BLL_MARKETPLACE : ListarOrdenesComprador(int idComprador)
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarOrdenesComprador(int idComprador)
 MP_MARKETPLACE -> BD : ORDENES_COMPRADOR_LISTAR
-BD --> MP_MARKETPLACE : resultado
-MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
-BLL_MARKETPLACE --> FormReclamos : DataTable
+BD --> MP_MARKETPLACE : DataTable
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable dt
+BLL_MARKETPLACE --> FormReclamos : DataTable dal.ListarOrdenesComprador(idComprador)
 FormReclamos -> BLL_MARKETPLACE : ListarReclamosAbiertos()
 BLL_MARKETPLACE -> MP_MARKETPLACE : ListarReclamosAbiertos()
 MP_MARKETPLACE -> BD : RECLAMOS_ABIERTOS_LISTAR
-BD --> MP_MARKETPLACE : resultado
-MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
-BLL_MARKETPLACE --> FormReclamos : DataTable
+BD --> MP_MARKETPLACE : DataTable
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable dt
+BLL_MARKETPLACE --> FormReclamos : DataTable dal.ListarReclamosAbiertos()
 FormReclamos --> FormReclamos : void
 FormReclamos --> ACT : muestra Reclamo presentado
 @enduml

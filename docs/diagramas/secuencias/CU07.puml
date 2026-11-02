@@ -8,36 +8,36 @@ participant BLL_BITACORA
 participant MP_BITACORA
 database "SQL Server" as BD
 ACT -> FormTarifas : escribe categoría y comisión y presiona Fijar comisión
-FormTarifas -> BLL_GESTION : ProponerTarifa()
-BLL_GESTION -> MP_GESTION : AltaDecision()
+FormTarifas -> BLL_GESTION : ProponerTarifa(BE_USUARIO usuario, string categoria, decimal porcentaje)
+BLL_GESTION -> MP_GESTION : AltaDecision(int? idInforme, int idUsuario, int? idPuntoVerde, string tipo, string descripcion)
 MP_GESTION -> BD : DECISION_ALTA
-BD --> MP_GESTION : resultado
-MP_GESTION --> BLL_GESTION : int
-BLL_GESTION -> MP_GESTION : AltaTarifa()
+BD --> MP_GESTION : object
+MP_GESTION --> BLL_GESTION : int id
+BLL_GESTION -> MP_GESTION : AltaTarifa(int? idDecision, string categoria, decimal porcentaje)
 MP_GESTION -> BD : TARIFA_ALTA
-BD --> MP_GESTION : resultado
-MP_GESTION --> BLL_GESTION : int
-BLL_GESTION -> BLL_BITACORA : IngresarRegistro()
-BLL_BITACORA -> MP_BITACORA : Alta()
+BD --> MP_GESTION : object
+MP_GESTION --> BLL_GESTION : int id
+BLL_GESTION -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string descripcion)
+BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj)
 MP_BITACORA -> BD : REGISTRO
-BD --> MP_BITACORA : resultado
-MP_BITACORA --> BLL_BITACORA : int
+BD --> MP_BITACORA : int
+MP_BITACORA --> BLL_BITACORA : int filas
 BLL_BITACORA --> BLL_GESTION : void
 BLL_GESTION -> BLL_GESTION : Exigir(PROC_GESTIONAR_TARIFAS)
-BLL_GESTION --> FormTarifas : int
+BLL_GESTION --> FormTarifas : int idTarifa
 FormTarifas -> FormTarifas : Refrescar()
 FormTarifas -> BLL_GESTION : ListarTarifas()
 BLL_GESTION -> MP_GESTION : ListarTarifasVigentes()
 MP_GESTION -> BD : TARIFAS_LISTAR_VIGENTES
-BD --> MP_GESTION : resultado
-MP_GESTION --> BLL_GESTION : DataTable
-BLL_GESTION --> FormTarifas : DataTable
+BD --> MP_GESTION : DataTable
+MP_GESTION --> BLL_GESTION : DataTable dt
+BLL_GESTION --> FormTarifas : DataTable dal.ListarTarifasVigentes()
 FormTarifas -> BLL_GESTION : ListarConversiones()
 BLL_GESTION -> MP_GESTION : ListarConversionesVigentes()
 MP_GESTION -> BD : CONVERSIONES_LISTAR_VIGENTES
-BD --> MP_GESTION : resultado
-MP_GESTION --> BLL_GESTION : DataTable
-BLL_GESTION --> FormTarifas : DataTable
+BD --> MP_GESTION : DataTable
+MP_GESTION --> BLL_GESTION : DataTable dt
+BLL_GESTION --> FormTarifas : DataTable dal.ListarConversionesVigentes()
 FormTarifas --> FormTarifas : void
 FormTarifas --> ACT : muestra Comisión fijada
 @enduml

@@ -15,138 +15,138 @@ participant MP_GESTION
 database "SQL Server" as BD
 alt presiona Declarar
 ACT -> FormDeclararMaterial : presiona Declarar
-FormDeclararMaterial -> BLL_RECICLAJE : DeclararMaterial()
+FormDeclararMaterial -> BLL_RECICLAJE : DeclararMaterial(BE_USUARIO usuario, int idMaterial, decimal cantidad)
 BLL_RECICLAJE -> MP_CATALOGO : ListarMateriales()
 MP_CATALOGO -> BD : MATERIAL_LISTAR
-BD --> MP_CATALOGO : resultado
-MP_CATALOGO --> BLL_RECICLAJE : DataTable
-BLL_RECICLAJE -> MP_RECICLAJE : AltaDeclaracion()
+BD --> MP_CATALOGO : DataTable
+MP_CATALOGO --> BLL_RECICLAJE : DataTable dt
+BLL_RECICLAJE -> MP_RECICLAJE : AltaDeclaracion(int idUsuario, int idMaterial, decimal cantidad)
 MP_RECICLAJE -> BD : DECLARACION_ALTA
-BD --> MP_RECICLAJE : resultado
-MP_RECICLAJE --> BLL_RECICLAJE : int
-BLL_RECICLAJE -> BLL_BITACORA : IngresarRegistro()
-BLL_BITACORA -> MP_BITACORA : Alta()
+BD --> MP_RECICLAJE : object
+MP_RECICLAJE --> BLL_RECICLAJE : int id
+BLL_RECICLAJE -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string descripcion)
+BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj)
 MP_BITACORA -> BD : REGISTRO
-BD --> MP_BITACORA : resultado
-MP_BITACORA --> BLL_BITACORA : int
+BD --> MP_BITACORA : int
+MP_BITACORA --> BLL_BITACORA : int filas
 BLL_BITACORA --> BLL_RECICLAJE : void
-BLL_RECICLAJE -> MP_RECICLAJE : ListarGuiasPorMaterial()
+BLL_RECICLAJE -> MP_RECICLAJE : ListarGuiasPorMaterial(int idMaterial)
 MP_RECICLAJE -> BD : GUIA_LISTAR_POR_MATERIAL
-BD --> MP_RECICLAJE : resultado
-MP_RECICLAJE --> BLL_RECICLAJE : DataTable
-BLL_RECICLAJE -> MP_RECICLAJE : ListarPuntosVerdesPorMaterial()
+BD --> MP_RECICLAJE : DataTable
+MP_RECICLAJE --> BLL_RECICLAJE : DataTable dt
+BLL_RECICLAJE -> MP_RECICLAJE : ListarPuntosVerdesPorMaterial(int idMaterial)
 MP_RECICLAJE -> BD : PUNTO_VERDE_LISTAR_POR_MATERIAL
-BD --> MP_RECICLAJE : resultado
-MP_RECICLAJE --> BLL_RECICLAJE : DataTable
-BLL_RECICLAJE -> BLL_RECICLAJE : MasCercano()
-BLL_RECICLAJE -> BLL_DATOS_USUARIO : Obtener()
-BLL_DATOS_USUARIO -> MP_DATOS_USUARIO : Obtener()
+BD --> MP_RECICLAJE : DataTable
+MP_RECICLAJE --> BLL_RECICLAJE : DataTable dt
+BLL_RECICLAJE -> BLL_RECICLAJE : MasCercano(BE_USUARIO usuario, DataTable puntos)
+BLL_RECICLAJE -> BLL_DATOS_USUARIO : Obtener(BE_USUARIO usuario)
+BLL_DATOS_USUARIO -> MP_DATOS_USUARIO : Obtener(int idUsuario)
 MP_DATOS_USUARIO -> BD : DATOS_USUARIO_OBTENER
-BD --> MP_DATOS_USUARIO : resultado
+BD --> MP_DATOS_USUARIO : DataTable
 MP_DATOS_USUARIO -> BD : FECHA_NACIMIENTO
-BD --> MP_DATOS_USUARIO : resultado
-BD --> MP_DATOS_USUARIO : resultado
+BD --> MP_DATOS_USUARIO : DataTable
+BD --> MP_DATOS_USUARIO : DataTable
 MP_DATOS_USUARIO -> BD : LATITUD
-BD --> MP_DATOS_USUARIO : resultado
-BD --> MP_DATOS_USUARIO : resultado
+BD --> MP_DATOS_USUARIO : DataTable
+BD --> MP_DATOS_USUARIO : DataTable
 MP_DATOS_USUARIO -> BD : LONGITUD
-BD --> MP_DATOS_USUARIO : resultado
-BD --> MP_DATOS_USUARIO : resultado
+BD --> MP_DATOS_USUARIO : DataTable
+BD --> MP_DATOS_USUARIO : DataTable
 MP_DATOS_USUARIO -> BD : LOCALIDAD
-BD --> MP_DATOS_USUARIO : resultado
-BD --> MP_DATOS_USUARIO : resultado
-MP_DATOS_USUARIO --> BLL_DATOS_USUARIO : BE_DatosUsuario
-BLL_DATOS_USUARIO --> BLL_RECICLAJE : BE_DatosUsuario
-BLL_RECICLAJE --> BLL_RECICLAJE : DataRow
+BD --> MP_DATOS_USUARIO : DataTable
+BD --> MP_DATOS_USUARIO : DataTable
+MP_DATOS_USUARIO --> BLL_DATOS_USUARIO : BE_DatosUsuario new BE_DatosUsuario { IDUsuario = idUsuario }
+BLL_DATOS_USUARIO --> BLL_RECICLAJE : BE_DatosUsuario dal.Obtener(usuario.ID)
+BLL_RECICLAJE --> BLL_RECICLAJE : DataRow null
 BLL_RECICLAJE -> BLL_RECICLAJE : Exigir(PROC_DECLARAR_MATERIAL)
-BLL_RECICLAJE --> FormDeclararMaterial : OpcionesRecomendacion
+BLL_RECICLAJE --> FormDeclararMaterial : OpcionesRecomendacion opciones
 FormDeclararMaterial -> FormDeclararMaterial : Refrescar()
-FormDeclararMaterial -> BLL_RECICLAJE : ListarDeclaracionesDeUsuario()
-BLL_RECICLAJE -> MP_RECICLAJE : ListarDeclaracionesDeUsuario()
+FormDeclararMaterial -> BLL_RECICLAJE : ListarDeclaracionesDeUsuario(int idUsuario)
+BLL_RECICLAJE -> MP_RECICLAJE : ListarDeclaracionesDeUsuario(int idUsuario)
 MP_RECICLAJE -> BD : DECLARACION_LISTAR_POR_USUARIO
-BD --> MP_RECICLAJE : resultado
-MP_RECICLAJE --> BLL_RECICLAJE : DataTable
-BLL_RECICLAJE --> FormDeclararMaterial : DataTable
-FormDeclararMaterial -> BLL_ECOPUNTOS : ObtenerSaldo()
-BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo()
+BD --> MP_RECICLAJE : DataTable
+MP_RECICLAJE --> BLL_RECICLAJE : DataTable dt
+BLL_RECICLAJE --> FormDeclararMaterial : DataTable dal.ListarDeclaracionesDeUsuario(idUsuario)
+FormDeclararMaterial -> BLL_ECOPUNTOS : ObtenerSaldo(int idUsuario)
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo(int idUsuario)
 MP_ECOPUNTOS -> BD : CUENTA_SALDO
-BD --> MP_ECOPUNTOS : resultado
-MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
-BLL_ECOPUNTOS --> FormDeclararMaterial : int
+BD --> MP_ECOPUNTOS : object
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int Convert.ToInt32(o)
+BLL_ECOPUNTOS --> FormDeclararMaterial : int dal.ObtenerSaldo(idUsuario)
 FormDeclararMaterial --> FormDeclararMaterial : void
 FormDeclararMaterial --> ACT : muestra opción 1 y opción 2
 else presiona Reutilizar en casa (confirmar)
 ACT -> FormDeclararMaterial : presiona Reutilizar en casa (confirmar)
-FormDeclararMaterial -> BLL_RECICLAJE : ConfirmarReutilizacion()
-BLL_RECICLAJE -> MP_RECICLAJE : GuardarRecomendacion()
+FormDeclararMaterial -> BLL_RECICLAJE : ConfirmarReutilizacion(BE_USUARIO usuario, OpcionesRecomendacion opciones)
+BLL_RECICLAJE -> MP_RECICLAJE : GuardarRecomendacion(int idDeclaracion, int? idGuia, int? idPuntoVerde, string opcionElegida, string nuevoEstado)
 MP_RECICLAJE -> BD : RECOMENDACION_GUARDAR
-BD --> MP_RECICLAJE : resultado
+BD --> MP_RECICLAJE : int
 MP_RECICLAJE --> BLL_RECICLAJE : void
-BLL_RECICLAJE -> BLL_ECOPUNTOS : Acreditar()
-BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo()
+BLL_RECICLAJE -> BLL_ECOPUNTOS : Acreditar(int idUsuario, int puntos, string tipo, string motivo)
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo(int idUsuario)
 MP_ECOPUNTOS -> BD : CUENTA_SALDO
-BD --> MP_ECOPUNTOS : resultado
-MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
-BLL_ECOPUNTOS -> MP_ECOPUNTOS : AcreditarPuntos()
+BD --> MP_ECOPUNTOS : object
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int Convert.ToInt32(o)
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : AcreditarPuntos(int idUsuario, int puntos, string tipo, string motivo)
 MP_ECOPUNTOS -> BD : CUENTA_ACREDITAR
-BD --> MP_ECOPUNTOS : resultado
-MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
-BLL_ECOPUNTOS --> BLL_RECICLAJE : int
-BLL_RECICLAJE -> BLL_BITACORA : IngresarRegistro()
-BLL_BITACORA -> MP_BITACORA : Alta()
+BD --> MP_ECOPUNTOS : object
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int saldo
+BLL_ECOPUNTOS --> BLL_RECICLAJE : int dal.ObtenerSaldo(idUsuario)
+BLL_RECICLAJE -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string descripcion)
+BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj)
 MP_BITACORA -> BD : REGISTRO
-BD --> MP_BITACORA : resultado
-MP_BITACORA --> BLL_BITACORA : int
+BD --> MP_BITACORA : int
+MP_BITACORA --> BLL_BITACORA : int filas
 BLL_BITACORA --> BLL_RECICLAJE : void
-BLL_RECICLAJE -> BLL_RECICLAJE : CalcularPuntos()
-BLL_RECICLAJE -> MP_GESTION : ObtenerPuntosPorKgVigente()
+BLL_RECICLAJE -> BLL_RECICLAJE : CalcularPuntos(int idMaterial, decimal kg)
+BLL_RECICLAJE -> MP_GESTION : ObtenerPuntosPorKgVigente(int idMaterial)
 MP_GESTION -> BD : CONVERSION_PUNTOS_POR_KG_VIGENTE
-BD --> MP_GESTION : resultado
-MP_GESTION --> BLL_RECICLAJE : decimal?
-BLL_RECICLAJE --> BLL_RECICLAJE : int
+BD --> MP_GESTION : object
+MP_GESTION --> BLL_RECICLAJE : decimal? null
+BLL_RECICLAJE --> BLL_RECICLAJE : int 0
 BLL_RECICLAJE -> BLL_RECICLAJE : Exigir(PROC_DECLARAR_MATERIAL)
-BLL_RECICLAJE --> FormDeclararMaterial : int
+BLL_RECICLAJE --> FormDeclararMaterial : int saldo
 FormDeclararMaterial -> FormDeclararMaterial : Refrescar()
-FormDeclararMaterial -> BLL_RECICLAJE : ListarDeclaracionesDeUsuario()
-BLL_RECICLAJE -> MP_RECICLAJE : ListarDeclaracionesDeUsuario()
+FormDeclararMaterial -> BLL_RECICLAJE : ListarDeclaracionesDeUsuario(int idUsuario)
+BLL_RECICLAJE -> MP_RECICLAJE : ListarDeclaracionesDeUsuario(int idUsuario)
 MP_RECICLAJE -> BD : DECLARACION_LISTAR_POR_USUARIO
-BD --> MP_RECICLAJE : resultado
-MP_RECICLAJE --> BLL_RECICLAJE : DataTable
-BLL_RECICLAJE --> FormDeclararMaterial : DataTable
-FormDeclararMaterial -> BLL_ECOPUNTOS : ObtenerSaldo()
-BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo()
-MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
-BLL_ECOPUNTOS --> FormDeclararMaterial : int
+BD --> MP_RECICLAJE : DataTable
+MP_RECICLAJE --> BLL_RECICLAJE : DataTable dt
+BLL_RECICLAJE --> FormDeclararMaterial : DataTable dal.ListarDeclaracionesDeUsuario(idUsuario)
+FormDeclararMaterial -> BLL_ECOPUNTOS : ObtenerSaldo(int idUsuario)
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo(int idUsuario)
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int Convert.ToInt32(o)
+BLL_ECOPUNTOS --> FormDeclararMaterial : int dal.ObtenerSaldo(idUsuario)
 FormDeclararMaterial --> FormDeclararMaterial : void
 FormDeclararMaterial --> ACT : muestra Reutilización confirmada
 else presiona Entregar en punto verde
 ACT -> FormDeclararMaterial : presiona Entregar en punto verde
-FormDeclararMaterial -> BLL_RECICLAJE : ElegirEntregaOficial()
-BLL_RECICLAJE -> MP_RECICLAJE : GuardarRecomendacion()
+FormDeclararMaterial -> BLL_RECICLAJE : ElegirEntregaOficial(BE_USUARIO usuario, OpcionesRecomendacion opciones)
+BLL_RECICLAJE -> MP_RECICLAJE : GuardarRecomendacion(int idDeclaracion, int? idGuia, int? idPuntoVerde, string opcionElegida, string nuevoEstado)
 MP_RECICLAJE -> BD : RECOMENDACION_GUARDAR
-BD --> MP_RECICLAJE : resultado
+BD --> MP_RECICLAJE : int
 MP_RECICLAJE --> BLL_RECICLAJE : void
-BLL_RECICLAJE -> BLL_BITACORA : IngresarRegistro()
-BLL_BITACORA -> MP_BITACORA : Alta()
+BLL_RECICLAJE -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string descripcion)
+BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj)
 MP_BITACORA -> BD : REGISTRO
-BD --> MP_BITACORA : resultado
-MP_BITACORA --> BLL_BITACORA : int
+BD --> MP_BITACORA : int
+MP_BITACORA --> BLL_BITACORA : int filas
 BLL_BITACORA --> BLL_RECICLAJE : void
 BLL_RECICLAJE -> BLL_RECICLAJE : Exigir(PROC_DECLARAR_MATERIAL)
 BLL_RECICLAJE --> FormDeclararMaterial : void
 FormDeclararMaterial -> FormDeclararMaterial : Refrescar()
-FormDeclararMaterial -> BLL_RECICLAJE : ListarDeclaracionesDeUsuario()
-BLL_RECICLAJE -> MP_RECICLAJE : ListarDeclaracionesDeUsuario()
+FormDeclararMaterial -> BLL_RECICLAJE : ListarDeclaracionesDeUsuario(int idUsuario)
+BLL_RECICLAJE -> MP_RECICLAJE : ListarDeclaracionesDeUsuario(int idUsuario)
 MP_RECICLAJE -> BD : DECLARACION_LISTAR_POR_USUARIO
-BD --> MP_RECICLAJE : resultado
-MP_RECICLAJE --> BLL_RECICLAJE : DataTable
-BLL_RECICLAJE --> FormDeclararMaterial : DataTable
-FormDeclararMaterial -> BLL_ECOPUNTOS : ObtenerSaldo()
-BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo()
+BD --> MP_RECICLAJE : DataTable
+MP_RECICLAJE --> BLL_RECICLAJE : DataTable dt
+BLL_RECICLAJE --> FormDeclararMaterial : DataTable dal.ListarDeclaracionesDeUsuario(idUsuario)
+FormDeclararMaterial -> BLL_ECOPUNTOS : ObtenerSaldo(int idUsuario)
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo(int idUsuario)
 MP_ECOPUNTOS -> BD : CUENTA_SALDO
-BD --> MP_ECOPUNTOS : resultado
-MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
-BLL_ECOPUNTOS --> FormDeclararMaterial : int
+BD --> MP_ECOPUNTOS : object
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int Convert.ToInt32(o)
+BLL_ECOPUNTOS --> FormDeclararMaterial : int dal.ObtenerSaldo(idUsuario)
 FormDeclararMaterial --> FormDeclararMaterial : void
 FormDeclararMaterial --> ACT : muestra Entrega oficial registrada
 end

@@ -9,38 +9,38 @@ participant BLL_BITACORA
 participant MP_BITACORA
 database "SQL Server" as BD
 ACT -> FormPuntosVerdes : completa datos y presiona Guardar
-FormPuntosVerdes -> BLL_GESTION : GuardarPuntoVerde()
-BLL_GESTION -> MP_RECICLAJE : AltaPuntoVerde()
+FormPuntosVerdes -> BLL_GESTION : GuardarPuntoVerde(BE_USUARIO usuario, BE_PuntoVerde pv, List<int> materiales, bool validadoPorReferente)
+BLL_GESTION -> MP_RECICLAJE : AltaPuntoVerde(BE_PuntoVerde pv)
 MP_RECICLAJE -> BD : PUNTO_VERDE_ALTA
-BD --> MP_RECICLAJE : resultado
-MP_RECICLAJE --> BLL_GESTION : int
-BLL_GESTION -> MP_RECICLAJE : ModificarPuntoVerde()
+BD --> MP_RECICLAJE : object
+MP_RECICLAJE --> BLL_GESTION : int id
+BLL_GESTION -> MP_RECICLAJE : ModificarPuntoVerde(BE_PuntoVerde pv)
 MP_RECICLAJE -> BD : PUNTO_VERDE_MODIFICAR
-BD --> MP_RECICLAJE : resultado
+BD --> MP_RECICLAJE : int
 MP_RECICLAJE --> BLL_GESTION : void
-BLL_GESTION -> MP_RECICLAJE : GuardarMaterialesAceptados()
+BLL_GESTION -> MP_RECICLAJE : GuardarMaterialesAceptados(int idPuntoVerde, List<int> idMateriales)
 MP_RECICLAJE -> BD : PUNTO_VERDE_MATERIALES_GUARDAR
-BD --> MP_RECICLAJE : resultado
+BD --> MP_RECICLAJE : int
 MP_RECICLAJE --> BLL_GESTION : void
-BLL_GESTION -> MP_GESTION : AltaDecision()
+BLL_GESTION -> MP_GESTION : AltaDecision(int? idInforme, int idUsuario, int? idPuntoVerde, string tipo, string descripcion)
 MP_GESTION -> BD : DECISION_ALTA
-BD --> MP_GESTION : resultado
-MP_GESTION --> BLL_GESTION : int
-BLL_GESTION -> BLL_BITACORA : IngresarRegistro()
-BLL_BITACORA -> MP_BITACORA : Alta()
+BD --> MP_GESTION : object
+MP_GESTION --> BLL_GESTION : int id
+BLL_GESTION -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string descripcion)
+BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj)
 MP_BITACORA -> BD : REGISTRO
-BD --> MP_BITACORA : resultado
-MP_BITACORA --> BLL_BITACORA : int
+BD --> MP_BITACORA : int
+MP_BITACORA --> BLL_BITACORA : int filas
 BLL_BITACORA --> BLL_GESTION : void
 BLL_GESTION -> BLL_GESTION : Exigir(PROC_GESTIONAR_PUNTOS_VERDES)
-BLL_GESTION --> FormPuntosVerdes : int
+BLL_GESTION --> FormPuntosVerdes : int id
 FormPuntosVerdes -> FormPuntosVerdes : Refrescar()
 FormPuntosVerdes -> BLL_GESTION : ListarPuntosVerdes()
 BLL_GESTION -> MP_RECICLAJE : ListarPuntosVerdes()
 MP_RECICLAJE -> BD : PUNTO_VERDE_LISTAR
-BD --> MP_RECICLAJE : resultado
-MP_RECICLAJE --> BLL_GESTION : DataTable
-BLL_GESTION --> FormPuntosVerdes : DataTable
+BD --> MP_RECICLAJE : DataTable
+MP_RECICLAJE --> BLL_GESTION : DataTable dt
+BLL_GESTION --> FormPuntosVerdes : DataTable dalReciclaje.ListarPuntosVerdes()
 FormPuntosVerdes --> FormPuntosVerdes : void
 FormPuntosVerdes --> ACT : muestra Punto verde guardado
 @enduml

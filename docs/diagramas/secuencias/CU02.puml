@@ -11,48 +11,48 @@ participant MP_BITACORA
 participant MP_GESTION
 database "SQL Server" as BD
 ACT -> FormRecepcionAcopio : elige declaración, ingresa peso y presiona Registrar recepción
-FormRecepcionAcopio -> BLL_RECICLAJE : RegistrarRecepcion()
-BLL_RECICLAJE -> MP_RECICLAJE : ListarMaterialesAceptados()
+FormRecepcionAcopio -> BLL_RECICLAJE : RegistrarRecepcion(BE_USUARIO operador, int idPuntoVerde, int? idDeclaracion, int idUsuarioCiudadano, int idMaterial, decimal pesoKg)
+BLL_RECICLAJE -> MP_RECICLAJE : ListarMaterialesAceptados(int idPuntoVerde)
 MP_RECICLAJE -> BD : PUNTO_VERDE_MATERIALES_LISTAR
-BD --> MP_RECICLAJE : resultado
-MP_RECICLAJE --> BLL_RECICLAJE : DataTable
-BLL_RECICLAJE -> MP_RECICLAJE : RegistrarAcopio()
+BD --> MP_RECICLAJE : DataTable
+MP_RECICLAJE --> BLL_RECICLAJE : DataTable dt
+BLL_RECICLAJE -> MP_RECICLAJE : RegistrarAcopio(int? idDeclaracion, int idPuntoVerde, int idMaterial, decimal pesoKg)
 MP_RECICLAJE -> BD : ACOPIO_REGISTRAR
-BD --> MP_RECICLAJE : resultado
-MP_RECICLAJE --> BLL_RECICLAJE : int
-BLL_RECICLAJE -> BLL_ECOPUNTOS : Acreditar()
-BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo()
+BD --> MP_RECICLAJE : object
+MP_RECICLAJE --> BLL_RECICLAJE : int id
+BLL_RECICLAJE -> BLL_ECOPUNTOS : Acreditar(int idUsuario, int puntos, string tipo, string motivo)
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo(int idUsuario)
 MP_ECOPUNTOS -> BD : CUENTA_SALDO
-BD --> MP_ECOPUNTOS : resultado
-MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
-BLL_ECOPUNTOS -> MP_ECOPUNTOS : AcreditarPuntos()
+BD --> MP_ECOPUNTOS : object
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int Convert.ToInt32(o)
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : AcreditarPuntos(int idUsuario, int puntos, string tipo, string motivo)
 MP_ECOPUNTOS -> BD : CUENTA_ACREDITAR
-BD --> MP_ECOPUNTOS : resultado
-MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
-BLL_ECOPUNTOS --> BLL_RECICLAJE : int
-BLL_RECICLAJE -> BLL_BITACORA : IngresarRegistro()
-BLL_BITACORA -> MP_BITACORA : Alta()
+BD --> MP_ECOPUNTOS : object
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int saldo
+BLL_ECOPUNTOS --> BLL_RECICLAJE : int dal.ObtenerSaldo(idUsuario)
+BLL_RECICLAJE -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string descripcion)
+BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj)
 MP_BITACORA -> BD : REGISTRO
-BD --> MP_BITACORA : resultado
-MP_BITACORA --> BLL_BITACORA : int
+BD --> MP_BITACORA : int
+MP_BITACORA --> BLL_BITACORA : int filas
 BLL_BITACORA --> BLL_RECICLAJE : void
-BLL_RECICLAJE -> BLL_RECICLAJE : CalcularPuntos()
-BLL_RECICLAJE -> MP_GESTION : ObtenerPuntosPorKgVigente()
+BLL_RECICLAJE -> BLL_RECICLAJE : CalcularPuntos(int idMaterial, decimal kg)
+BLL_RECICLAJE -> MP_GESTION : ObtenerPuntosPorKgVigente(int idMaterial)
 MP_GESTION -> BD : CONVERSION_PUNTOS_POR_KG_VIGENTE
-BD --> MP_GESTION : resultado
-MP_GESTION --> BLL_RECICLAJE : decimal?
-BLL_RECICLAJE --> BLL_RECICLAJE : int
+BD --> MP_GESTION : object
+MP_GESTION --> BLL_RECICLAJE : decimal? null
+BLL_RECICLAJE --> BLL_RECICLAJE : int 0
 BLL_RECICLAJE -> BLL_RECICLAJE : Exigir(PROC_REGISTRAR_RECEPCION)
-BLL_RECICLAJE --> FormRecepcionAcopio : int
+BLL_RECICLAJE --> FormRecepcionAcopio : int puntos
 FormRecepcionAcopio -> FormRecepcionAcopio : Refrescar()
-FormRecepcionAcopio -> BLL_RECICLAJE : ListarDeclaracionesPendientesDePuntoVerde()
-BLL_RECICLAJE -> MP_RECICLAJE : ListarDeclaracionesPendientesDePuntoVerde()
+FormRecepcionAcopio -> BLL_RECICLAJE : ListarDeclaracionesPendientesDePuntoVerde(int idPuntoVerde)
+BLL_RECICLAJE -> MP_RECICLAJE : ListarDeclaracionesPendientesDePuntoVerde(int idPuntoVerde)
 MP_RECICLAJE -> BD : DECLARACION_LISTAR_PENDIENTES_PUNTO
-BD --> MP_RECICLAJE : resultado
-MP_RECICLAJE --> BLL_RECICLAJE : DataTable
-BLL_RECICLAJE --> FormRecepcionAcopio : DataTable
+BD --> MP_RECICLAJE : DataTable
+MP_RECICLAJE --> BLL_RECICLAJE : DataTable dt
+BLL_RECICLAJE --> FormRecepcionAcopio : DataTable dal.ListarDeclaracionesPendientesDePuntoVerde(idPuntoVerde)
 FormRecepcionAcopio -> FormRecepcionAcopio : ActualizarPesoSugerido()
-FormRecepcionAcopio --> FormRecepcionAcopio : void
-FormRecepcionAcopio --> FormRecepcionAcopio : void
+FormRecepcionAcopio --> FormRecepcionAcopio : >
+FormRecepcionAcopio --> FormRecepcionAcopio : >
 FormRecepcionAcopio --> ACT : muestra Recepción registrada
 @enduml

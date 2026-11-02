@@ -9,66 +9,66 @@ participant MP_BITACORA
 database "SQL Server" as BD
 alt selecciona solicitud y presiona Aprobar seleccionada
 ACT -> FormVerificacionVendedor : selecciona solicitud y presiona Aprobar seleccionada
-FormVerificacionVendedor -> FormVerificacionVendedor : ResolverSeleccion()
-FormVerificacionVendedor -> BLL_MARKETPLACE : ResolverVerificacion()
-BLL_MARKETPLACE -> MP_MARKETPLACE : AltaVerificacion()
+FormVerificacionVendedor -> FormVerificacionVendedor : ResolverSeleccion(bool aprobada)
+FormVerificacionVendedor -> BLL_MARKETPLACE : ResolverVerificacion(BE_USUARIO responsable, int idUsuarioSolicitante, bool aprobada)
+BLL_MARKETPLACE -> MP_MARKETPLACE : AltaVerificacion(int idUsuario, string estado, string documentoRef)
 MP_MARKETPLACE -> BD : VERIFICACION_ALTA
-BD --> MP_MARKETPLACE : resultado
-MP_MARKETPLACE --> BLL_MARKETPLACE : int
-BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro()
-BLL_BITACORA -> MP_BITACORA : Alta()
+BD --> MP_MARKETPLACE : object
+MP_MARKETPLACE --> BLL_MARKETPLACE : int id
+BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string descripcion)
+BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj)
 MP_BITACORA -> BD : REGISTRO
-BD --> MP_BITACORA : resultado
-MP_BITACORA --> BLL_BITACORA : int
+BD --> MP_BITACORA : int
+MP_BITACORA --> BLL_BITACORA : int filas
 BLL_BITACORA --> BLL_MARKETPLACE : void
 BLL_MARKETPLACE -> BLL_MARKETPLACE : Exigir(PROC_RESOLVER_VERIFICACION)
 BLL_MARKETPLACE --> FormVerificacionVendedor : void
 FormVerificacionVendedor -> FormVerificacionVendedor : Refrescar()
-FormVerificacionVendedor -> BLL_MARKETPLACE : ObtenerEstadoVerificacion()
-BLL_MARKETPLACE -> MP_MARKETPLACE : UltimoEstadoVerificacion()
+FormVerificacionVendedor -> BLL_MARKETPLACE : ObtenerEstadoVerificacion(int idUsuario)
+BLL_MARKETPLACE -> MP_MARKETPLACE : UltimoEstadoVerificacion(int idUsuario)
 MP_MARKETPLACE -> BD : VERIFICACION_ULTIMO_ESTADO
-BD --> MP_MARKETPLACE : resultado
-MP_MARKETPLACE --> BLL_MARKETPLACE : string
-BLL_MARKETPLACE --> FormVerificacionVendedor : string
+BD --> MP_MARKETPLACE : object
+MP_MARKETPLACE --> BLL_MARKETPLACE : string o == null || o == DBNull.Value ? null : o.ToString()
+BLL_MARKETPLACE --> FormVerificacionVendedor : string dal.UltimoEstadoVerificacion(idUsuario)
 FormVerificacionVendedor -> BLL_MARKETPLACE : ListarSolicitudesVerificacion()
 BLL_MARKETPLACE -> MP_MARKETPLACE : ListarSolicitudesVerificacion()
 MP_MARKETPLACE -> BD : VERIFICACIONES_PENDIENTES_LISTAR
-BD --> MP_MARKETPLACE : resultado
-MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
-BLL_MARKETPLACE --> FormVerificacionVendedor : DataTable
-FormVerificacionVendedor --> FormVerificacionVendedor : void
+BD --> MP_MARKETPLACE : DataTable
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable dt
+BLL_MARKETPLACE --> FormVerificacionVendedor : DataTable dal.ListarSolicitudesVerificacion()
+FormVerificacionVendedor --> FormVerificacionVendedor : >
 FormVerificacionVendedor --> FormVerificacionVendedor : void
 FormVerificacionVendedor --> ACT : muestra Vendedor verificado
 else selecciona solicitud y presiona Rechazar seleccionada
 ACT -> FormVerificacionVendedor : selecciona solicitud y presiona Rechazar seleccionada
-FormVerificacionVendedor -> FormVerificacionVendedor : ResolverSeleccion()
-FormVerificacionVendedor -> BLL_MARKETPLACE : ResolverVerificacion()
-BLL_MARKETPLACE -> MP_MARKETPLACE : AltaVerificacion()
+FormVerificacionVendedor -> FormVerificacionVendedor : ResolverSeleccion(bool aprobada)
+FormVerificacionVendedor -> BLL_MARKETPLACE : ResolverVerificacion(BE_USUARIO responsable, int idUsuarioSolicitante, bool aprobada)
+BLL_MARKETPLACE -> MP_MARKETPLACE : AltaVerificacion(int idUsuario, string estado, string documentoRef)
 MP_MARKETPLACE -> BD : VERIFICACION_ALTA
-BD --> MP_MARKETPLACE : resultado
-MP_MARKETPLACE --> BLL_MARKETPLACE : int
-BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro()
-BLL_BITACORA -> MP_BITACORA : Alta()
+BD --> MP_MARKETPLACE : object
+MP_MARKETPLACE --> BLL_MARKETPLACE : int id
+BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string descripcion)
+BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj)
 MP_BITACORA -> BD : REGISTRO
-BD --> MP_BITACORA : resultado
-MP_BITACORA --> BLL_BITACORA : int
+BD --> MP_BITACORA : int
+MP_BITACORA --> BLL_BITACORA : int filas
 BLL_BITACORA --> BLL_MARKETPLACE : void
 BLL_MARKETPLACE -> BLL_MARKETPLACE : Exigir(PROC_RESOLVER_VERIFICACION)
 BLL_MARKETPLACE --> FormVerificacionVendedor : void
 FormVerificacionVendedor -> FormVerificacionVendedor : Refrescar()
-FormVerificacionVendedor -> BLL_MARKETPLACE : ObtenerEstadoVerificacion()
-BLL_MARKETPLACE -> MP_MARKETPLACE : UltimoEstadoVerificacion()
+FormVerificacionVendedor -> BLL_MARKETPLACE : ObtenerEstadoVerificacion(int idUsuario)
+BLL_MARKETPLACE -> MP_MARKETPLACE : UltimoEstadoVerificacion(int idUsuario)
 MP_MARKETPLACE -> BD : VERIFICACION_ULTIMO_ESTADO
-BD --> MP_MARKETPLACE : resultado
-MP_MARKETPLACE --> BLL_MARKETPLACE : string
-BLL_MARKETPLACE --> FormVerificacionVendedor : string
+BD --> MP_MARKETPLACE : object
+MP_MARKETPLACE --> BLL_MARKETPLACE : string o == null || o == DBNull.Value ? null : o.ToString()
+BLL_MARKETPLACE --> FormVerificacionVendedor : string dal.UltimoEstadoVerificacion(idUsuario)
 FormVerificacionVendedor -> BLL_MARKETPLACE : ListarSolicitudesVerificacion()
 BLL_MARKETPLACE -> MP_MARKETPLACE : ListarSolicitudesVerificacion()
 MP_MARKETPLACE -> BD : VERIFICACIONES_PENDIENTES_LISTAR
-BD --> MP_MARKETPLACE : resultado
-MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
-BLL_MARKETPLACE --> FormVerificacionVendedor : DataTable
-FormVerificacionVendedor --> FormVerificacionVendedor : void
+BD --> MP_MARKETPLACE : DataTable
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable dt
+BLL_MARKETPLACE --> FormVerificacionVendedor : DataTable dal.ListarSolicitudesVerificacion()
+FormVerificacionVendedor --> FormVerificacionVendedor : >
 FormVerificacionVendedor --> FormVerificacionVendedor : void
 FormVerificacionVendedor --> ACT : muestra Solicitud rechazada
 end

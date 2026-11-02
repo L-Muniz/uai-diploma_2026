@@ -8,46 +8,46 @@ participant BLL_BITACORA
 participant MP_BITACORA
 database "SQL Server" as BD
 ACT -> FormLiquidacion : selecciona venta y presiona Marcar como despachada
-FormLiquidacion -> BLL_MARKETPLACE : MarcarDespachada()
-BLL_MARKETPLACE -> MP_MARKETPLACE : MarcarDespachada()
+FormLiquidacion -> BLL_MARKETPLACE : MarcarDespachada(BE_USUARIO vendedor, int idOrden)
+BLL_MARKETPLACE -> MP_MARKETPLACE : MarcarDespachada(int idOrden, int idVendedor)
 MP_MARKETPLACE -> BD : ORDEN_DESPACHAR
-BD --> MP_MARKETPLACE : resultado
+BD --> MP_MARKETPLACE : int
 MP_MARKETPLACE --> BLL_MARKETPLACE : void
-BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro()
-BLL_BITACORA -> MP_BITACORA : Alta()
+BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string descripcion)
+BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj)
 MP_BITACORA -> BD : REGISTRO
-BD --> MP_BITACORA : resultado
-MP_BITACORA --> BLL_BITACORA : int
+BD --> MP_BITACORA : int
+MP_BITACORA --> BLL_BITACORA : int filas
 BLL_BITACORA --> BLL_MARKETPLACE : void
 BLL_MARKETPLACE -> BLL_MARKETPLACE : Exigir(PROC_DESPACHAR)
 BLL_MARKETPLACE --> FormLiquidacion : void
-FormLiquidacion -> FormLiquidacion : IdSeleccionado()
-FormLiquidacion --> FormLiquidacion : int?
+FormLiquidacion -> FormLiquidacion : IdSeleccionado(DataGridView grilla)
+FormLiquidacion --> FormLiquidacion : int? grilla.CurrentRow == null ? (int?)null : Convert.ToInt32(grilla.CurrentRow.Cells["ID"].Value)
 FormLiquidacion -> FormLiquidacion : Refrescar()
-FormLiquidacion -> BLL_MARKETPLACE : ListarOrdenesComprador()
-BLL_MARKETPLACE -> MP_MARKETPLACE : ListarOrdenesComprador()
+FormLiquidacion -> BLL_MARKETPLACE : ListarOrdenesComprador(int idComprador)
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarOrdenesComprador(int idComprador)
 MP_MARKETPLACE -> BD : ORDENES_COMPRADOR_LISTAR
-BD --> MP_MARKETPLACE : resultado
-MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
-BLL_MARKETPLACE --> FormLiquidacion : DataTable
-FormLiquidacion -> BLL_MARKETPLACE : ListarOrdenesVendedor()
-BLL_MARKETPLACE -> MP_MARKETPLACE : ListarOrdenesVendedor()
+BD --> MP_MARKETPLACE : DataTable
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable dt
+BLL_MARKETPLACE --> FormLiquidacion : DataTable dal.ListarOrdenesComprador(idComprador)
+FormLiquidacion -> BLL_MARKETPLACE : ListarOrdenesVendedor(int idVendedor)
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarOrdenesVendedor(int idVendedor)
 MP_MARKETPLACE -> BD : ORDENES_VENDEDOR_LISTAR
-BD --> MP_MARKETPLACE : resultado
-MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
-BLL_MARKETPLACE --> FormLiquidacion : DataTable
-FormLiquidacion -> BLL_MARKETPLACE : ListarLiquidaciones()
-BLL_MARKETPLACE -> MP_MARKETPLACE : ListarLiquidaciones()
+BD --> MP_MARKETPLACE : DataTable
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable dt
+BLL_MARKETPLACE --> FormLiquidacion : DataTable dal.ListarOrdenesVendedor(idVendedor)
+FormLiquidacion -> BLL_MARKETPLACE : ListarLiquidaciones(string estado)
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarLiquidaciones(string estado)
 MP_MARKETPLACE -> BD : LIQUIDACIONES_LISTAR
-BD --> MP_MARKETPLACE : resultado
-MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
-BLL_MARKETPLACE --> FormLiquidacion : DataTable
-FormLiquidacion -> BLL_MARKETPLACE : ListarLiquidacionesDeVendedor()
-BLL_MARKETPLACE -> MP_MARKETPLACE : ListarLiquidacionesDeVendedor()
+BD --> MP_MARKETPLACE : DataTable
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable dt
+BLL_MARKETPLACE --> FormLiquidacion : DataTable dal.ListarLiquidaciones(estado)
+FormLiquidacion -> BLL_MARKETPLACE : ListarLiquidacionesDeVendedor(int idVendedor)
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarLiquidacionesDeVendedor(int idVendedor)
 MP_MARKETPLACE -> BD : LIQUIDACIONES_VENDEDOR_LISTAR
-BD --> MP_MARKETPLACE : resultado
-MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
-BLL_MARKETPLACE --> FormLiquidacion : DataTable
+BD --> MP_MARKETPLACE : DataTable
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable dt
+BLL_MARKETPLACE --> FormLiquidacion : DataTable dal.ListarLiquidacionesDeVendedor(idVendedor)
 FormLiquidacion --> FormLiquidacion : void
 FormLiquidacion --> ACT : muestra Orden marcada como despachada
 @enduml

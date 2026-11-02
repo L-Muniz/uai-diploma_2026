@@ -10,65 +10,65 @@ participant MP_BITACORA
 database "SQL Server" as BD
 alt presiona Exportar a PDF
 ACT -> FormIndicadores : presiona Exportar a PDF
-FormIndicadores -> BLL_REPORTES : ExportarIndicadoresPdf()
-BLL_REPORTES -> BLL_GESTION : ConsultarIndicadores()
-BLL_GESTION -> MP_GESTION : IndicadorAcopioPorMaterial()
+FormIndicadores -> BLL_REPORTES : ExportarIndicadoresPdf(BE_USUARIO usuario, string periodo, string ruta)
+BLL_REPORTES -> BLL_GESTION : ConsultarIndicadores(BE_USUARIO usuario, string periodo)
+BLL_GESTION -> MP_GESTION : IndicadorAcopioPorMaterial(string periodo)
 MP_GESTION -> BD : INDICADOR_ACOPIO_POR_MATERIAL
-BD --> MP_GESTION : resultado
-MP_GESTION --> BLL_GESTION : DataTable
-BLL_GESTION -> MP_GESTION : IndicadorVentas()
+BD --> MP_GESTION : DataTable
+MP_GESTION --> BLL_GESTION : DataTable dt
+BLL_GESTION -> MP_GESTION : IndicadorVentas(string periodo)
 MP_GESTION -> BD : INDICADOR_VENTAS
-BD --> MP_GESTION : resultado
-MP_GESTION --> BLL_GESTION : DataTable
-BLL_GESTION -> MP_GESTION : IndicadorCostoCanjes()
+BD --> MP_GESTION : DataTable
+MP_GESTION --> BLL_GESTION : DataTable dt
+BLL_GESTION -> MP_GESTION : IndicadorCostoCanjes(string periodo)
 MP_GESTION -> BD : INDICADOR_COSTO_CANJES
-BD --> MP_GESTION : resultado
-MP_GESTION --> BLL_GESTION : decimal
-BLL_GESTION -> MP_GESTION : AltaInforme()
+BD --> MP_GESTION : object
+MP_GESTION --> BLL_GESTION : decimal Convert.ToDecimal(o)
+BLL_GESTION -> MP_GESTION : AltaInforme(int idUsuario, string tipo, string periodo)
 MP_GESTION -> BD : INFORME_ALTA
-BD --> MP_GESTION : resultado
-MP_GESTION --> BLL_GESTION : int
-BLL_GESTION -> BLL_BITACORA : IngresarRegistro()
-BLL_BITACORA -> MP_BITACORA : Alta()
+BD --> MP_GESTION : object
+MP_GESTION --> BLL_GESTION : int id
+BLL_GESTION -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string descripcion)
+BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj)
 MP_BITACORA -> BD : REGISTRO
-BD --> MP_BITACORA : resultado
-MP_BITACORA --> BLL_BITACORA : int
+BD --> MP_BITACORA : int
+MP_BITACORA --> BLL_BITACORA : int filas
 BLL_BITACORA --> BLL_GESTION : void
 BLL_GESTION -> BLL_GESTION : Exigir(PROC_VER_INDICADORES)
-BLL_GESTION --> BLL_REPORTES : DataTable
-BLL_REPORTES -> BLL_BITACORA : IngresarRegistro()
+BLL_GESTION --> BLL_REPORTES : DataTable resultado
+BLL_REPORTES -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string descripcion)
 BLL_BITACORA --> BLL_REPORTES : void
 BLL_REPORTES --> FormIndicadores : void
 FormIndicadores --> ACT : muestra Informe PDF generado
 else presiona Guardar XML
 ACT -> FormIndicadores : presiona Guardar XML
-FormIndicadores -> BLL_REPORTES : ExportarIndicadoresXml()
-BLL_REPORTES -> BLL_GESTION : ConsultarIndicadores()
-BLL_GESTION -> MP_GESTION : IndicadorAcopioPorMaterial()
+FormIndicadores -> BLL_REPORTES : ExportarIndicadoresXml(BE_USUARIO usuario, string periodo, string ruta)
+BLL_REPORTES -> BLL_GESTION : ConsultarIndicadores(BE_USUARIO usuario, string periodo)
+BLL_GESTION -> MP_GESTION : IndicadorAcopioPorMaterial(string periodo)
 MP_GESTION -> BD : INDICADOR_ACOPIO_POR_MATERIAL
-BD --> MP_GESTION : resultado
-MP_GESTION --> BLL_GESTION : DataTable
-BLL_GESTION -> MP_GESTION : IndicadorVentas()
+BD --> MP_GESTION : DataTable
+MP_GESTION --> BLL_GESTION : DataTable dt
+BLL_GESTION -> MP_GESTION : IndicadorVentas(string periodo)
 MP_GESTION -> BD : INDICADOR_VENTAS
-BD --> MP_GESTION : resultado
-MP_GESTION --> BLL_GESTION : DataTable
-BLL_GESTION -> MP_GESTION : IndicadorCostoCanjes()
+BD --> MP_GESTION : DataTable
+MP_GESTION --> BLL_GESTION : DataTable dt
+BLL_GESTION -> MP_GESTION : IndicadorCostoCanjes(string periodo)
 MP_GESTION -> BD : INDICADOR_COSTO_CANJES
-BD --> MP_GESTION : resultado
-MP_GESTION --> BLL_GESTION : decimal
-BLL_GESTION -> MP_GESTION : AltaInforme()
+BD --> MP_GESTION : object
+MP_GESTION --> BLL_GESTION : decimal Convert.ToDecimal(o)
+BLL_GESTION -> MP_GESTION : AltaInforme(int idUsuario, string tipo, string periodo)
 MP_GESTION -> BD : INFORME_ALTA
-BD --> MP_GESTION : resultado
-MP_GESTION --> BLL_GESTION : int
-BLL_GESTION -> BLL_BITACORA : IngresarRegistro()
-BLL_BITACORA -> MP_BITACORA : Alta()
+BD --> MP_GESTION : object
+MP_GESTION --> BLL_GESTION : int id
+BLL_GESTION -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string descripcion)
+BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj)
 MP_BITACORA -> BD : REGISTRO
-BD --> MP_BITACORA : resultado
-MP_BITACORA --> BLL_BITACORA : int
+BD --> MP_BITACORA : int
+MP_BITACORA --> BLL_BITACORA : int filas
 BLL_BITACORA --> BLL_GESTION : void
 BLL_GESTION -> BLL_GESTION : Exigir(PROC_VER_INDICADORES)
-BLL_GESTION --> BLL_REPORTES : DataTable
-BLL_REPORTES -> BLL_BITACORA : IngresarRegistro()
+BLL_GESTION --> BLL_REPORTES : DataTable resultado
+BLL_REPORTES -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string descripcion)
 BLL_BITACORA --> BLL_REPORTES : void
 BLL_REPORTES --> FormIndicadores : void
 FormIndicadores --> ACT : muestra Informe guardado en XML

@@ -8,32 +8,32 @@ participant BLL_BITACORA
 participant MP_BITACORA
 database "SQL Server" as BD
 ACT -> FormPublicarProducto : selecciona producto y presiona Aprobar producto seleccionado
-FormPublicarProducto -> BLL_MARKETPLACE : AprobarProducto()
-BLL_MARKETPLACE -> MP_MARKETPLACE : AprobarProducto()
+FormPublicarProducto -> BLL_MARKETPLACE : AprobarProducto(BE_USUARIO responsable, int idProducto)
+BLL_MARKETPLACE -> MP_MARKETPLACE : AprobarProducto(int idProducto)
 MP_MARKETPLACE -> BD : PRODUCTO_APROBAR
-BD --> MP_MARKETPLACE : resultado
+BD --> MP_MARKETPLACE : int
 MP_MARKETPLACE --> BLL_MARKETPLACE : void
-BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro()
-BLL_BITACORA -> MP_BITACORA : Alta()
+BLL_MARKETPLACE -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string descripcion)
+BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj)
 MP_BITACORA -> BD : REGISTRO
-BD --> MP_BITACORA : resultado
-MP_BITACORA --> BLL_BITACORA : int
+BD --> MP_BITACORA : int
+MP_BITACORA --> BLL_BITACORA : int filas
 BLL_BITACORA --> BLL_MARKETPLACE : void
 BLL_MARKETPLACE -> BLL_MARKETPLACE : Exigir(PROC_APROBAR_PRODUCTO)
 BLL_MARKETPLACE --> FormPublicarProducto : void
 FormPublicarProducto -> FormPublicarProducto : Refrescar()
-FormPublicarProducto -> BLL_MARKETPLACE : ListarProductosDeVendedor()
-BLL_MARKETPLACE -> MP_MARKETPLACE : ListarProductosDeVendedor()
+FormPublicarProducto -> BLL_MARKETPLACE : ListarProductosDeVendedor(int idVendedor)
+BLL_MARKETPLACE -> MP_MARKETPLACE : ListarProductosDeVendedor(int idVendedor)
 MP_MARKETPLACE -> BD : PRODUCTOS_VENDEDOR_LISTAR
-BD --> MP_MARKETPLACE : resultado
-MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
-BLL_MARKETPLACE --> FormPublicarProducto : DataTable
+BD --> MP_MARKETPLACE : DataTable
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable dt
+BLL_MARKETPLACE --> FormPublicarProducto : DataTable dal.ListarProductosDeVendedor(idVendedor)
 FormPublicarProducto -> BLL_MARKETPLACE : ListarProductosPendientes()
 BLL_MARKETPLACE -> MP_MARKETPLACE : ListarProductosPendientes()
 MP_MARKETPLACE -> BD : PRODUCTOS_PENDIENTES_LISTAR
-BD --> MP_MARKETPLACE : resultado
-MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable
-BLL_MARKETPLACE --> FormPublicarProducto : DataTable
+BD --> MP_MARKETPLACE : DataTable
+MP_MARKETPLACE --> BLL_MARKETPLACE : DataTable dt
+BLL_MARKETPLACE --> FormPublicarProducto : DataTable dal.ListarProductosPendientes()
 FormPublicarProducto --> FormPublicarProducto : void
 FormPublicarProducto --> ACT : muestra Producto aprobado
 @enduml

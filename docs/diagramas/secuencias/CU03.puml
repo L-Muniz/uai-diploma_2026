@@ -8,38 +8,38 @@ participant BLL_BITACORA
 participant MP_BITACORA
 database "SQL Server" as BD
 ACT -> FormCanjeEcoPuntos : presiona Canjear beneficio seleccionado y confirma Sí
-FormCanjeEcoPuntos -> BLL_ECOPUNTOS : Canjear()
-BLL_ECOPUNTOS -> MP_ECOPUNTOS : RegistrarCanje()
+FormCanjeEcoPuntos -> BLL_ECOPUNTOS : Canjear(BE_USUARIO usuario, int idBeneficio)
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : RegistrarCanje(int idUsuario, int idBeneficio)
 MP_ECOPUNTOS -> BD : CANJE_REGISTRAR
-BD --> MP_ECOPUNTOS : resultado
-MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
-BLL_ECOPUNTOS -> BLL_BITACORA : IngresarRegistro()
-BLL_BITACORA -> MP_BITACORA : Alta()
+BD --> MP_ECOPUNTOS : object
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int id
+BLL_ECOPUNTOS -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string descripcion)
+BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj)
 MP_BITACORA -> BD : REGISTRO
-BD --> MP_BITACORA : resultado
-MP_BITACORA --> BLL_BITACORA : int
+BD --> MP_BITACORA : int
+MP_BITACORA --> BLL_BITACORA : int filas
 BLL_BITACORA --> BLL_ECOPUNTOS : void
 BLL_ECOPUNTOS -> BLL_ECOPUNTOS : Exigir(PROC_CANJEAR_PUNTOS)
-BLL_ECOPUNTOS --> FormCanjeEcoPuntos : int
+BLL_ECOPUNTOS --> FormCanjeEcoPuntos : int idCanje
 FormCanjeEcoPuntos -> FormCanjeEcoPuntos : Refrescar()
-FormCanjeEcoPuntos -> BLL_ECOPUNTOS : ObtenerSaldo()
-BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo()
+FormCanjeEcoPuntos -> BLL_ECOPUNTOS : ObtenerSaldo(int idUsuario)
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : ObtenerSaldo(int idUsuario)
 MP_ECOPUNTOS -> BD : CUENTA_SALDO
-BD --> MP_ECOPUNTOS : resultado
-MP_ECOPUNTOS --> BLL_ECOPUNTOS : int
-BLL_ECOPUNTOS --> FormCanjeEcoPuntos : int
+BD --> MP_ECOPUNTOS : object
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : int Convert.ToInt32(o)
+BLL_ECOPUNTOS --> FormCanjeEcoPuntos : int dal.ObtenerSaldo(idUsuario)
 FormCanjeEcoPuntos -> BLL_ECOPUNTOS : ListarBeneficios()
 BLL_ECOPUNTOS -> MP_ECOPUNTOS : ListarBeneficiosActivos()
 MP_ECOPUNTOS -> BD : BENEFICIO_LISTAR_ACTIVOS
-BD --> MP_ECOPUNTOS : resultado
-MP_ECOPUNTOS --> BLL_ECOPUNTOS : DataTable
-BLL_ECOPUNTOS --> FormCanjeEcoPuntos : DataTable
-FormCanjeEcoPuntos -> BLL_ECOPUNTOS : ListarMovimientos()
-BLL_ECOPUNTOS -> MP_ECOPUNTOS : ListarMovimientos()
+BD --> MP_ECOPUNTOS : DataTable
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : DataTable dt
+BLL_ECOPUNTOS --> FormCanjeEcoPuntos : DataTable dal.ListarBeneficiosActivos()
+FormCanjeEcoPuntos -> BLL_ECOPUNTOS : ListarMovimientos(int idUsuario)
+BLL_ECOPUNTOS -> MP_ECOPUNTOS : ListarMovimientos(int idUsuario)
 MP_ECOPUNTOS -> BD : MOVIMIENTOS_LISTAR
-BD --> MP_ECOPUNTOS : resultado
-MP_ECOPUNTOS --> BLL_ECOPUNTOS : DataTable
-BLL_ECOPUNTOS --> FormCanjeEcoPuntos : DataTable
+BD --> MP_ECOPUNTOS : DataTable
+MP_ECOPUNTOS --> BLL_ECOPUNTOS : DataTable dt
+BLL_ECOPUNTOS --> FormCanjeEcoPuntos : DataTable dal.ListarMovimientos(idUsuario)
 FormCanjeEcoPuntos --> FormCanjeEcoPuntos : void
 FormCanjeEcoPuntos --> ACT : muestra Canje realizado
 @enduml
