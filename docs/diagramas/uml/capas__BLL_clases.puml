@@ -295,6 +295,5 @@ BLL_USUARIO ..> BLL_IntegridadDatos
 BLL_USUARIO ..> BLL_Rollback
 CriteriosBusqueda ..> TipoEvento
 IPasarelaPago ..> ResultadoCobro
-PasarelaSimulada ..|> IPasarelaPago
 PasarelaSimulada ..> ResultadoCobro
 @enduml
