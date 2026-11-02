@@ -76,7 +76,3 @@ Para el monto de la pasarela simulada: hasta $100.000 aprueba; por encima rechaz
 | CP-48 | Período invertido | Cualquier vendedor | Desde mayor que hasta | Error de período |
 | CP-49 | Menú según rol | Usuarios de cada rol | Revisar la barra de menú (Reciclar, Tienda, Mi cuenta y Gestión) | Cada rol ve solo sus opciones; ADMIN ve todas |
 | CP-50 | Acceso denegado en BLL | Rol sin permiso | Ejecutar una operación desde el código | UnauthorizedAccessException con el código del permiso |
-
-## Pendientes del plan de entregas (no son casos de prueba todavía)
-
-Según el plan de entregas, para la 3ra entrega también se evalúan: **A01 instalador** (versión final, incluye casos de instancia inexistente, motor no instalado y servicio SQL detenido), **A02 informe y exportación a PDF** con librería de terceros, **A02 serialización**, **D01 manual de instalación**, **D02 ayuda en línea**, **D03 material de apoyo al usuario**, y el balanceo entre diagramas, DER, casos de uso y secuencias con la implementación. Esos casos de prueba se agregan cuando los implementemos.
