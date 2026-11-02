@@ -31,8 +31,8 @@ namespace GUI
 
             if (!puedeSolicitar)
             {
-                // El área comercial no solicita: el título cambia, la lista de pendientes sube y los botones van debajo.
-                lblTitulo.Text = "Aprobación de vendedores";
+                // El área comercial no solicita: se oculta el título, la lista de pendientes sube y los botones van debajo.
+                lblTitulo.Visible = false;
                 lblSolicitudes.Location = new Point(16, 44);
                 dgvSolicitudes.Location = new Point(16, 66);
                 btnAprobar.Location = new Point(16, dgvSolicitudes.Bottom + 10);
