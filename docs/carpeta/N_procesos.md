@@ -4,8 +4,8 @@ Los tres procesos de negocio que cubre el sistema: N01 (apoyo a la toma de decis
 
 ## Figuras generales
 
-- Diagrama de clases general (capa de negocio): [class_general.svg](diagramas/class_general.svg)
-- Modelo de datos general (DER): [der_general.svg](diagramas/der_general.svg)
+- Diagrama de clases por capa: ver G06.
+- Modelo de datos (DER técnico y de negocio): ver G07.
 
 ## Resumen
 
