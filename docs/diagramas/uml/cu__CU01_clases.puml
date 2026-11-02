@@ -69,10 +69,10 @@ class "BE_MovimientoEcoPuntos" as BE_MovimientoEcoPuntos <<BE>> {
   +Fecha: DateTime
   +Motivo: string
 }
-BE_DeclaracionMaterial "0..*" -- "1" BE_Material : Material
-BE_Recomendacion "0..*" -- "1" BE_DeclaracionMaterial : Declaracion
-BE_Recomendacion "0..*" -- "1" BE_GuiaReutilizacion : Guia
-BE_Recomendacion "0..*" -- "1" BE_PuntoVerde : PuntoVerde
-BE_GuiaReutilizacion "0..*" -- "1" BE_Material : Material
+BE_DeclaracionMaterial "0..*" --> "1" BE_Material : Material
+BE_Recomendacion "0..*" --> "1" BE_DeclaracionMaterial : Declaracion
+BE_Recomendacion "0..*" --> "1" BE_GuiaReutilizacion : Guia
+BE_Recomendacion "0..*" --> "1" BE_PuntoVerde : PuntoVerde
+BE_GuiaReutilizacion "0..*" --> "1" BE_Material : Material
 BE_PuntoVerde "1" *-- "0..*" BE_Material : MaterialesAceptados
 @enduml

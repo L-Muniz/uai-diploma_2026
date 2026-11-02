@@ -90,5 +90,5 @@ class "BE_Reclamo" as BE_Reclamo <<BE>> {
   +Fecha: DateTime
 }
 BE_OrdenVenta "1" *-- "0..*" BE_ItemOrden : Items
-BE_ItemOrden "0..*" -- "1" BE_Producto : Producto
+BE_ItemOrden "0..*" --> "1" BE_Producto : Producto
 @enduml

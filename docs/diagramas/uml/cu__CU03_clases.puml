@@ -42,5 +42,5 @@ class "BE_Beneficio" as BE_Beneficio <<BE>> {
   --
   +ToString(): string
 }
-BE_Canje "0..*" -- "1" BE_Beneficio : Beneficio
+BE_Canje "0..*" --> "1" BE_Beneficio : Beneficio
 @enduml

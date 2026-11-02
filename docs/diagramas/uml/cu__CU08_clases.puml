@@ -34,5 +34,5 @@ class "BE_Material" as BE_Material <<BE>> {
   --
   +ToString(): string
 }
-BE_TablaConversion "0..*" -- "1" BE_Material : Material
+BE_TablaConversion "0..*" --> "1" BE_Material : Material
 @enduml
