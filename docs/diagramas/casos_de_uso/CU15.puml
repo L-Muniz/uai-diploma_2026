@@ -1,6 +1,0 @@
-@startuml CU15_caso_de_uso
-left to right direction
-actor "Comprador" as ACT
-usecase "CU15 Confirmar recepción de pedido" as UC
-ACT -- UC
-@enduml

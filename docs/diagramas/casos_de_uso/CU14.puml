@@ -1,6 +1,0 @@
-@startuml CU14_caso_de_uso
-left to right direction
-actor "Vendedor" as ACT
-usecase "CU14 Despachar pedido" as UC
-ACT -- UC
-@enduml

@@ -1,6 +1,0 @@
-@startuml CU05_caso_de_uso
-left to right direction
-actor "Gerencia" as ACT
-usecase "CU05 Exportar informe de indicadores" as UC
-ACT -- UC
-@enduml

@@ -1,6 +1,0 @@
-@startuml CU11_caso_de_uso
-left to right direction
-actor "Vendedor verificado" as ACT
-usecase "CU11 Publicar producto" as UC
-ACT -- UC
-@enduml

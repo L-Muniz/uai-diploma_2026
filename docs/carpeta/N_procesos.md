@@ -59,7 +59,7 @@ Casos de uso (numeración global):
 
 ### 5. Especificación de casos de uso
 
-![Figura N01-0. Diagrama de casos de uso del proceso N01](diagramas/casos_de_uso_png/N01.png)
+![Figura N01-0. Diagrama de casos de uso del proceso N01](diagramas/casos_de_uso/N01.svg)
 
 ### CU04 Consultar indicadores
 
@@ -70,17 +70,17 @@ Casos de uso (numeración global):
 
 **Flujo principal**
 
-1. Usuario: abre "Indicadores de acopio y ventas".
-2. Sistema: muestra el campo "Período (aaaa-mm):".
-3. Usuario: escribe el período y presiona "Consultar indicadores".
-4. Sistema: muestra la grilla de indicadores del período (acopio por material, ventas y costo de canjes).
+1. La gerencia abre "Indicadores de acopio y ventas".
+2. El sistema muestra el campo "Período (aaaa-mm):".
+3. La gerencia escribe el período y presiona "Consultar indicadores".
+4. El sistema muestra la grilla de indicadores del período (acopio por material, ventas y costo de canjes).
 
 **Flujos alternativos**
 
 - 3a. Período con formato incorrecto.
-  - 3a.1 Sistema: muestra "El período debe tener el formato aaaa-mm."
+  - 3a.1 El sistema muestra "El período debe tener el formato aaaa-mm."
 
-![Figura CU04-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU04.png)
+![Figura CU04-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU04.svg)
 
 ![Figura CU04-a. Diagrama de clases](diagramas/cu/CU04_clases.svg)
 
@@ -98,24 +98,24 @@ Casos de uso (numeración global):
 
 **Flujo principal (PDF)**
 
-1. Usuario: presiona "Exportar a PDF".
-2. Sistema: muestra el diálogo para guardar con el nombre "Indicadores_{período}.pdf".
-3. Usuario: elige la carpeta y presiona "Guardar".
-4. Sistema: muestra "Informe PDF generado."
+1. La gerencia presiona "Exportar a PDF".
+2. El sistema muestra el diálogo para guardar con el nombre "Indicadores_{período}.pdf".
+3. La gerencia elige la carpeta y presiona "Guardar".
+4. El sistema muestra "Informe PDF generado."
 
 **Flujo alternativo (XML)**
 
-- 1a. Usuario presiona "Guardar XML".
-  - 1a.1 Sistema: muestra el diálogo para guardar con el nombre "Indicadores_{período}.xml".
-  - 1a.2 Usuario: elige la carpeta y presiona "Guardar".
-  - 1a.3 Sistema: muestra "Informe guardado en XML."
+- 1a. La gerencia presiona "Guardar XML".
+  - 1a.1 El sistema muestra el diálogo para guardar con el nombre "Indicadores_{período}.xml".
+  - 1a.2 La gerencia elige la carpeta y presiona "Guardar".
+  - 1a.3 El sistema muestra "Informe guardado en XML."
 
 **Flujos alternativos comunes**
 
-- 2a. Usuario cierra el diálogo sin guardar.
-  - 2a.1 Sistema: no guarda el archivo y vuelve a la pantalla.
+- 2a. La gerencia cierra el diálogo sin guardar.
+  - 2a.1 El sistema no guarda el archivo y vuelve a la pantalla.
 
-![Figura CU05-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU05.png)
+![Figura CU05-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU05.svg)
 
 ![Figura CU05-a. Diagrama de clases](diagramas/cu/CU05_clases.svg)
 
@@ -133,23 +133,23 @@ Casos de uso (numeración global):
 
 **Flujo principal**
 
-1. Usuario: abre "Red de puntos verdes y materiales".
-2. Usuario: completa "Nombre", "Dirección", "Latitud", "Longitud", "Horario" y marca los "Materiales aceptados".
-3. Usuario: marca "Locación validada por el referente de cooperativas" y presiona "Guardar".
-4. Sistema: muestra "Punto verde guardado (ID {id}). La decisión quedó registrada."
+1. La gerencia abre "Red de puntos verdes y materiales".
+2. La gerencia completa "Nombre", "Dirección", "Latitud", "Longitud", "Horario" y marca los "Materiales aceptados".
+3. La gerencia marca "Locación validada por el referente de cooperativas" y presiona "Guardar".
+4. El sistema muestra "Punto verde guardado (ID {id}). La decisión quedó registrada."
 
 **Flujos alternativos**
 
-- 2a. Usuario presiona "Nuevo" para cargar otro punto verde.
-  - 2a.1 Sistema: limpia el formulario.
-- 3a. Usuario presiona "Guardar" sin marcar la validación del referente.
-  - 3a.1 Sistema: muestra "La locación debe ser validada por el referente de cooperativas."
+- 2a. La gerencia presiona "Nuevo" para cargar otro punto verde.
+  - 2a.1 El sistema limpia el formulario.
+- 3a. La gerencia presiona "Guardar" sin marcar la validación del referente.
+  - 3a.1 El sistema muestra "La locación debe ser validada por el referente de cooperativas."
 - 3b. Nombre vacío.
-  - 3b.1 Sistema: muestra "Ingrese el nombre del punto verde."
+  - 3b.1 El sistema muestra "Ingrese el nombre del punto verde."
 - 3c. Dirección vacía.
-  - 3c.1 Sistema: muestra "Ingrese la dirección."
+  - 3c.1 El sistema muestra "Ingrese la dirección."
 
-![Figura CU06-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU06.png)
+![Figura CU06-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU06.svg)
 
 ![Figura CU06-a. Diagrama de clases](diagramas/cu/CU06_clases.svg)
 
@@ -167,19 +167,19 @@ Casos de uso (numeración global):
 
 **Flujo principal**
 
-1. Usuario: abre "Tarifas de comisión y conversión".
-2. Sistema: muestra "Comisión vigente por categoría:".
-3. Usuario: escribe la "Categoría" y la "Comisión %" y presiona "Fijar comisión".
-4. Sistema: muestra "Comisión fijada (tarifa {id}). Rige desde hoy y queda registrada como decisión."
+1. La gerencia abre "Tarifas de comisión y conversión".
+2. El sistema muestra "Comisión vigente por categoría:".
+3. La gerencia escribe la "Categoría" y la "Comisión %" y presiona "Fijar comisión".
+4. El sistema muestra "Comisión fijada (tarifa {id}). Rige desde hoy y queda registrada como decisión."
 
 **Flujos alternativos**
 
 - 3a. Comisión menor o igual a 0 o mayor a 50.
-  - 3a.1 Sistema: muestra "La comisión debe estar entre 0,01% y 50%."
+  - 3a.1 El sistema muestra "La comisión debe estar entre 0,01% y 50%."
 - 3b. Categoría vacía.
-  - 3b.1 Sistema: muestra "Ingrese la categoría."
+  - 3b.1 El sistema muestra "Ingrese la categoría."
 
-![Figura CU07-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU07.png)
+![Figura CU07-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU07.svg)
 
 ![Figura CU07-a. Diagrama de clases](diagramas/cu/CU07_clases.svg)
 
@@ -197,21 +197,21 @@ Casos de uso (numeración global):
 
 **Flujo principal**
 
-1. Usuario: abre "Tarifas de comisión y conversión".
-2. Sistema: muestra la grilla "Conversión vigente de Eco-Puntos".
-3. Usuario: selecciona una fila de la grilla.
-4. Sistema: carga el material en "Material" y sus puntos en "Puntos por kg".
-5. Usuario: corrige "Puntos por kg" y presiona "Fijar conversión".
-6. Sistema: muestra "Conversión fijada (ID {id}). Queda registrada como decisión."
+1. La gerencia abre "Tarifas de comisión y conversión".
+2. El sistema muestra la grilla "Conversión vigente de Eco-Puntos".
+3. La gerencia selecciona una fila de la grilla.
+4. El sistema carga el material en "Material" y sus puntos en "Puntos por kg".
+5. La gerencia corrige "Puntos por kg" y presiona "Fijar conversión".
+6. El sistema muestra "Conversión fijada (ID {id}). Queda registrada como decisión."
 
 **Flujos alternativos**
 
 - 5a. Puntos por kg vacíos, cero o no numéricos.
-  - 5a.1 Sistema: muestra "Los puntos por kg deben ser mayores a cero." o "Puntos por kg: ingrese un número válido.".
+  - 5a.1 El sistema muestra "Los puntos por kg deben ser mayores a cero." o "Puntos por kg: ingrese un número válido.".
 - 5b. No hay material seleccionado.
-  - 5b.1 Sistema: muestra "Seleccione un material."
+  - 5b.1 El sistema muestra "Seleccione un material."
 
-![Figura CU08-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU08.png)
+![Figura CU08-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU08.svg)
 
 ![Figura CU08-a. Diagrama de clases](diagramas/cu/CU08_clases.svg)
 
@@ -257,7 +257,7 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 ### 5. Especificación de casos de uso
 
-![Figura N02-0. Diagrama de casos de uso del proceso N02](diagramas/casos_de_uso_png/N02.png)
+![Figura N02-0. Diagrama de casos de uso del proceso N02](diagramas/casos_de_uso/N02.svg)
 
 ### CU09 Solicitar verificación de vendedor
 
@@ -268,23 +268,23 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 **Flujo principal**
 
-1. Usuario: abre "Verificación de vendedor".
-2. Sistema: muestra "Estado: {estado}" y el campo "Documentación (ref.):".
-3. Usuario: escribe la referencia de la documentación y presiona "Solicitar verificación".
-4. Sistema: muestra "Solicitud enviada. El área comercial la revisará."
+1. El ciudadano abre "Verificación de vendedor".
+2. El sistema muestra "Estado: {estado}" y el campo "Documentación (ref.):".
+3. El ciudadano escribe la referencia de la documentación y presiona "Solicitar verificación".
+4. El sistema muestra "Solicitud enviada. El área comercial la revisará."
 
 **Flujos alternativos**
 
 - 2a. El estado es pendiente o aprobado.
-  - 2a.1 Sistema: deshabilita "Solicitar verificación".
+  - 2a.1 El sistema deshabilita "Solicitar verificación".
 - 3a. Referencia vacía.
-  - 3a.1 Sistema: muestra "Ingrese la referencia de la documentación."
+  - 3a.1 El sistema muestra "Ingrese la referencia de la documentación."
 - 3b. No cargó la fecha de nacimiento.
-  - 3b.1 Sistema: muestra "Cargue su fecha de nacimiento en Mi perfil para solicitar la verificación."
+  - 3b.1 El sistema muestra "Cargue su fecha de nacimiento en Mi perfil para solicitar la verificación."
 - 3c. Tiene menos de 18 años.
-  - 3c.1 Sistema: muestra "Para vender debe tener al menos 18 años."
+  - 3c.1 El sistema muestra "Para vender debe tener al menos 18 años."
 
-![Figura CU09-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU09.png)
+![Figura CU09-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU09.svg)
 
 ![Figura CU09-a. Diagrama de clases](diagramas/cu/CU09_clases.svg)
 
@@ -302,19 +302,19 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 **Flujo principal**
 
-1. Usuario: abre "Verificación de vendedor".
-2. Sistema: muestra "Solicitudes pendientes (área comercial):" con la lista de solicitudes.
-3. Usuario: selecciona una solicitud y presiona "Aprobar seleccionada".
-4. Sistema: muestra "Vendedor verificado." y quita la solicitud de la lista.
+1. El área comercial abre "Verificación de vendedor".
+2. El sistema muestra "Solicitudes pendientes (área comercial):" con la lista de solicitudes.
+3. El área comercial selecciona una solicitud y presiona "Aprobar seleccionada".
+4. El sistema muestra "Vendedor verificado." y quita la solicitud de la lista.
 
 **Flujos alternativos**
 
-- 3a. Usuario presiona "Rechazar seleccionada".
-  - 3a.1 Sistema: muestra "Solicitud rechazada." y quita la solicitud de la lista.
-- 3b. Usuario presiona "Aprobar seleccionada" o "Rechazar seleccionada" sin seleccionar una solicitud.
-  - 3b.1 Sistema: muestra "Seleccione una solicitud."
+- 3a. El área comercial presiona "Rechazar seleccionada".
+  - 3a.1 El sistema muestra "Solicitud rechazada." y quita la solicitud de la lista.
+- 3b. El área comercial presiona "Aprobar seleccionada" o "Rechazar seleccionada" sin seleccionar una solicitud.
+  - 3b.1 El sistema muestra "Seleccione una solicitud."
 
-![Figura CU10-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU10.png)
+![Figura CU10-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU10.svg)
 
 ![Figura CU10-a. Diagrama de clases](diagramas/cu/CU10_clases.svg)
 
@@ -332,25 +332,25 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 **Flujo principal**
 
-1. Usuario: abre "Publicar producto sustentable".
-2. Sistema: muestra la comisión estimada ("Comisión estimada: {porcentaje}%") y "Mis publicaciones:".
-3. Usuario: completa "Nombre", "Categoría", "Descripción", "Precio" y "Stock", y presiona "Publicar".
-4. Sistema: muestra "Producto {id} publicado. Queda pendiente de aprobación del área comercial."
+1. El vendedor verificado abre "Publicar producto sustentable".
+2. El sistema muestra la comisión estimada ("Comisión estimada: {porcentaje}%") y "Mis publicaciones:".
+3. El vendedor verificado completa "Nombre", "Categoría", "Descripción", "Precio" y "Stock", y presiona "Publicar".
+4. El sistema muestra "Producto {id} publicado. Queda pendiente de aprobación del área comercial."
 
 **Flujos alternativos**
 
-- 3a. Usuario selecciona una publicación propia de "Mis publicaciones".
-  - 3a.1 Sistema: carga su nombre, categoría, precio y stock.
-  - 3a.2 Usuario: modifica "Precio" o "Stock" y presiona "Actualizar precio y stock".
-  - 3a.3 Sistema: muestra "Precio y stock actualizados."
+- 3a. El vendedor verificado selecciona una publicación propia de "Mis publicaciones".
+  - 3a.1 El sistema carga su nombre, categoría, precio y stock.
+  - 3a.2 El vendedor verificado modifica "Precio" o "Stock" y presiona "Actualizar precio y stock".
+  - 3a.3 El sistema muestra "Precio y stock actualizados."
 - 3b. El vendedor no está verificado.
-  - 3b.1 Sistema: deshabilita "Publicar".
+  - 3b.1 El sistema deshabilita "Publicar".
 - 3c. Nombre o categoría vacíos.
-  - 3c.1 Sistema: muestra "Ingrese el nombre del producto." o "Ingrese la categoría.".
+  - 3c.1 El sistema muestra "Ingrese el nombre del producto." o "Ingrese la categoría.".
 - 3d. Precio igual o menor a cero, o stock negativo.
-  - 3d.1 Sistema: muestra "El precio debe ser mayor a cero." o "El stock no puede ser negativo.".
+  - 3d.1 El sistema muestra "El precio debe ser mayor a cero." o "El stock no puede ser negativo.".
 
-![Figura CU11-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU11.png)
+![Figura CU11-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU11.svg)
 
 ![Figura CU11-a. Diagrama de clases](diagramas/cu/CU11_clases.svg)
 
@@ -368,17 +368,17 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 **Flujo principal**
 
-1. Usuario: abre "Publicar producto sustentable".
-2. Sistema: muestra "Pendientes de aprobación (área comercial):" con la lista de productos.
-3. Usuario: selecciona un producto y presiona "Aprobar producto seleccionado".
-4. Sistema: muestra "Producto aprobado. Ya está visible en el catálogo." y quita el producto de la lista.
+1. El área comercial abre "Publicar producto sustentable".
+2. El sistema muestra "Pendientes de aprobación (área comercial):" con la lista de productos.
+3. El área comercial selecciona un producto y presiona "Aprobar producto seleccionado".
+4. El sistema muestra "Producto aprobado. Ya está visible en el catálogo." y quita el producto de la lista.
 
 **Flujos alternativos**
 
-- 3a. Usuario presiona "Aprobar producto seleccionado" sin seleccionar un producto.
-  - 3a.1 Sistema: muestra "Seleccione un producto pendiente."
+- 3a. El área comercial presiona "Aprobar producto seleccionado" sin seleccionar un producto.
+  - 3a.1 El sistema muestra "Seleccione un producto pendiente."
 
-![Figura CU12-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU12.png)
+![Figura CU12-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU12.svg)
 
 ![Figura CU12-a. Diagrama de clases](diagramas/cu/CU12_clases.svg)
 
@@ -396,31 +396,31 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 **Flujo principal**
 
-1. Usuario: abre "Comprar en la tienda sustentable".
-2. Sistema: muestra el catálogo de productos aprobados con stock.
-3. Usuario: selecciona un producto, elige "Cantidad" y escribe el "Domicilio envío".
-4. Sistema: muestra el resumen "{cantidad} x {producto} = {total}".
-5. Usuario: presiona "Pagar pedido".
-6. Sistema: pregunta "¿Confirmar el pedido?" con el resumen, con los botones "Sí" y "No".
-7. Usuario: presiona "Sí".
-8. Sistema: muestra "Pago aprobado. Orden {id} registrada. Se le notificará cuando el vendedor la despache." y actualiza el catálogo.
+1. El comprador abre "Comprar en la tienda sustentable".
+2. El sistema muestra el catálogo de productos aprobados con stock.
+3. El comprador selecciona un producto, elige "Cantidad" y escribe el "Domicilio envío".
+4. El sistema muestra el resumen "{cantidad} x {producto} = {total}".
+5. El comprador presiona "Pagar pedido".
+6. El sistema pregunta "¿Confirmar el pedido?" con el resumen, con los botones "Sí" y "No".
+7. El comprador presiona "Sí".
+8. El sistema muestra "Pago aprobado. Orden {id} registrada. Se le notificará cuando el vendedor la despache." y actualiza el catálogo.
 
 **Flujos alternativos**
 
-- 5a. Usuario presiona "Pagar pedido" sin seleccionar un producto.
-  - 5a.1 Sistema: muestra "Seleccione un producto."
+- 5a. El comprador presiona "Pagar pedido" sin seleccionar un producto.
+  - 5a.1 El sistema muestra "Seleccione un producto."
 - 5b. Domicilio vacío.
-  - 5b.1 Sistema: muestra "Ingrese el domicilio de entrega."
-- 7a. Usuario presiona "No".
-  - 7a.1 Sistema: vuelve al catálogo sin registrar el pedido.
+  - 5b.1 El sistema muestra "Ingrese el domicilio de entrega."
+- 7a. El comprador presiona "No".
+  - 7a.1 El sistema vuelve al catálogo sin registrar el pedido.
 - 7b. El cobro es rechazado.
-  - 7b.1 Sistema: muestra "El pago fue rechazado: {motivo}".
+  - 7b.1 El sistema muestra "El pago fue rechazado: {motivo}".
 - 7c. Cantidad mayor al stock disponible.
-  - 7c.1 Sistema: muestra "Stock insuficiente para completar la compra."
-- 7d. El producto es propio del usuario.
-  - 7d.1 Sistema: muestra "No puede comprar sus propios productos."
+  - 7c.1 El sistema muestra "Stock insuficiente para completar la compra."
+- 7d. El producto es propio del comprador.
+  - 7d.1 El sistema muestra "No puede comprar sus propios productos."
 
-![Figura CU13-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU13.png)
+![Figura CU13-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU13.svg)
 
 ![Figura CU13-a. Diagrama de clases](diagramas/cu/CU13_clases.svg)
 
@@ -438,19 +438,19 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 **Flujo principal**
 
-1. Usuario: abre "Pedidos y liquidaciones" y elige la pestaña "Mis ventas".
-2. Sistema: muestra la lista de ventas del vendedor.
-3. Usuario: selecciona una venta y presiona "Marcar como despachada".
-4. Sistema: muestra "Orden marcada como despachada."
+1. El vendedor abre "Pedidos y liquidaciones" y elige la pestaña "Mis ventas".
+2. El sistema muestra la lista de ventas del vendedor.
+3. El vendedor selecciona una venta y presiona "Marcar como despachada".
+4. El sistema muestra "Orden marcada como despachada."
 
 **Flujos alternativos**
 
-- 3a. Usuario presiona "Marcar como despachada" sin seleccionar una venta.
-  - 3a.1 Sistema: muestra "Seleccione una venta."
+- 3a. El vendedor presiona "Marcar como despachada" sin seleccionar una venta.
+  - 3a.1 El sistema muestra "Seleccione una venta."
 - 3b. La orden ya no está pendiente de despacho.
-  - 3b.1 Sistema: muestra "La orden no está pendiente de despacho o no le pertenece."
+  - 3b.1 El sistema muestra "La orden no está pendiente de despacho o no le pertenece."
 
-![Figura CU14-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU14.png)
+![Figura CU14-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU14.svg)
 
 ![Figura CU14-a. Diagrama de clases](diagramas/cu/CU14_clases.svg)
 
@@ -468,19 +468,19 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 **Flujo principal**
 
-1. Usuario: abre "Pedidos y liquidaciones" y elige la pestaña "Mis compras".
-2. Sistema: muestra la lista de compras.
-3. Usuario: selecciona una compra y presiona "Confirmar recepción conforme".
-4. Sistema: muestra "Recepción confirmada. El saldo quedó disponible para liquidar."
+1. El comprador abre "Pedidos y liquidaciones" y elige la pestaña "Mis compras".
+2. El sistema muestra la lista de compras.
+3. El comprador selecciona una compra y presiona "Confirmar recepción conforme".
+4. El sistema muestra "Recepción confirmada. El saldo quedó disponible para liquidar."
 
 **Flujos alternativos**
 
-- 3a. Usuario presiona "Confirmar recepción conforme" sin seleccionar una compra.
-  - 3a.1 Sistema: muestra "Seleccione una compra."
+- 3a. El comprador presiona "Confirmar recepción conforme" sin seleccionar una compra.
+  - 3a.1 El sistema muestra "Seleccione una compra."
 - 3b. La orden no está despachada.
-  - 3b.1 Sistema: muestra "La orden no está despachada o no le pertenece."
+  - 3b.1 El sistema muestra "La orden no está despachada o no le pertenece."
 
-![Figura CU15-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU15.png)
+![Figura CU15-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU15.svg)
 
 ![Figura CU15-a. Diagrama de clases](diagramas/cu/CU15_clases.svg)
 
@@ -498,23 +498,23 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 **Flujo principal**
 
-1. Usuario: abre "Pedidos y liquidaciones" y elige la pestaña "Liquidaciones".
-2. Sistema: muestra las liquidaciones disponibles.
-3. Usuario: selecciona una liquidación y presiona "Ordenar transferencia al vendedor".
-4. Sistema: pregunta "¿Ordenar la transferencia al vendedor por el saldo neto?" con los botones "Sí" y "No".
-5. Usuario: presiona "Sí".
-6. Sistema: muestra "Transferencia ordenada. La liquidación quedó pagada." y quita la liquidación de la lista.
+1. El área comercial abre "Pedidos y liquidaciones" y elige la pestaña "Liquidaciones".
+2. El sistema muestra las liquidaciones disponibles.
+3. El área comercial selecciona una liquidación y presiona "Ordenar transferencia al vendedor".
+4. El sistema pregunta "¿Ordenar la transferencia al vendedor por el saldo neto?" con los botones "Sí" y "No".
+5. El área comercial presiona "Sí".
+6. El sistema muestra "Transferencia ordenada. La liquidación quedó pagada." y quita la liquidación de la lista.
 
 **Flujos alternativos**
 
-- 3a. Usuario presiona "Ordenar transferencia al vendedor" sin seleccionar una liquidación.
-  - 3a.1 Sistema: muestra "Seleccione una liquidación."
-- 5a. Usuario presiona "No".
-  - 5a.1 Sistema: vuelve a la lista sin cambios.
+- 3a. El área comercial presiona "Ordenar transferencia al vendedor" sin seleccionar una liquidación.
+  - 3a.1 El sistema muestra "Seleccione una liquidación."
+- 5a. El área comercial presiona "No".
+  - 5a.1 El sistema vuelve a la lista sin cambios.
 - 5b. La liquidación ya no está disponible.
-  - 5b.1 Sistema: muestra "La liquidación no está disponible para pagar."
+  - 5b.1 El sistema muestra "La liquidación no está disponible para pagar."
 
-![Figura CU16-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU16.png)
+![Figura CU16-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU16.svg)
 
 ![Figura CU16-a. Diagrama de clases](diagramas/cu/CU16_clases.svg)
 
@@ -532,21 +532,21 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 **Flujo principal**
 
-1. Usuario: abre "Reclamos" y elige la pestaña "Presentar reclamo".
-2. Sistema: muestra las órdenes del comprador.
-3. Usuario: selecciona una orden, escribe el "Motivo:" y presiona "Presentar reclamo".
-4. Sistema: muestra "Reclamo {id} presentado. El saldo del vendedor quedó congelado hasta su resolución."
+1. El comprador abre "Reclamos" y elige la pestaña "Presentar reclamo".
+2. El sistema muestra las órdenes del comprador.
+3. El comprador selecciona una orden, escribe el "Motivo:" y presiona "Presentar reclamo".
+4. El sistema muestra "Reclamo {id} presentado. El saldo del vendedor quedó congelado hasta su resolución."
 
 **Flujos alternativos**
 
-- 3a. Usuario presiona "Presentar reclamo" sin seleccionar una orden.
-  - 3a.1 Sistema: muestra "Seleccione la orden a reclamar."
+- 3a. El comprador presiona "Presentar reclamo" sin seleccionar una orden.
+  - 3a.1 El sistema muestra "Seleccione la orden a reclamar."
 - 3b. Motivo vacío.
-  - 3b.1 Sistema: muestra "Describa el motivo del reclamo."
+  - 3b.1 El sistema muestra "Describa el motivo del reclamo."
 - 3c. La orden no es despachada o no es propia.
-  - 3c.1 Sistema: muestra "Solo puede reclamar órdenes despachadas propias."
+  - 3c.1 El sistema muestra "Solo puede reclamar órdenes despachadas propias."
 
-![Figura CU17-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU17.png)
+![Figura CU17-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU17.svg)
 
 ![Figura CU17-a. Diagrama de clases](diagramas/cu/CU17_clases.svg)
 
@@ -564,21 +564,21 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 **Flujo principal**
 
-1. Usuario: abre "Reclamos" y elige la pestaña "Resolver reclamos".
-2. Sistema: muestra la lista de reclamos abiertos.
-3. Usuario: selecciona un reclamo y presiona "Reclamo procedente".
-4. Sistema: muestra "Reclamo procedente: la orden se devolvió, el stock se restituyó y la liquidación se canceló." y quita el reclamo de la lista.
+1. El área comercial abre "Reclamos" y elige la pestaña "Resolver reclamos".
+2. El sistema muestra la lista de reclamos abiertos.
+3. El área comercial selecciona un reclamo y presiona "Reclamo procedente".
+4. El sistema muestra "Reclamo procedente: la orden se devolvió, el stock se restituyó y la liquidación se canceló." y quita el reclamo de la lista.
 
 **Flujos alternativos**
 
-- 3a. Usuario presiona "Reclamo improcedente".
-  - 3a.1 Sistema: muestra "Reclamo improcedente: la liquidación volvió a retenida hasta la confirmación del comprador."
-- 3b. Usuario presiona un botón sin seleccionar un reclamo.
-  - 3b.1 Sistema: muestra "Seleccione un reclamo."
+- 3a. El área comercial presiona "Reclamo improcedente".
+  - 3a.1 El sistema muestra "Reclamo improcedente: la liquidación volvió a retenida hasta la confirmación del comprador."
+- 3b. El área comercial presiona un botón sin seleccionar un reclamo.
+  - 3b.1 El sistema muestra "Seleccione un reclamo."
 - 3c. El reclamo ya no está abierto.
-  - 3c.1 Sistema: muestra "El reclamo no está abierto."
+  - 3c.1 El sistema muestra "El reclamo no está abierto."
 
-![Figura CU18-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU18.png)
+![Figura CU18-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU18.svg)
 
 ![Figura CU18-a. Diagrama de clases](diagramas/cu/CU18_clases.svg)
 
@@ -623,7 +623,7 @@ Cada caso de uso tiene su secuencia (figuras de CU07 a CU11 arriba).
 
 ### 5. Especificación de casos de uso
 
-![Figura N03-0. Diagrama de casos de uso del proceso N03](diagramas/casos_de_uso_png/N03.png)
+![Figura N03-0. Diagrama de casos de uso del proceso N03](diagramas/casos_de_uso/N03.svg)
 
 ### CU01 Declarar material
 
@@ -634,26 +634,26 @@ Cada caso de uso tiene su secuencia (figuras de CU07 a CU11 arriba).
 
 **Flujo principal**
 
-1. Usuario: elige el material en la lista "Material" y escribe la cantidad en "Cantidad (kg)".
-2. Usuario: presiona "Declarar".
-3. Sistema: muestra la "Opción 1: reutilizar en casa" con la guía del material y la "Opción 2: entregar en el punto verde más cercano".
-4. Usuario: presiona "Reutilizar en casa (confirmar)".
-5. Sistema: muestra "Reutilización confirmada. Saldo actual: {saldo} Eco-Puntos."
+1. El ciudadano elige el material en la lista "Material" y escribe la cantidad en "Cantidad (kg)".
+2. El ciudadano presiona "Declarar".
+3. El sistema muestra la "Opción 1: reutilizar en casa" con la guía del material y la "Opción 2: entregar en el punto verde más cercano".
+4. El ciudadano presiona "Reutilizar en casa (confirmar)".
+5. El sistema muestra "Reutilización confirmada. Saldo actual: {saldo} Eco-Puntos."
 
 **Flujos alternativos**
 
 - 1a. El material no tiene guía cargada.
-  - 1a.1 Sistema: muestra "Opción 1: reutilizar en casa (declare un material primero)." y deshabilita "Reutilizar en casa (confirmar)".
-  - 1a.2 Usuario: presiona "Entregar en punto verde".
-  - 1a.3 Sistema: muestra "Entrega oficial registrada. Los Eco-Puntos se acreditarán cuando el punto verde confirme el peso."
-- 4a. Usuario presiona "Entregar en punto verde" en lugar de reutilizar.
-  - 4a.1 Sistema: muestra "Entrega oficial registrada. Los Eco-Puntos se acreditarán cuando el punto verde confirme el peso."
+  - 1a.1 El sistema muestra "Opción 1: reutilizar en casa (declare un material primero)." y deshabilita "Reutilizar en casa (confirmar)".
+  - 1a.2 El ciudadano presiona "Entregar en punto verde".
+  - 1a.3 El sistema muestra "Entrega oficial registrada. Los Eco-Puntos se acreditarán cuando el punto verde confirme el peso."
+- 4a. El ciudadano presiona "Entregar en punto verde" en lugar de reutilizar.
+  - 4a.1 El sistema muestra "Entrega oficial registrada. Los Eco-Puntos se acreditarán cuando el punto verde confirme el peso."
 - 2a. Cantidad vacía, cero o negativa.
-  - 2a.1 Sistema: muestra "La cantidad debe ser mayor a cero."
-- 2b. Usuario presiona "Declarar" sin elegir material.
-  - 2b.1 Sistema: muestra "Seleccione un material."
+  - 2a.1 El sistema muestra "La cantidad debe ser mayor a cero."
+- 2b. El ciudadano presiona "Declarar" sin elegir material.
+  - 2b.1 El sistema muestra "Seleccione un material."
 
-![Figura CU01-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU01.png)
+![Figura CU01-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU01.svg)
 
 ![Figura CU01-a. Diagrama de clases](diagramas/cu/CU01_clases.svg)
 
@@ -671,25 +671,25 @@ Cada caso de uso tiene su secuencia (figuras de CU07 a CU11 arriba).
 
 **Flujo principal**
 
-1. Usuario: elige el punto verde en la lista "Punto verde".
-2. Sistema: muestra en "Declaraciones pendientes de entrega" las declaraciones de ese punto verde.
-3. Usuario: selecciona una declaración.
-4. Sistema: muestra en "Peso pesado (kg)" el peso que declaró el ciudadano.
-5. Usuario: confirma o corrige el peso y presiona "Registrar recepción".
-6. Sistema: muestra "Recepción registrada. Se acreditaron {puntos} Eco-Puntos al ciudadano." y la declaración sale de la lista.
+1. El operador de punto verde elige el punto verde en la lista "Punto verde".
+2. El sistema muestra en "Declaraciones pendientes de entrega" las declaraciones de ese punto verde.
+3. El operador de punto verde selecciona una declaración.
+4. El sistema muestra en "Peso pesado (kg)" el peso que declaró el ciudadano.
+5. El operador de punto verde confirma o corrige el peso y presiona "Registrar recepción".
+6. El sistema muestra "Recepción registrada. Se acreditaron {puntos} Eco-Puntos al ciudadano." y la declaración sale de la lista.
 
 **Flujos alternativos**
 
 - 2a. El punto verde no tiene declaraciones pendientes.
-  - 2a.1 Sistema: la lista queda vacía.
-- 5a. Usuario presiona "Registrar recepción" sin seleccionar una declaración.
-  - 5a.1 Sistema: muestra "Seleccione una declaración pendiente."
+  - 2a.1 El sistema la lista queda vacía.
+- 5a. El operador de punto verde presiona "Registrar recepción" sin seleccionar una declaración.
+  - 5a.1 El sistema muestra "Seleccione una declaración pendiente."
 - 5b. El punto verde no acepta el material de la declaración.
-  - 5b.1 Sistema: muestra "El punto verde no acepta este material. Se rechaza la carga."
+  - 5b.1 El sistema muestra "El punto verde no acepta este material. Se rechaza la carga."
 - 5c. Peso vacío, cero o no numérico.
-  - 5c.1 Sistema: muestra "El peso debe ser mayor a cero." o "Peso: ingrese un número válido.".
+  - 5c.1 El sistema muestra "El peso debe ser mayor a cero." o "Peso: ingrese un número válido.".
 
-![Figura CU02-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU02.png)
+![Figura CU02-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU02.svg)
 
 ![Figura CU02-a. Diagrama de clases](diagramas/cu/CU02_clases.svg)
 
@@ -707,25 +707,25 @@ Cada caso de uso tiene su secuencia (figuras de CU07 a CU11 arriba).
 
 **Flujo principal**
 
-1. Usuario: abre "Canjear Eco-Puntos".
-2. Sistema: muestra "Saldo: {saldo} Eco-Puntos", la lista "Beneficios disponibles" y los "Movimientos de mi cuenta".
-3. Usuario: selecciona un beneficio y presiona "Canjear beneficio seleccionado".
-4. Sistema: pregunta "¿Canjear \"{descripción}\"?" con los botones "Sí" y "No".
-5. Usuario: presiona "Sí".
-6. Sistema: muestra "Canje realizado. Su cupón o envío bonificado quedó registrado." y actualiza el saldo y los movimientos.
+1. El ciudadano abre "Canjear Eco-Puntos".
+2. El sistema muestra "Saldo: {saldo} Eco-Puntos", la lista "Beneficios disponibles" y los "Movimientos de mi cuenta".
+3. El ciudadano selecciona un beneficio y presiona "Canjear beneficio seleccionado".
+4. El sistema pregunta "¿Canjear \"{descripción}\"?" con los botones "Sí" y "No".
+5. El ciudadano presiona "Sí".
+6. El sistema muestra "Canje realizado. Su cupón o envío bonificado quedó registrado." y actualiza el saldo y los movimientos.
 
 **Flujos alternativos**
 
-- 3a. Usuario presiona "Canjear beneficio seleccionado" sin seleccionar un beneficio.
-  - 3a.1 Sistema: muestra "Seleccione un beneficio."
-- 5a. Usuario presiona "No".
-  - 5a.1 Sistema: vuelve a la pantalla sin cambios.
+- 3a. El ciudadano presiona "Canjear beneficio seleccionado" sin seleccionar un beneficio.
+  - 3a.1 El sistema muestra "Seleccione un beneficio."
+- 5a. El ciudadano presiona "No".
+  - 5a.1 El sistema vuelve a la pantalla sin cambios.
 - 5b. Saldo insuficiente.
-  - 5b.1 Sistema: muestra "Saldo insuficiente de Eco-Puntos."
+  - 5b.1 El sistema muestra "Saldo insuficiente de Eco-Puntos."
 - 5c. El beneficio dejó de estar disponible.
-  - 5c.1 Sistema: muestra "El beneficio no está disponible."
+  - 5c.1 El sistema muestra "El beneficio no está disponible."
 
-![Figura CU03-0. Diagrama de casos de uso](diagramas/casos_de_uso_png/CU03.png)
+![Figura CU03-0. Diagrama de casos de uso](diagramas/casos_de_uso/CU03.svg)
 
 ![Figura CU03-a. Diagrama de clases](diagramas/cu/CU03_clases.svg)
 

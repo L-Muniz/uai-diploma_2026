@@ -1,6 +1,0 @@
-@startuml CU07_caso_de_uso
-left to right direction
-actor "Gerencia" as ACT
-usecase "CU07 Fijar comisión por categoría" as UC
-ACT -- UC
-@enduml

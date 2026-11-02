@@ -1,6 +1,0 @@
-@startuml CU06_caso_de_uso
-left to right direction
-actor "Gerencia" as ACT
-usecase "CU06 Gestionar puntos verdes" as UC
-ACT -- UC
-@enduml

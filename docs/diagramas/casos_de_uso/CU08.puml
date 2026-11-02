@@ -1,6 +1,0 @@
-@startuml CU08_caso_de_uso
-left to right direction
-actor "Gerencia" as ACT
-usecase "CU08 Fijar conversión de puntos" as UC
-ACT -- UC
-@enduml

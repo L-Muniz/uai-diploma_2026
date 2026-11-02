@@ -1,6 +1,0 @@
-@startuml CU17_caso_de_uso
-left to right direction
-actor "Comprador" as ACT
-usecase "CU17 Presentar reclamo" as UC
-ACT -- UC
-@enduml
