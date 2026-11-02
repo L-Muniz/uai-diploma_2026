@@ -19,6 +19,17 @@ namespace GUI
             this.usuario = usuario;
             UIHelper.CargarCombo(cboMaterial, bllGestion.ListarMateriales(), "Nombre", "ID");
             dgvGuias.SelectionChanged += (s, e) => CargarSeleccion();
+
+            // Sin permiso de ABM (por ejemplo, un ciudadano) la guía se consulta pero no se modifica.
+            bool puedeEditar = BLL_AUTORIZACION.TienePermiso(usuario, "PROC_ABM_GUIAS");
+            btnNuevo.Enabled = puedeEditar;
+            btnGuardar.Enabled = puedeEditar;
+            btnEliminar.Enabled = puedeEditar;
+            cboMaterial.Enabled = puedeEditar;
+            cboDificultad.Enabled = puedeEditar;
+            txtTitulo.ReadOnly = !puedeEditar;
+            txtPasos.ReadOnly = !puedeEditar;
+
             Refrescar();
             Nuevo();
         }
@@ -26,6 +37,9 @@ namespace GUI
         private void Refrescar()
         {
             UIHelper.CargarGrilla(dgvGuias, bllCatalogo.ListarGuias());
+            // Los pasos se leen en el cuadro de abajo: en la grilla quedan ilegibles.
+            if (dgvGuias.Columns.Contains("Pasos"))
+                dgvGuias.Columns["Pasos"].Visible = false;
         }
 
         private void CargarSeleccion()
