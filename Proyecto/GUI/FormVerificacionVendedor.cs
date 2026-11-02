@@ -39,6 +39,8 @@ namespace GUI
                 btnRechazar.Location = new Point(180, dgvSolicitudes.Bottom + 10);
             }
             Refrescar();
+            // Otro usuario puede resolver la solicitud mientras este formulario está abierto: se vuelve a leer al activarlo.
+            Activated += (s, e) => Refrescar();
         }
 
         private void Refrescar()
