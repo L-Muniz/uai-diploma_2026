@@ -1,0 +1,4 @@
+@startuml
+skinparam classAttributeIconSize 0
+title class_general
+@enduml

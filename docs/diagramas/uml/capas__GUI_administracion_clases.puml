@@ -1,0 +1,61 @@
+@startuml
+skinparam classAttributeIconSize 0
+title capas__GUI_administracion_clases
+class "Bitacora" as Bitacora {
+  +idiomaManager: SV_IdiomaManager
+  +user: BLL_USUARIO
+  +bitacora: BLL_BITACORA
+  +opcionTodos: BE_USUARIO
+  +bindingSource: BindingSource
+}
+class "FormAgregarIdioma" as FormAgregarIdioma {
+  +idiomaManager: SV_IdiomaManager
+  +bllIdioma: BLL_Idioma
+  +traduccionesIngresadas: Dictionary<string, string>
+  +lblInstruccion: Label lblCodigo, lblNombre, lblTraduccion,
+  +btnCancelar: Button btnCargarClaves, btnGuardar,
+  +dgv: DataGridView
+}
+class "FormAuditoria" as FormAuditoria {
+  +idiomaManager: SV_IdiomaManager
+  +cambiosActuales: List<BE_CambiosEntidad>
+  +bllRollback: BLL_Rollback
+  +cbVista: ComboBox
+  +mostrandoSnapshots: bool
+}
+class "FormBackups" as FormBackups {
+  +idiomaManager: SV_IdiomaManager
+  +lblStatus: Label
+  +progressBar: ProgressBar
+}
+class "FormCambiarIdioma" as FormCambiarIdioma {
+  +cbIdiomas: ComboBox
+}
+class "FormGestionUsuarios" as FormGestionUsuarios {
+  +idiomaManager: SV_IdiomaManager
+  +bllUsuario: BLL_USUARIO
+  +bllRol: BLL_ROL
+  +dgvUsuarios: DataGridView
+  +btnAsignarRol: Button btnBloquearDesbloquear, btnNuevo, btnEliminar,
+  +lblUsuarios: Label
+}
+class "FormIntegridad" as FormIntegridad {
+  +idiomaManager: SV_IdiomaManager
+  +txtResultado: TextBox
+  +btnCerrar: Button btnVerificar, btnRecalcular,
+  +lblTitulo: Label
+}
+class "FormPermisoABM" as FormPermisoABM {
+  +idiomaManager: SV_IdiomaManager
+  +bllPermiso: BLL_PERMISO
+  +permisoSeleccionado: BE_Permiso
+}
+class "FormRoles" as FormRoles {
+  +idiomaManager: SV_IdiomaManager
+  +bllRol: BLL_ROL
+  +rolSeleccionado: BE_Rol
+}
+class "FormSnapshots" as FormSnapshots {
+  +idiomaManager: SV_IdiomaManager
+}
+@enduml

@@ -1,0 +1,103 @@
+@startuml
+skinparam classAttributeIconSize 0
+title procesos__N02_modelo_conceptual
+class "BE_USUARIO" as USUARIO {
+  +ID: int
+  +Username: string
+  +HashedPassword: string
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+}
+class "BE_DatosUsuario" as DATOS_USUARIO {
+  +IDUsuario: int
+  +FechaNacimiento: DateTime?
+  +Latitud: decimal?
+  +Longitud: decimal?
+  +Localidad: string
+}
+class "BE_VerificacionVendedor" as VERIFICACION {
+  +ID: int
+  +IDUsuario: int
+  +Fecha: DateTime
+  +Estado: string
+  +DocumentoRef: string
+}
+class "BE_Producto" as PRODUCTO {
+  +ID: int
+  +IDVendedor: int
+  +IDTarifa: int?
+  +Nombre: string
+  +Descripcion: string
+  +Categoria: string
+  +Precio: decimal
+  +Stock: int
+  +Estado: string
+}
+class "BE_TarifaComision" as TARIFA {
+  +ID: int
+  +IDDecision: int?
+  +Categoria: string
+  +Porcentaje: decimal
+  +VigenteDesde: DateTime
+}
+class "BE_OrdenVenta" as ORDEN {
+  +ID: int
+  +IDComprador: int
+  +IDVendedor: int
+  +Fecha: DateTime
+  +Estado: string
+  +MontoBruto: decimal
+  +DireccionEnvio: string
+  +Items: List<BE_ItemOrden>
+}
+class "BE_ItemOrden" as ITEM {
+  +Producto: BE_Producto
+  +Cantidad: int
+  +PrecioUnitario: decimal
+}
+class "BE_Pago" as PAGO {
+  +ID: int
+  +IDOrden: int
+  +ReferenciaPasarela: string
+  +Monto: decimal
+  +Estado: string
+  +Fecha: DateTime
+}
+class "BE_Comision" as COMISION {
+  +ID: int
+  +IDOrden: int
+  +Porcentaje: decimal
+  +Monto: decimal
+  +Fecha: DateTime
+}
+class "BE_LiquidacionVendedor" as LIQUIDACION {
+  +ID: int
+  +IDOrden: int
+  +MontoNeto: decimal
+  +Estado: string
+  +FechaDisponible: DateTime?
+  +FechaPago: DateTime?
+}
+class "BE_Reclamo" as RECLAMO {
+  +ID: int
+  +IDOrden: int
+  +IDUsuario: int
+  +Motivo: string
+  +Estado: string
+  +Fecha: DateTime
+}
+USUARIO "1" -- "0..*" VERIFICACION
+USUARIO "1" -- "0..*" PRODUCTO
+USUARIO "1" -- "0..*" ORDEN
+USUARIO "1" -- "0..*" ORDEN
+ORDEN "1" *-- "1..*" ITEM
+PRODUCTO "1" -- "0..*" ITEM
+ORDEN "1" -- "1..*" PAGO
+ORDEN "1" -- "1" COMISION
+ORDEN "1" -- "1" LIQUIDACION
+ORDEN "1" -- "0..*" RECLAMO
+USUARIO "1" -- "0..*" RECLAMO
+TARIFA "1" -- "0..*" PRODUCTO
+USUARIO "1" -- "0..1" DATOS_USUARIO
+@enduml

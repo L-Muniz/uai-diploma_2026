@@ -1,0 +1,28 @@
+@startuml
+skinparam classAttributeIconSize 0
+title cu__CU05_clases
+class "BE_USUARIO" as USUARIO {
+  +ID: int
+  +Username: string
+  +HashedPassword: string
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+}
+class "BE_InformeGestion" as INFORME {
+  +ID: int
+  +IDUsuario: int
+  +Tipo: string
+  +Periodo: string
+  +FechaGeneracion: DateTime
+}
+class "BE_InformeIndicadores" as IND {
+  +Version: string
+  +Periodo: string
+  +FechaGeneracion: DateTime
+  +Generado: string
+  +Indicadores: List<BE_IndicadorItem>
+}
+USUARIO "1" -- "0..*" INFORME
+INFORME "1" -- "0..1" IND
+@enduml

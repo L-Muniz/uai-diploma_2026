@@ -1,0 +1,83 @@
+@startuml
+skinparam classAttributeIconSize 0
+title cu__CU01_clases
+class "BE_USUARIO" as USUARIO {
+  +ID: int
+  +Username: string
+  +HashedPassword: string
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+}
+class "BE_DatosUsuario" as DATOS_USUARIO {
+  +IDUsuario: int
+  +FechaNacimiento: DateTime?
+  +Latitud: decimal?
+  +Longitud: decimal?
+  +Localidad: string
+}
+class "BE_DeclaracionMaterial" as DECLARACION {
+  +ID: int
+  +IDUsuario: int
+  +Material: BE_Material
+  +Cantidad: decimal
+  +Fecha: DateTime
+  +Estado: string
+}
+class "BE_Material" as MATERIAL {
+  +ID: int
+  +Nombre: string
+  +Categoria: string
+  +UnidadMedida: string
+}
+class "BE_Recomendacion" as RECOMENDACION {
+  +ID: int
+  +Declaracion: BE_DeclaracionMaterial
+  +Guia: BE_GuiaReutilizacion
+  +PuntoVerde: BE_PuntoVerde
+  +TipoOpcionElegida: string
+  +FechaGeneracion: DateTime
+}
+class "BE_GuiaReutilizacion" as GUIA {
+  +ID: int
+  +Material: BE_Material
+  +Titulo: string
+  +Pasos: string
+  +Dificultad: string
+}
+class "BE_PuntoVerde" as PUNTO_VERDE {
+  +ID: int
+  +Nombre: string
+  +Direccion: string
+  +Latitud: decimal?
+  +Longitud: decimal?
+  +Horario: string
+  +Activo: bool
+  +MaterialesAceptados: List<BE_Material>
+}
+class "BE_CuentaEcoPuntos" as CUENTA {
+  +ID: int
+  +IDUsuario: int
+  +Saldo: int
+  +Nivel: int
+}
+class "BE_MovimientoEcoPuntos" as MOVIMIENTO {
+  +ID: int
+  +IDCuenta: int
+  +Tipo: string
+  +Puntos: int
+  +Fecha: DateTime
+  +Motivo: string
+}
+USUARIO "1" -- "0..*" DECLARACION
+DECLARACION "0..*" -- "1" MATERIAL
+DECLARACION "1" -- "0..1" RECOMENDACION
+RECOMENDACION "0..*" -- "0..1" GUIA
+RECOMENDACION "0..*" -- "0..1" PUNTO_VERDE
+PUNTO_VERDE "0..*" -- "0..*" MATERIAL
+USUARIO "1" -- "1" CUENTA
+CUENTA "1" -- "0..*" MOVIMIENTO
+MATERIAL "1" -- "0..*" GUIA
+USUARIO "1" -- "0..1" DATOS_USUARIO
+USUARIO "0..*" -- "0..*" MATERIAL
+@enduml

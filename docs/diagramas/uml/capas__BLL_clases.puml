@@ -1,0 +1,152 @@
+@startuml
+skinparam classAttributeIconSize 0
+title capas__BLL_clases
+class "BLL_AUTORIZACION" as BLL_AUTORIZACION {
+}
+class "BLL_BITACORA" as BLL_BITACORA {
+}
+class "BLL_BackupRestore" as BLL_BackupRestore {
+  +rutaBackup: static string
+}
+class "BLL_CATALOGO" as BLL_CATALOGO {
+  +dal: MP_CATALOGO
+  +bllBitacora: BLL_BITACORA
+}
+class "BLL_ControlCambios" as BLL_ControlCambios {
+  +mpCambios: static MP_CambiosEntidad
+}
+class "BLL_DATOS_USUARIO" as BLL_DATOS_USUARIO {
+  +dal: MP_DATOS_USUARIO
+  +bllBitacora: BLL_BITACORA
+}
+class "BLL_ECOPUNTOS" as BLL_ECOPUNTOS {
+  +dal: MP_ECOPUNTOS
+  +bllBitacora: BLL_BITACORA
+}
+class "BLL_ESTADISTICAS" as BLL_ESTADISTICAS {
+  +dal: MP_ESTADISTICAS
+}
+class "BLL_GESTION" as BLL_GESTION {
+  +dal: MP_GESTION
+  +dalReciclaje: MP_RECICLAJE
+  +dalCatalogo: MP_CATALOGO
+  +bllBitacora: BLL_BITACORA
+}
+class "BLL_GESTOR" as BLL_GESTOR {
+}
+class "BLL_Idioma" as BLL_Idioma {
+}
+class "BLL_IntegridadDatos" as BLL_IntegridadDatos {
+}
+class "BLL_MARKETPLACE" as BLL_MARKETPLACE {
+  +dal: MP_MARKETPLACE
+  +dalGestion: MP_GESTION
+  +bllBitacora: BLL_BITACORA
+}
+class "BLL_PERFIL" as BLL_PERFIL {
+  +mp: MP_PERFIL
+}
+class "BLL_PERMISO" as BLL_PERMISO {
+  +mpPermiso: MP_PERMISO
+  +bllBitacora: BLL_BITACORA
+}
+class "BLL_RECICLAJE" as BLL_RECICLAJE {
+  +dal: MP_RECICLAJE
+  +dalCatalogo: MP_CATALOGO
+  +dalGestion: MP_GESTION
+  +bllEcoPuntos: BLL_ECOPUNTOS
+  +bllBitacora: BLL_BITACORA
+}
+class "BLL_REPORTES" as BLL_REPORTES {
+  +bllGestion: BLL_GESTION
+  +bllEstadisticas: BLL_ESTADISTICAS
+  +bllBitacora: BLL_BITACORA
+}
+class "BLL_ROL" as BLL_ROL {
+  +mp: MP_ROL
+}
+class "BLL_Rollback" as BLL_Rollback {
+}
+class "BLL_USUARIO" as BLL_USUARIO {
+  +intentosLoginActuales: int
+}
+class "CriteriosBusqueda" as CriteriosBusqueda {
+}
+class "<<interface>> IPasarelaPago" as IPasarelaPago {
+  +dal: MP_MARKETPLACE
+  +dalGestion: MP_GESTION
+  +bllBitacora: BLL_BITACORA
+}
+class "OpcionesRecomendacion" as OpcionesRecomendacion {
+}
+class "PasarelaSimulada" as PasarelaSimulada {
+  +dal: MP_MARKETPLACE
+  +dalGestion: MP_GESTION
+  +bllBitacora: BLL_BITACORA
+}
+class "ResultadoCobro" as ResultadoCobro {
+  +dal: MP_MARKETPLACE
+  +dalGestion: MP_GESTION
+  +bllBitacora: BLL_BITACORA
+}
+class "<<enum>> TipoEvento" as TipoEvento {
+}
+BLL_AUTORIZACION ..> BLL_ROL
+BLL_AUTORIZACION ..> BLL_USUARIO
+BLL_BITACORA ..> CriteriosBusqueda
+BLL_BITACORA ..> TipoEvento
+BLL_CATALOGO ..> BLL_AUTORIZACION
+BLL_CATALOGO ..> BLL_BITACORA
+BLL_ControlCambios ..> BLL_IntegridadDatos
+BLL_DATOS_USUARIO ..> BLL_AUTORIZACION
+BLL_DATOS_USUARIO ..> BLL_BITACORA
+BLL_ECOPUNTOS ..> BLL_AUTORIZACION
+BLL_ECOPUNTOS ..> BLL_BITACORA
+BLL_ESTADISTICAS ..> BLL_AUTORIZACION
+BLL_GESTION ..> BLL_AUTORIZACION
+BLL_GESTION ..> BLL_BITACORA
+BLL_Idioma ..> BLL_BITACORA
+BLL_MARKETPLACE ..> BLL_AUTORIZACION
+BLL_MARKETPLACE ..> BLL_BITACORA
+BLL_MARKETPLACE ..> BLL_DATOS_USUARIO
+BLL_MARKETPLACE ..> ResultadoCobro
+BLL_MARKETPLACE ..> IPasarelaPago
+BLL_PERFIL ..> BLL_BITACORA
+BLL_PERMISO ..> BLL_BITACORA
+BLL_RECICLAJE ..> BLL_AUTORIZACION
+BLL_RECICLAJE ..> BLL_BITACORA
+BLL_RECICLAJE ..> BLL_DATOS_USUARIO
+BLL_RECICLAJE ..> BLL_ECOPUNTOS
+BLL_RECICLAJE ..> OpcionesRecomendacion
+BLL_REPORTES ..> BLL_BITACORA
+BLL_REPORTES ..> BLL_ESTADISTICAS
+BLL_REPORTES ..> BLL_GESTION
+BLL_ROL ..> BLL_BITACORA
+BLL_USUARIO ..> BLL_BITACORA
+BLL_USUARIO ..> BLL_ControlCambios
+BLL_USUARIO ..> BLL_GESTOR
+BLL_USUARIO ..> BLL_IntegridadDatos
+BLL_USUARIO ..> BLL_Rollback
+CriteriosBusqueda ..> TipoEvento
+IPasarelaPago ..> BLL_AUTORIZACION
+IPasarelaPago ..> BLL_BITACORA
+IPasarelaPago ..> BLL_DATOS_USUARIO
+IPasarelaPago ..> ResultadoCobro
+IPasarelaPago ..> PasarelaSimulada
+IPasarelaPago ..> BLL_MARKETPLACE
+OpcionesRecomendacion ..> BLL_AUTORIZACION
+OpcionesRecomendacion ..> BLL_DATOS_USUARIO
+PasarelaSimulada ..> BLL_AUTORIZACION
+PasarelaSimulada ..> BLL_BITACORA
+PasarelaSimulada ..> BLL_DATOS_USUARIO
+PasarelaSimulada ..> ResultadoCobro
+PasarelaSimulada ..> IPasarelaPago
+PasarelaSimulada ..> BLL_MARKETPLACE
+ResultadoCobro ..> BLL_AUTORIZACION
+ResultadoCobro ..> BLL_BITACORA
+ResultadoCobro ..> BLL_DATOS_USUARIO
+ResultadoCobro ..> IPasarelaPago
+ResultadoCobro ..> PasarelaSimulada
+ResultadoCobro ..> BLL_MARKETPLACE
+TipoEvento ..> CriteriosBusqueda
+@enduml

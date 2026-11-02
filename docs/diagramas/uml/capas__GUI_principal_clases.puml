@@ -1,0 +1,32 @@
+@startuml
+skinparam classAttributeIconSize 0
+title capas__GUI_principal_clases
+class "FormUnico" as FormUnico {
+}
+class "LogInOut" as LogInOut {
+  +idiomaManager: SV_IdiomaManager
+  +bllIdioma: BLL_Idioma
+}
+class "MainForm" as MainForm {
+  +idiomaManager: SV_IdiomaManager
+  +usuarioActual: BE_USUARIO
+}
+class "Register" as Register {
+  +idiomaManager: SV_IdiomaManager
+}
+class "UIHelper" as UIHelper {
+}
+class "UITheme" as UITheme {
+}
+FormUnico ..> UITheme
+LogInOut ..> FormUnico
+LogInOut ..> MainForm
+LogInOut ..> Register
+LogInOut ..> UIHelper
+LogInOut ..> UITheme
+MainForm ..> FormUnico
+MainForm ..> LogInOut
+MainForm ..> UIHelper
+MainForm ..> UITheme
+Register ..> UITheme
+@enduml

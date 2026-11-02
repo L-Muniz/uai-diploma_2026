@@ -1,0 +1,47 @@
+@startuml
+skinparam classAttributeIconSize 0
+title cu__CU03_clases
+class "BE_USUARIO" as USUARIO {
+  +ID: int
+  +Username: string
+  +HashedPassword: string
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+}
+class "BE_CuentaEcoPuntos" as CUENTA {
+  +ID: int
+  +IDUsuario: int
+  +Saldo: int
+  +Nivel: int
+}
+class "BE_MovimientoEcoPuntos" as MOVIMIENTO {
+  +ID: int
+  +IDCuenta: int
+  +Tipo: string
+  +Puntos: int
+  +Fecha: DateTime
+  +Motivo: string
+}
+class "BE_Canje" as CANJE {
+  +ID: int
+  +IDUsuario: int
+  +Beneficio: BE_Beneficio
+  +PuntosUsados: int
+  +Fecha: DateTime
+  +Estado: string
+}
+class "BE_Beneficio" as BENEFICIO {
+  +ID: int
+  +Tipo: string
+  +Descripcion: string
+  +PuntosRequeridos: int
+  +CostoEmpresa: decimal
+  +Activo: bool
+}
+USUARIO "1" -- "1" CUENTA
+CUENTA "1" -- "0..*" MOVIMIENTO
+USUARIO "1" -- "0..*" CANJE
+BENEFICIO "1" -- "0..*" CANJE
+CUENTA "1" -- "0..*" CANJE
+@enduml

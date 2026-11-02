@@ -1,0 +1,53 @@
+@startuml
+skinparam classAttributeIconSize 0
+title capas__SERVICE_clases
+class "<<interface>> ISV_IdiomaObserver" as ISV_IdiomaObserver {
+}
+class "<<interface>> ISV_ProveedorTraduccion" as ISV_ProveedorTraduccion {
+  +instancia: static SV_IdiomaManager
+  +codigoIdiomaActual: string
+  +observadores: List<ISV_IdiomaObserver>
+  +proveedorTraduccion: ISV_ProveedorTraduccion
+}
+class "SV_ArchivoInvalidoException" as SV_ArchivoInvalidoException {
+}
+class "SV_DigitoVerificadorHorizontal" as SV_DigitoVerificadorHorizontal {
+}
+class "SV_DigitoVerificadorVertical" as SV_DigitoVerificadorVertical {
+}
+class "SV_Encriptacion" as SV_Encriptacion {
+  +Salt: static readonly byte[]
+}
+class "SV_GeneradorPdf" as SV_GeneradorPdf {
+}
+class "SV_Hash" as SV_Hash {
+}
+class "SV_IdiomaManager" as SV_IdiomaManager {
+  +instancia: static SV_IdiomaManager
+  +codigoIdiomaActual: string
+  +observadores: List<ISV_IdiomaObserver>
+  +proveedorTraduccion: ISV_ProveedorTraduccion
+}
+class "SV_IdiomaObserverBase" as SV_IdiomaObserverBase {
+}
+class "SV_Mensajes" as SV_Mensajes {
+  +idiomaManager: static SV_IdiomaManager
+}
+class "SV_PerfilComposite" as SV_PerfilComposite {
+}
+class "SV_Serializacion" as SV_Serializacion {
+}
+class "SV_Singleton" as SV_Singleton {
+  +singleton: static SV_Singleton
+  +usuario: BE_USUARIO
+}
+ISV_IdiomaObserver ..> SV_IdiomaObserverBase
+ISV_ProveedorTraduccion ..> SV_IdiomaManager
+ISV_ProveedorTraduccion ..> ISV_IdiomaObserver
+SV_ArchivoInvalidoException ..> SV_Serializacion
+SV_IdiomaManager ..> ISV_ProveedorTraduccion
+SV_IdiomaManager ..> ISV_IdiomaObserver
+SV_IdiomaObserverBase ..> ISV_IdiomaObserver
+SV_Mensajes ..> SV_IdiomaManager
+SV_Serializacion ..> SV_ArchivoInvalidoException
+@enduml

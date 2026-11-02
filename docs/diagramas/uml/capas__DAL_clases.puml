@@ -1,0 +1,58 @@
+@startuml
+skinparam classAttributeIconSize 0
+title capas__DAL_clases
+class "ACCESO" as ACCESO {
+}
+class "MAPPER" as MAPPER {
+}
+class "MP_BITACORA" as MP_BITACORA {
+}
+class "MP_CATALOGO" as MP_CATALOGO {
+}
+class "MP_CambiosEntidad" as MP_CambiosEntidad {
+}
+class "MP_DATOS_USUARIO" as MP_DATOS_USUARIO {
+}
+class "MP_DigitoVerificadorVertical" as MP_DigitoVerificadorVertical {
+}
+class "MP_ECOPUNTOS" as MP_ECOPUNTOS {
+}
+class "MP_ESTADISTICAS" as MP_ESTADISTICAS {
+}
+class "MP_GESTION" as MP_GESTION {
+}
+class "MP_MARKETPLACE" as MP_MARKETPLACE {
+}
+class "MP_PERFIL" as MP_PERFIL {
+}
+class "MP_PERMISO" as MP_PERMISO {
+}
+class "MP_RECICLAJE" as MP_RECICLAJE {
+}
+class "MP_ROL" as MP_ROL {
+}
+class "MP_USUARIO" as MP_USUARIO {
+}
+MP_BITACORA ..> ACCESO
+MP_BITACORA ..> MAPPER
+MP_BITACORA ..> MP_USUARIO
+MP_CATALOGO ..> ACCESO
+MP_CambiosEntidad ..> ACCESO
+MP_CambiosEntidad ..> MAPPER
+MP_CambiosEntidad ..> MP_USUARIO
+MP_DATOS_USUARIO ..> ACCESO
+MP_DigitoVerificadorVertical ..> ACCESO
+MP_DigitoVerificadorVertical ..> MAPPER
+MP_ECOPUNTOS ..> ACCESO
+MP_ESTADISTICAS ..> ACCESO
+MP_GESTION ..> ACCESO
+MP_MARKETPLACE ..> ACCESO
+MP_PERFIL ..> ACCESO
+MP_PERFIL ..> MAPPER
+MP_PERMISO ..> ACCESO
+MP_RECICLAJE ..> ACCESO
+MP_ROL ..> ACCESO
+MP_ROL ..> MAPPER
+MP_USUARIO ..> ACCESO
+MP_USUARIO ..> MAPPER
+@enduml

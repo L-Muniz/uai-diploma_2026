@@ -1,0 +1,40 @@
+@startuml
+skinparam classAttributeIconSize 0
+title cu__CU11_clases
+class "BE_USUARIO" as USUARIO {
+  +ID: int
+  +Username: string
+  +HashedPassword: string
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+}
+class "BE_VerificacionVendedor" as VERIFICACION {
+  +ID: int
+  +IDUsuario: int
+  +Fecha: DateTime
+  +Estado: string
+  +DocumentoRef: string
+}
+class "BE_Producto" as PRODUCTO {
+  +ID: int
+  +IDVendedor: int
+  +IDTarifa: int?
+  +Nombre: string
+  +Descripcion: string
+  +Categoria: string
+  +Precio: decimal
+  +Stock: int
+  +Estado: string
+}
+class "BE_TarifaComision" as TARIFA {
+  +ID: int
+  +IDDecision: int?
+  +Categoria: string
+  +Porcentaje: decimal
+  +VigenteDesde: DateTime
+}
+USUARIO "1" -- "0..*" VERIFICACION
+USUARIO "1" -- "0..*" PRODUCTO
+TARIFA "1" -- "0..*" PRODUCTO
+@enduml

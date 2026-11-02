@@ -1,0 +1,50 @@
+@startuml
+skinparam classAttributeIconSize 0
+title cu__CU06_clases
+class "BE_USUARIO" as USUARIO {
+  +ID: int
+  +Username: string
+  +HashedPassword: string
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+}
+class "BE_PuntoVerde" as PUNTO_VERDE {
+  +ID: int
+  +Nombre: string
+  +Direccion: string
+  +Latitud: decimal?
+  +Longitud: decimal?
+  +Horario: string
+  +Activo: bool
+  +MaterialesAceptados: List<BE_Material>
+}
+class "BE_Material" as MATERIAL {
+  +ID: int
+  +Nombre: string
+  +Categoria: string
+  +UnidadMedida: string
+}
+class "BE_Decision" as DECISION {
+  +ID: int
+  +IDInforme: int?
+  +IDUsuario: int
+  +IDPuntoVerde: int?
+  +Tipo: string
+  +Descripcion: string
+  +Fecha: DateTime
+}
+class "BE_InformeGestion" as INFORME {
+  +ID: int
+  +IDUsuario: int
+  +Tipo: string
+  +Periodo: string
+  +FechaGeneracion: DateTime
+}
+PUNTO_VERDE "0..*" -- "0..*" MATERIAL
+USUARIO "1" -- "0..*" INFORME
+INFORME "1" -- "0..*" DECISION
+DECISION "0..*" -- "0..1" PUNTO_VERDE
+USUARIO "1" -- "0..*" DECISION
+USUARIO "0..*" -- "0..*" MATERIAL
+@enduml

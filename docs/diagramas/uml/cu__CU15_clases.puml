@@ -1,0 +1,33 @@
+@startuml
+skinparam classAttributeIconSize 0
+title cu__CU15_clases
+class "BE_USUARIO" as USUARIO {
+  +ID: int
+  +Username: string
+  +HashedPassword: string
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+}
+class "BE_OrdenVenta" as ORDEN {
+  +ID: int
+  +IDComprador: int
+  +IDVendedor: int
+  +Fecha: DateTime
+  +Estado: string
+  +MontoBruto: decimal
+  +DireccionEnvio: string
+  +Items: List<BE_ItemOrden>
+}
+class "BE_LiquidacionVendedor" as LIQUIDACION {
+  +ID: int
+  +IDOrden: int
+  +MontoNeto: decimal
+  +Estado: string
+  +FechaDisponible: DateTime?
+  +FechaPago: DateTime?
+}
+USUARIO "1" -- "0..*" ORDEN
+USUARIO "1" -- "0..*" ORDEN
+ORDEN "1" -- "1" LIQUIDACION
+@enduml

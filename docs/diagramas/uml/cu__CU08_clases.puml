@@ -1,0 +1,38 @@
+@startuml
+skinparam classAttributeIconSize 0
+title cu__CU08_clases
+class "BE_USUARIO" as USUARIO {
+  +ID: int
+  +Username: string
+  +HashedPassword: string
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+}
+class "BE_Decision" as DECISION {
+  +ID: int
+  +IDInforme: int?
+  +IDUsuario: int
+  +IDPuntoVerde: int?
+  +Tipo: string
+  +Descripcion: string
+  +Fecha: DateTime
+}
+class "BE_TablaConversion" as CONVERSION {
+  +ID: int
+  +IDDecision: int?
+  +Material: BE_Material
+  +PuntosPorKg: decimal
+  +VigenteDesde: DateTime
+}
+class "BE_Material" as MATERIAL {
+  +ID: int
+  +Nombre: string
+  +Categoria: string
+  +UnidadMedida: string
+}
+DECISION "1" -- "0..*" CONVERSION
+MATERIAL "1" -- "0..*" CONVERSION
+USUARIO "1" -- "0..*" DECISION
+USUARIO "0..*" -- "0..*" MATERIAL
+@enduml

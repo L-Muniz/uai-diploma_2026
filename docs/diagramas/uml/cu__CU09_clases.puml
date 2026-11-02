@@ -1,0 +1,28 @@
+@startuml
+skinparam classAttributeIconSize 0
+title cu__CU09_clases
+class "BE_USUARIO" as USUARIO {
+  +ID: int
+  +Username: string
+  +HashedPassword: string
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+}
+class "BE_DatosUsuario" as DATOS_USUARIO {
+  +IDUsuario: int
+  +FechaNacimiento: DateTime?
+  +Latitud: decimal?
+  +Longitud: decimal?
+  +Localidad: string
+}
+class "BE_VerificacionVendedor" as VERIFICACION {
+  +ID: int
+  +IDUsuario: int
+  +Fecha: DateTime
+  +Estado: string
+  +DocumentoRef: string
+}
+USUARIO "1" -- "0..*" VERIFICACION
+USUARIO "1" -- "0..1" DATOS_USUARIO
+@enduml

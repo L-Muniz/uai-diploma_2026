@@ -1,0 +1,39 @@
+@startuml
+skinparam classAttributeIconSize 0
+title cu__CU07_clases
+class "BE_USUARIO" as USUARIO {
+  +ID: int
+  +Username: string
+  +HashedPassword: string
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+}
+class "BE_Decision" as DECISION {
+  +ID: int
+  +IDInforme: int?
+  +IDUsuario: int
+  +IDPuntoVerde: int?
+  +Tipo: string
+  +Descripcion: string
+  +Fecha: DateTime
+}
+class "BE_TarifaComision" as TARIFA {
+  +ID: int
+  +IDDecision: int?
+  +Categoria: string
+  +Porcentaje: decimal
+  +VigenteDesde: DateTime
+}
+class "BE_InformeGestion" as INFORME {
+  +ID: int
+  +IDUsuario: int
+  +Tipo: string
+  +Periodo: string
+  +FechaGeneracion: DateTime
+}
+USUARIO "1" -- "0..*" INFORME
+INFORME "1" -- "0..*" DECISION
+DECISION "1" -- "0..*" TARIFA
+USUARIO "1" -- "0..*" DECISION
+@enduml

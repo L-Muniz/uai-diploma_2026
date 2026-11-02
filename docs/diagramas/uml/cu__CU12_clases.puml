@@ -1,0 +1,24 @@
+@startuml
+skinparam classAttributeIconSize 0
+title cu__CU12_clases
+class "BE_USUARIO" as USUARIO {
+  +ID: int
+  +Username: string
+  +HashedPassword: string
+  +Bloqueado: bool
+  +DVHorizontal: int
+  +Rol: string
+}
+class "BE_Producto" as PRODUCTO {
+  +ID: int
+  +IDVendedor: int
+  +IDTarifa: int?
+  +Nombre: string
+  +Descripcion: string
+  +Categoria: string
+  +Precio: decimal
+  +Stock: int
+  +Estado: string
+}
+USUARIO "1" -- "0..*" PRODUCTO
+@enduml
