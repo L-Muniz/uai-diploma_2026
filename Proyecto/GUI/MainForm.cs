@@ -211,8 +211,7 @@ namespace GUI
             AgregarGrupo(menuStrip, "&Reciclar",
                 ("&Declarar material", "PROC_DECLARAR_MATERIAL", () => new FormDeclararMaterial(usuarioActual)),
                 ("&Mis materiales", "PROC_SUSCRIBIRSE_MATERIALES", () => new FormSuscripciones(usuarioActual)),
-                ("&Guías de reutilización", "", () => new FormGuias(usuarioActual)),
-                ("&Mi perfil", "", () => new FormMiPerfil(usuarioActual)));
+                ("&Guías de reutilización", "", () => new FormGuias(usuarioActual)));
             AgregarGrupo(menuStrip, "&Tienda",
                 ("&Canjear Eco-Puntos", "PROC_CANJEAR_PUNTOS", () => new FormCanjeEcoPuntos(usuarioActual)),
                 ("&Verificación de vendedor", "PROC_SOLICITAR_VERIFICACION|PROC_RESOLVER_VERIFICACION", () => new FormVerificacionVendedor(usuarioActual)),
@@ -228,6 +227,8 @@ namespace GUI
                 ("&Tarifas y conversión", "PROC_GESTIONAR_TARIFAS", () => new FormTarifas(usuarioActual)),
                 ("&Materiales", "PROC_ABM_MATERIALES", () => new FormMateriales(usuarioActual)),
                 ("&Beneficios canjeables", "PROC_ABM_BENEFICIOS", () => new FormBeneficios(usuarioActual)));
+            AgregarGrupo(menuStrip, "&Mi cuenta",
+                ("&Mi perfil", "", () => new FormMiPerfil(usuarioActual)));
         }
 
         // Agrega un grupo directo en la barra de menú, con solo las opciones permitidas para el rol.
