@@ -211,8 +211,8 @@ namespace GUI
             // Las mismas pantallas cambian según el permiso: el ciudadano verifica y reclama, el área comercial resuelve.
             AgregarGrupo(menuStrip, "&Reciclar",
                 ("&Declarar material", "PROC_DECLARAR_MATERIAL", () => new FormDeclararMaterial(usuarioActual)),
-                ("&Mis materiales", "PROC_SUSCRIBIRSE_MATERIALES", () => new FormSuscripciones(usuarioActual)),
-                ("&Guías de reutilización", "PROC_DECLARAR_MATERIAL|PROC_ABM_GUIAS", () => new FormGuias(usuarioActual)));
+                ("&Materiales que sigo", "PROC_SUSCRIBIRSE_MATERIALES", () => new FormSuscripciones(usuarioActual)),
+                ("&Guías de reutilización", "PROC_ABM_GUIAS", () => new FormGuias(usuarioActual)));
             AgregarGrupo(menuStrip, "&Tienda",
                 ("&Canjear Eco-Puntos", "PROC_CANJEAR_PUNTOS", () => new FormCanjeEcoPuntos(usuarioActual)),
                 ("&Publicar producto", "PROC_PUBLICAR_PRODUCTO", () => new FormPublicarProducto(usuarioActual)),

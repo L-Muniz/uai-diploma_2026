@@ -34,7 +34,7 @@ namespace GUI
             this.lblTitulo.Name = "lblTitulo";
             this.lblTitulo.Size = new System.Drawing.Size(260, 21);
             this.lblTitulo.TabIndex = 0;
-            this.lblTitulo.Text = "Mis materiales (suscripciones)";
+            this.lblTitulo.Text = "Materiales que sigo";
             //
             // lblMateriales
             //
@@ -118,7 +118,7 @@ namespace GUI
             this.Controls.Add(this.lblMateriales);
             this.Controls.Add(this.lblTitulo);
             this.Name = "FormSuscripciones";
-            this.Text = "Mis materiales";
+            this.Text = "Materiales que sigo";
             ((System.ComponentModel.ISupportInitialize)(this.dgvGuias)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
