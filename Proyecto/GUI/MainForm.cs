@@ -207,28 +207,33 @@ namespace GUI
             var menuStrip = this.Controls.OfType<MenuStrip>().FirstOrDefault();
             if (menuStrip == null) return;
 
-            // Tres grupos según lo que hace la persona. Cada grupo aparece solo si el rol tiene alguna opción.
+            // Grupos según lo que hace la persona en el sistema. Cada grupo aparece solo si el rol tiene alguna opción.
+            // Las mismas pantallas cambian según el permiso: el ciudadano verifica y reclama, el área comercial resuelve.
             AgregarGrupo(menuStrip, "&Reciclar",
                 ("&Declarar material", "PROC_DECLARAR_MATERIAL", () => new FormDeclararMaterial(usuarioActual)),
                 ("&Mis materiales", "PROC_SUSCRIBIRSE_MATERIALES", () => new FormSuscripciones(usuarioActual)),
-                ("&Guías de reutilización", "", () => new FormGuias(usuarioActual)));
+                ("&Guías de reutilización", "PROC_DECLARAR_MATERIAL|PROC_REGISTRAR_RECEPCION|PROC_ABM_GUIAS", () => new FormGuias(usuarioActual)));
             AgregarGrupo(menuStrip, "&Tienda",
                 ("&Canjear Eco-Puntos", "PROC_CANJEAR_PUNTOS", () => new FormCanjeEcoPuntos(usuarioActual)),
-                ("&Verificación de vendedor", "PROC_SOLICITAR_VERIFICACION|PROC_RESOLVER_VERIFICACION", () => new FormVerificacionVendedor(usuarioActual)),
-                ("&Publicar producto", "PROC_PUBLICAR_PRODUCTO|PROC_APROBAR_PRODUCTO", () => new FormPublicarProducto(usuarioActual)),
-                ("&Comprar", "PROC_COMPRAR", () => new FormCompraMarketplace(usuarioActual)),
-                ("&Pedidos y liquidaciones", "PROC_CONFIRMAR_RECEPCION|PROC_DESPACHAR|PROC_LIQUIDAR", () => new FormLiquidacion(usuarioActual)),
-                ("&Reclamos", "PROC_RECLAMAR|PROC_RESOLVER_RECLAMO", () => new FormReclamos(usuarioActual)),
+                ("&Publicar producto", "PROC_PUBLICAR_PRODUCTO", () => new FormPublicarProducto(usuarioActual)),
+                ("&Comprar", "PROC_COMPRAR", () => new FormCompraMarketplace(usuarioActual)));
+            AgregarGrupo(menuStrip, "&Mi cuenta",
+                ("&Mi perfil", "", () => new FormMiPerfil(usuarioActual)),
+                ("&Verificación de vendedor", "PROC_SOLICITAR_VERIFICACION", () => new FormVerificacionVendedor(usuarioActual)),
+                ("&Pedidos y liquidaciones", "PROC_CONFIRMAR_RECEPCION|PROC_DESPACHAR", () => new FormLiquidacion(usuarioActual)),
+                ("&Reclamos", "PROC_RECLAMAR", () => new FormReclamos(usuarioActual)),
                 ("&Estadísticas de mis ventas", "PROC_VER_ESTADISTICAS_VENTAS", () => new FormEstadisticasVentas(usuarioActual)));
             AgregarGrupo(menuStrip, "&Gestión",
                 ("&Recepción en punto verde", "PROC_REGISTRAR_RECEPCION", () => new FormRecepcionAcopio(usuarioActual)),
+                ("&Verificación de vendedor", "PROC_RESOLVER_VERIFICACION", () => new FormVerificacionVendedor(usuarioActual)),
+                ("&Aprobar productos", "PROC_APROBAR_PRODUCTO", () => new FormPublicarProducto(usuarioActual)),
+                ("&Pedidos y liquidaciones", "PROC_LIQUIDAR", () => new FormLiquidacion(usuarioActual)),
+                ("&Reclamos", "PROC_RESOLVER_RECLAMO", () => new FormReclamos(usuarioActual)),
                 ("&Indicadores", "PROC_VER_INDICADORES", () => new FormIndicadores(usuarioActual)),
                 ("&Red de puntos verdes", "PROC_GESTIONAR_PUNTOS_VERDES", () => new FormPuntosVerdes(usuarioActual)),
                 ("&Tarifas y conversión", "PROC_GESTIONAR_TARIFAS", () => new FormTarifas(usuarioActual)),
                 ("&Materiales", "PROC_ABM_MATERIALES", () => new FormMateriales(usuarioActual)),
                 ("&Beneficios canjeables", "PROC_ABM_BENEFICIOS", () => new FormBeneficios(usuarioActual)));
-            AgregarGrupo(menuStrip, "&Mi cuenta",
-                ("&Mi perfil", "", () => new FormMiPerfil(usuarioActual)));
         }
 
         // Agrega un grupo directo en la barra de menú, con solo las opciones permitidas para el rol.

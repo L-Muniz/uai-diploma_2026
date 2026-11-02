@@ -20,11 +20,11 @@ namespace GUI
             UIHelper.CargarCombo(cboMaterial, bllGestion.ListarMateriales(), "Nombre", "ID");
             dgvGuias.SelectionChanged += (s, e) => CargarSeleccion();
 
-            // Sin permiso de ABM (por ejemplo, un ciudadano) la guía se consulta pero no se modifica.
+            // Sin permiso de ABM (ciudadano u operador) la guía se consulta pero no se modifica: se ocultan los botones.
             bool puedeEditar = BLL_AUTORIZACION.TienePermiso(usuario, "PROC_ABM_GUIAS");
-            btnNuevo.Enabled = puedeEditar;
-            btnGuardar.Enabled = puedeEditar;
-            btnEliminar.Enabled = puedeEditar;
+            btnNuevo.Visible = puedeEditar;
+            btnGuardar.Visible = puedeEditar;
+            btnEliminar.Visible = puedeEditar;
             cboMaterial.Enabled = puedeEditar;
             cboDificultad.Enabled = puedeEditar;
             txtTitulo.ReadOnly = !puedeEditar;
