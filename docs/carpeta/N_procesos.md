@@ -59,55 +59,149 @@ Casos de uso (numeración global):
 
 ### 5. Especificación de casos de uso
 
-![Figura N01-3. Diagrama de casos de uso del proceso N01](diagramas/procesos/N01_casos_de_uso.svg)
+### CU04 Consultar indicadores
 
-**CU04. Consultar indicadores de acopio y ventas**
+**Actor principal:** Gerencia.
+**Precondiciones:** el usuario tiene sesión iniciada con el rol GERENCIA.
+**Postcondiciones:** se muestran los indicadores del período y queda registrado el informe.
 
-| Ítem | Detalle |
-|---|---|
-| Objetivo | Que la gerencia cuente con datos para decidir sobre la red y las tarifas. |
-| Actor principal | Gerencia. |
-| Disparador | Inicio del ciclo mensual de revisión. |
-| Precondiciones | Existen registros de acopio, ventas y canjes del período. |
-| Escenario principal | 1. La gerencia selecciona el período. 2. El sistema obtiene ventas, acopio y canjes del período. 3. El sistema muestra indicadores por material y zona. 4. La gerencia configura tarifas (CU06) si corresponde. |
-| Flujos alternativos | 2a. Sin datos en el período: el sistema lo informa. |
-| Postcondiciones | Los indicadores quedan disponibles para la decisión. |
+**Flujo principal**
 
-![Figura N01-4. Diagrama de clases de CU04](diagramas/cu/CU04_clases.svg)
-![Figura N01-5. Modelo de datos de CU04](diagramas/cu/CU04_der.svg)
-![Figura N01-6. Diagrama de secuencia de CU04](diagramas/cu/CU04_secuencia.svg)
+1. Usuario: abre "Indicadores de acopio y ventas".
+2. Sistema: muestra el campo "Período (aaaa-mm):".
+3. Usuario: escribe el período y presiona "Consultar indicadores".
+4. Sistema: muestra la grilla de indicadores del período (acopio por material, ventas y costo de canjes).
 
-**CU05. Administrar puntos verdes y materiales**
+**Flujos alternativos**
 
-| Ítem | Detalle |
-|---|---|
-| Objetivo | Mantener actualizado el catálogo de puntos verdes y de materiales aceptados. |
-| Actores | Gerencia (decide), Referente de cooperativas (valida). |
-| Disparador | Decisión de alta, baja o cambio de un punto verde o de un material. |
-| Precondiciones | Existe una propuesta validada por el referente. |
-| Escenario principal | 1. La gerencia registra la propuesta de alta, baja o modificación. 2. El referente valida los datos de la locación. 3. La gerencia confirma el cambio. 4. El sistema actualiza el catálogo. |
-| Flujos alternativos | 2a. Datos no validados: el cambio queda pendiente. |
-| Postcondiciones | El catálogo refleja la decisión vigente. |
+- 3a. Período con formato incorrecto.
+  - 3a.1 Sistema: muestra "El período debe tener el formato aaaa-mm."
 
-![Figura N01-7. Diagrama de clases de CU05](diagramas/cu/CU05_clases.svg)
-![Figura N01-8. Modelo de datos de CU05](diagramas/cu/CU05_der.svg)
-![Figura N01-9. Diagrama de secuencia de CU05](diagramas/cu/CU05_secuencia.svg)
+![Figura CU04-a. Diagrama de clases](diagramas/cu/CU04_clases.svg)
 
-**CU06. Configurar comisiones y tabla de conversión de Eco-Puntos**
+![Figura CU04-b. Modelo de datos](diagramas/cu/CU04_der.svg)
 
-| Ítem | Detalle |
-|---|---|
-| Objetivo | Fijar las tarifas vigentes para la tienda y para la gamificación. |
-| Actor principal | Gerencia. |
-| Disparador | Decisión de cambio tarifario. |
-| Precondiciones | Existe un informe del período que justifique el cambio. |
-| Escenario principal | 1. La gerencia propone el nuevo porcentaje por categoría o la nueva tabla de conversión. 2. El sistema valida que los valores estén dentro de rango. 3. La gerencia confirma y define la vigencia. 4. El sistema guarda la tarifa. |
-| Flujos alternativos | 2a. Valor fuera de rango: el sistema lo rechaza. |
-| Postcondiciones | La nueva tarifa rige desde la fecha de vigencia. |
+![Figura CU04-c. Diagrama de secuencia](diagramas/secuencias_png/CU04.png)
 
-![Figura N01-10. Diagrama de clases de CU06](diagramas/cu/CU06_clases.svg)
-![Figura N01-11. Modelo de datos de CU06](diagramas/cu/CU06_der.svg)
-![Figura N01-12. Diagrama de secuencia de CU06](diagramas/cu/CU06_secuencia.svg)
+
+### CU05 Exportar informe de indicadores
+
+**Actor principal:** Gerencia.
+**Precondiciones:** se consultaron los indicadores de un período (CU04).
+**Postcondiciones:** queda guardado el archivo PDF o XML en la ubicación elegida.
+
+**Flujo principal (PDF)**
+
+1. Usuario: presiona "Exportar a PDF".
+2. Sistema: muestra el diálogo para guardar con el nombre "Indicadores_{período}.pdf".
+3. Usuario: elige la carpeta y presiona "Guardar".
+4. Sistema: muestra "Informe PDF generado."
+
+**Flujo alternativo (XML)**
+
+- 1a. Usuario presiona "Guardar XML".
+  - 1a.1 Sistema: muestra el diálogo para guardar con el nombre "Indicadores_{período}.xml".
+  - 1a.2 Usuario: elige la carpeta y presiona "Guardar".
+  - 1a.3 Sistema: muestra "Informe guardado en XML."
+
+**Flujos alternativos comunes**
+
+- 2a. Usuario cierra el diálogo sin guardar.
+  - 2a.1 Sistema: no guarda el archivo y vuelve a la pantalla.
+
+![Figura CU05-a. Diagrama de clases](diagramas/cu/CU05_clases.svg)
+
+![Figura CU05-b. Modelo de datos](diagramas/cu/CU05_der.svg)
+
+![Figura CU05-c. Diagrama de secuencia](diagramas/secuencias_png/CU05.png)
+
+
+### CU06 Gestionar puntos verdes
+
+**Actor principal:** Gerencia.
+**Precondiciones:** el usuario tiene sesión iniciada con el rol GERENCIA.
+**Postcondiciones:** el punto verde queda dado de alta o modificado, con sus materiales aceptados.
+
+**Flujo principal**
+
+1. Usuario: abre "Red de puntos verdes y materiales".
+2. Usuario: completa "Nombre", "Dirección", "Latitud", "Longitud", "Horario" y marca los "Materiales aceptados".
+3. Usuario: marca "Locación validada por el referente de cooperativas" y presiona "Guardar".
+4. Sistema: muestra "Punto verde guardado (ID {id}). La decisión quedó registrada."
+
+**Flujos alternativos**
+
+- 2a. Usuario presiona "Nuevo" para cargar otro punto verde.
+  - 2a.1 Sistema: limpia el formulario.
+- 3a. Usuario presiona "Guardar" sin marcar la validación del referente.
+  - 3a.1 Sistema: muestra "La locación debe ser validada por el referente de cooperativas."
+- 3b. Nombre vacío.
+  - 3b.1 Sistema: muestra "Ingrese el nombre del punto verde."
+- 3c. Dirección vacía.
+  - 3c.1 Sistema: muestra "Ingrese la dirección."
+
+![Figura CU06-a. Diagrama de clases](diagramas/cu/CU06_clases.svg)
+
+![Figura CU06-b. Modelo de datos](diagramas/cu/CU06_der.svg)
+
+![Figura CU06-c. Diagrama de secuencia](diagramas/secuencias_png/CU06.png)
+
+
+### CU07 Fijar comisión por categoría
+
+**Actor principal:** Gerencia.
+**Precondiciones:** el usuario tiene sesión iniciada con el rol GERENCIA.
+**Postcondiciones:** la comisión de la categoría queda vigente desde la fecha de hoy.
+
+**Flujo principal**
+
+1. Usuario: abre "Tarifas de comisión y conversión".
+2. Sistema: muestra "Comisión vigente por categoría:".
+3. Usuario: escribe la "Categoría" y la "Comisión %" y presiona "Fijar comisión".
+4. Sistema: muestra "Comisión fijada (tarifa {id}). Rige desde hoy y queda registrada como decisión."
+
+**Flujos alternativos**
+
+- 3a. Comisión menor o igual a 0 o mayor a 50.
+  - 3a.1 Sistema: muestra "La comisión debe estar entre 0,01% y 50%."
+- 3b. Categoría vacía.
+  - 3b.1 Sistema: muestra "Ingrese la categoría."
+
+![Figura CU07-a. Diagrama de clases](diagramas/cu/CU07_clases.svg)
+
+![Figura CU07-b. Modelo de datos](diagramas/cu/CU07_der.svg)
+
+![Figura CU07-c. Diagrama de secuencia](diagramas/secuencias_png/CU07.png)
+
+
+### CU08 Fijar conversión de puntos
+
+**Actor principal:** Gerencia.
+**Precondiciones:** el usuario tiene sesión iniciada con el rol GERENCIA.
+**Postcondiciones:** la conversión de puntos por kilo del material queda vigente desde hoy.
+
+**Flujo principal**
+
+1. Usuario: abre "Tarifas de comisión y conversión".
+2. Sistema: muestra la grilla "Conversión vigente de Eco-Puntos".
+3. Usuario: selecciona una fila de la grilla.
+4. Sistema: carga el material en "Material" y sus puntos en "Puntos por kg".
+5. Usuario: corrige "Puntos por kg" y presiona "Fijar conversión".
+6. Sistema: muestra "Conversión fijada (ID {id}). Queda registrada como decisión."
+
+**Flujos alternativos**
+
+- 5a. Puntos por kg vacíos, cero o no numéricos.
+  - 5a.1 Sistema: muestra "Los puntos por kg deben ser mayores a cero." o "Puntos por kg: ingrese un número válido.".
+- 5b. No hay material seleccionado.
+  - 5b.1 Sistema: muestra "Seleccione un material."
+
+![Figura CU08-a. Diagrama de clases](diagramas/cu/CU08_clases.svg)
+
+![Figura CU08-b. Modelo de datos](diagramas/cu/CU08_der.svg)
+
+![Figura CU08-c. Diagrama de secuencia](diagramas/secuencias_png/CU08.png)
+
 
 ### 6. Diagrama de secuencia
 
@@ -146,87 +240,303 @@ Cada caso de uso tiene su secuencia (figuras de CU04, CU05 y CU06 arriba).
 
 ### 5. Especificación de casos de uso
 
-![Figura N02-3. Diagrama de casos de uso del proceso N02](diagramas/procesos/N02_casos_de_uso.svg)
+### CU09 Solicitar verificación de vendedor
 
-**CU07. Verificar identidad del vendedor**
+**Actor principal:** Ciudadano.
+**Precondiciones:** el usuario tiene sesión iniciada y cargó su fecha de nacimiento en "Mi perfil".
+**Postcondiciones:** queda una solicitud pendiente de revisión por el área comercial.
 
-| Ítem | Detalle |
-|---|---|
-| Objetivo | Confirmar que el vendedor es mayor de 18 años y que su registro es válido antes de que publique. |
-| Actor principal | Área comercial. |
-| Disparador | El vendedor solicita habilitarse para vender. |
-| Precondiciones | El usuario está registrado. |
-| Escenario principal | 1. El vendedor carga la declaración jurada de mayoría de edad y la documentación. 2. El área comercial revisa los datos. 3. El área comercial aprueba la verificación. 4. El sistema habilita al usuario como vendedor. |
-| Flujos alternativos | 3a. Documentación incompleta o inválida: se rechaza y se notifica al usuario. |
-| Postcondiciones | El usuario queda habilitado o rechazado como vendedor. |
+**Flujo principal**
 
-![Figura N02-4. Diagrama de clases de CU07](diagramas/cu/CU07_clases.svg)
-![Figura N02-5. Modelo de datos de CU07](diagramas/cu/CU07_der.svg)
-![Figura N02-6. Diagrama de secuencia de CU07](diagramas/cu/CU07_secuencia.svg)
+1. Usuario: abre "Verificación de vendedor".
+2. Sistema: muestra "Estado: {estado}" y el campo "Documentación (ref.):".
+3. Usuario: escribe la referencia de la documentación y presiona "Solicitar verificación".
+4. Sistema: muestra "Solicitud enviada. El área comercial la revisará."
 
-**CU08. Publicar producto en el marketplace**
+**Flujos alternativos**
 
-| Ítem | Detalle |
-|---|---|
-| Objetivo | Que el vendedor ofrezca productos sustentables con precio, categoría y stock. |
-| Actor principal | Vendedor sustentable. |
-| Disparador | El vendedor elige crear una publicación. |
-| Precondiciones | El vendedor está verificado (CU07). |
-| Escenario principal | 1. El vendedor completa título, descripción, fotos, categoría, precio y stock. 2. El sistema muestra la comisión que se aplicará. 3. El vendedor acepta las condiciones y publica. 4. El área comercial aprueba la publicación. 5. El sistema la activa en el catálogo. |
-| Flujos alternativos | 1a. Campos incompletos: no se publica. 4a. Publicación no aprobada: el vendedor la corrige y la vuelve a enviar. |
-| Postcondiciones | El producto queda activo en el catálogo público. |
+- 2a. El estado es pendiente o aprobado.
+  - 2a.1 Sistema: deshabilita "Solicitar verificación".
+- 3a. Referencia vacía.
+  - 3a.1 Sistema: muestra "Ingrese la referencia de la documentación."
+- 3b. No cargó la fecha de nacimiento.
+  - 3b.1 Sistema: muestra "Cargue su fecha de nacimiento en Mi perfil para solicitar la verificación."
+- 3c. Tiene menos de 18 años.
+  - 3c.1 Sistema: muestra "Para vender debe tener al menos 18 años."
 
-![Figura N02-7. Diagrama de clases de CU08](diagramas/cu/CU08_clases.svg)
-![Figura N02-8. Modelo de datos de CU08](diagramas/cu/CU08_der.svg)
-![Figura N02-9. Diagrama de secuencia de CU08](diagramas/cu/CU08_secuencia.svg)
+![Figura CU09-a. Diagrama de clases](diagramas/cu/CU09_clases.svg)
 
-**CU09. Comprar y pagar pedido**
+![Figura CU09-b. Modelo de datos](diagramas/cu/CU09_der.svg)
 
-| Ítem | Detalle |
-|---|---|
-| Objetivo | Que el comprador abone el pedido mediante la pasarela de pagos. |
-| Actores | Comprador, Pasarela de pagos (externo). |
-| Disparador | El comprador confirma el pago del carrito. |
-| Precondiciones | Existe stock en las publicaciones seleccionadas. |
-| Escenario principal | 1. El comprador selecciona el domicilio de entrega y el medio de pago. 2. El sistema reserva el stock. 3. La pasarela procesa el cobro y devuelve el código de aprobación. 4. El sistema confirma la orden de venta, registra el pago y la comisión. |
-| Flujos alternativos | 3a. Pago rechazado: el sistema libera el stock y notifica al comprador. |
-| Postcondiciones | La orden queda en estado "Pagada, pendiente de despacho". |
+![Figura CU09-c. Diagrama de secuencia](diagramas/secuencias_png/CU09.png)
 
-![Figura N02-10. Diagrama de clases de CU09](diagramas/cu/CU09_clases.svg)
-![Figura N02-11. Modelo de datos de CU09](diagramas/cu/CU09_der.svg)
-![Figura N02-12. Diagrama de secuencia de CU09](diagramas/cu/CU09_secuencia.svg)
 
-**CU10. Confirmar recepción y liquidar saldo al vendedor**
+### CU10 Resolver verificación de vendedor
 
-| Ítem | Detalle |
-|---|---|
-| Objetivo | Liberar el saldo neto al vendedor cuando el comprador recibe el producto conforme. |
-| Actores | Comprador, Vendedor sustentable, Área comercial. |
-| Disparador | El comprador confirma la recepción o vence el plazo de reclamo. |
-| Precondiciones | La orden fue despachada por el vendedor. |
-| Escenario principal | 1. El comprador confirma la recepción conforme. 2. El sistema marca el saldo neto como disponible. 3. El área comercial ordena la transferencia al vendedor. 4. El sistema registra la liquidación. |
-| Flujos alternativos | 1a. Reclamo presentado: se ejecuta CU11. |
-| Postcondiciones | La venta queda completa y el neto transferido al vendedor. |
+**Actor principal:** Área comercial.
+**Precondiciones:** el usuario tiene sesión iniciada con el rol AREA_COMERCIAL y existe al menos una solicitud pendiente.
+**Postcondiciones:** la solicitud queda aprobada o rechazada, y sale de la lista de pendientes.
 
-![Figura N02-13. Diagrama de clases de CU10](diagramas/cu/CU10_clases.svg)
-![Figura N02-14. Modelo de datos de CU10](diagramas/cu/CU10_der.svg)
-![Figura N02-15. Diagrama de secuencia de CU10](diagramas/cu/CU10_secuencia.svg)
+**Flujo principal**
 
-**CU11. Gestionar reclamo de pedido**
+1. Usuario: abre "Verificación de vendedor".
+2. Sistema: muestra "Solicitudes pendientes (área comercial):" con la lista de solicitudes.
+3. Usuario: selecciona una solicitud y presiona "Aprobar seleccionada".
+4. Sistema: muestra "Vendedor verificado." y quita la solicitud de la lista.
 
-| Ítem | Detalle |
-|---|---|
-| Objetivo | Resolver un reclamo por producto dañado o no recibido sin liberar el saldo antes de tiempo. |
-| Actores | Comprador, Área comercial. |
-| Disparador | El comprador presenta un reclamo en lugar de confirmar la recepción. |
-| Precondiciones | La orden fue despachada. |
-| Escenario principal | 1. El comprador registra el motivo del reclamo. 2. El sistema congela el saldo neto. 3. El área comercial audita el reclamo. 4. El área comercial resuelve y libera o devuelve el saldo según corresponda. |
-| Flujos alternativos | — |
-| Postcondiciones | El reclamo queda cerrado y el saldo, resuelto. |
+**Flujos alternativos**
 
-![Figura N02-16. Diagrama de clases de CU11](diagramas/cu/CU11_clases.svg)
-![Figura N02-17. Modelo de datos de CU11](diagramas/cu/CU11_der.svg)
-![Figura N02-18. Diagrama de secuencia de CU11](diagramas/cu/CU11_secuencia.svg)
+- 3a. Usuario presiona "Rechazar seleccionada".
+  - 3a.1 Sistema: muestra "Solicitud rechazada." y quita la solicitud de la lista.
+- 3b. Usuario presiona "Aprobar seleccionada" o "Rechazar seleccionada" sin seleccionar una solicitud.
+  - 3b.1 Sistema: muestra "Seleccione una solicitud."
+
+![Figura CU10-a. Diagrama de clases](diagramas/cu/CU10_clases.svg)
+
+![Figura CU10-b. Modelo de datos](diagramas/cu/CU10_der.svg)
+
+![Figura CU10-c. Diagrama de secuencia](diagramas/secuencias_png/CU10.png)
+
+
+### CU11 Publicar producto
+
+**Actor principal:** Vendedor verificado.
+**Precondiciones:** el vendedor tiene el estado de verificado (CU10).
+**Postcondiciones:** el producto queda publicado en estado pendiente de aprobación.
+
+**Flujo principal**
+
+1. Usuario: abre "Publicar producto sustentable".
+2. Sistema: muestra la comisión estimada ("Comisión estimada: {porcentaje}%") y "Mis publicaciones:".
+3. Usuario: completa "Nombre", "Categoría", "Descripción", "Precio" y "Stock", y presiona "Publicar".
+4. Sistema: muestra "Producto {id} publicado. Queda pendiente de aprobación del área comercial."
+
+**Flujos alternativos**
+
+- 3a. Usuario selecciona una publicación propia de "Mis publicaciones".
+  - 3a.1 Sistema: carga su nombre, categoría, precio y stock.
+  - 3a.2 Usuario: modifica "Precio" o "Stock" y presiona "Actualizar precio y stock".
+  - 3a.3 Sistema: muestra "Precio y stock actualizados."
+- 3b. El vendedor no está verificado.
+  - 3b.1 Sistema: deshabilita "Publicar".
+- 3c. Nombre o categoría vacíos.
+  - 3c.1 Sistema: muestra "Ingrese el nombre del producto." o "Ingrese la categoría.".
+- 3d. Precio igual o menor a cero, o stock negativo.
+  - 3d.1 Sistema: muestra "El precio debe ser mayor a cero." o "El stock no puede ser negativo.".
+
+![Figura CU11-a. Diagrama de clases](diagramas/cu/CU11_clases.svg)
+
+![Figura CU11-b. Modelo de datos](diagramas/cu/CU11_der.svg)
+
+![Figura CU11-c. Diagrama de secuencia](diagramas/secuencias_png/CU11.png)
+
+
+### CU12 Aprobar producto
+
+**Actor principal:** Área comercial.
+**Precondiciones:** el usuario tiene sesión iniciada con el rol AREA_COMERCIAL y existe al menos un producto pendiente.
+**Postcondiciones:** el producto queda visible en el catálogo de compra.
+
+**Flujo principal**
+
+1. Usuario: abre "Publicar producto sustentable".
+2. Sistema: muestra "Pendientes de aprobación (área comercial):" con la lista de productos.
+3. Usuario: selecciona un producto y presiona "Aprobar producto seleccionado".
+4. Sistema: muestra "Producto aprobado. Ya está visible en el catálogo." y quita el producto de la lista.
+
+**Flujos alternativos**
+
+- 3a. Usuario presiona "Aprobar producto seleccionado" sin seleccionar un producto.
+  - 3a.1 Sistema: muestra "Seleccione un producto pendiente."
+
+![Figura CU12-a. Diagrama de clases](diagramas/cu/CU12_clases.svg)
+
+![Figura CU12-b. Modelo de datos](diagramas/cu/CU12_der.svg)
+
+![Figura CU12-c. Diagrama de secuencia](diagramas/secuencias_png/CU12.png)
+
+
+### CU13 Comprar producto
+
+**Actor principal:** Comprador (ciudadano).
+**Precondiciones:** el usuario tiene sesión iniciada y existe al menos un producto aprobado con stock.
+**Postcondiciones:** queda registrada la orden, con el pago aprobado, el stock descontado y la liquidación del vendedor retenida.
+
+**Flujo principal**
+
+1. Usuario: abre "Comprar en la tienda sustentable".
+2. Sistema: muestra el catálogo de productos aprobados con stock.
+3. Usuario: selecciona un producto, elige "Cantidad" y escribe el "Domicilio envío".
+4. Sistema: muestra el resumen "{cantidad} x {producto} = {total}".
+5. Usuario: presiona "Pagar pedido".
+6. Sistema: pregunta "¿Confirmar el pedido?" con el resumen, con los botones "Sí" y "No".
+7. Usuario: presiona "Sí".
+8. Sistema: muestra "Pago aprobado. Orden {id} registrada. Se le notificará cuando el vendedor la despache." y actualiza el catálogo.
+
+**Flujos alternativos**
+
+- 5a. Usuario presiona "Pagar pedido" sin seleccionar un producto.
+  - 5a.1 Sistema: muestra "Seleccione un producto."
+- 5b. Domicilio vacío.
+  - 5b.1 Sistema: muestra "Ingrese el domicilio de entrega."
+- 7a. Usuario presiona "No".
+  - 7a.1 Sistema: vuelve al catálogo sin registrar el pedido.
+- 7b. El cobro es rechazado.
+  - 7b.1 Sistema: muestra "El pago fue rechazado: {motivo}".
+- 7c. Cantidad mayor al stock disponible.
+  - 7c.1 Sistema: muestra "Stock insuficiente para completar la compra."
+- 7d. El producto es propio del usuario.
+  - 7d.1 Sistema: muestra "No puede comprar sus propios productos."
+
+![Figura CU13-a. Diagrama de clases](diagramas/cu/CU13_clases.svg)
+
+![Figura CU13-b. Modelo de datos](diagramas/cu/CU13_der.svg)
+
+![Figura CU13-c. Diagrama de secuencia](diagramas/secuencias_png/CU13.png)
+
+
+### CU14 Despachar pedido
+
+**Actor principal:** Vendedor.
+**Precondiciones:** el vendedor tiene una venta pagada (CU13).
+**Postcondiciones:** la orden queda despachada y espera la confirmación del comprador.
+
+**Flujo principal**
+
+1. Usuario: abre "Pedidos y liquidaciones" y elige la pestaña "Mis ventas".
+2. Sistema: muestra la lista de ventas del vendedor.
+3. Usuario: selecciona una venta y presiona "Marcar como despachada".
+4. Sistema: muestra "Orden marcada como despachada."
+
+**Flujos alternativos**
+
+- 3a. Usuario presiona "Marcar como despachada" sin seleccionar una venta.
+  - 3a.1 Sistema: muestra "Seleccione una venta."
+- 3b. La orden ya no está pendiente de despacho.
+  - 3b.1 Sistema: muestra "La orden no está pendiente de despacho o no le pertenece."
+
+![Figura CU14-a. Diagrama de clases](diagramas/cu/CU14_clases.svg)
+
+![Figura CU14-b. Modelo de datos](diagramas/cu/CU14_der.svg)
+
+![Figura CU14-c. Diagrama de secuencia](diagramas/secuencias_png/CU14.png)
+
+
+### CU15 Confirmar recepción de pedido
+
+**Actor principal:** Comprador (ciudadano).
+**Precondiciones:** la orden fue despachada (CU14).
+**Postcondiciones:** la orden queda recibida y la liquidación del vendedor pasa a disponible.
+
+**Flujo principal**
+
+1. Usuario: abre "Pedidos y liquidaciones" y elige la pestaña "Mis compras".
+2. Sistema: muestra la lista de compras.
+3. Usuario: selecciona una compra y presiona "Confirmar recepción conforme".
+4. Sistema: muestra "Recepción confirmada. El saldo quedó disponible para liquidar."
+
+**Flujos alternativos**
+
+- 3a. Usuario presiona "Confirmar recepción conforme" sin seleccionar una compra.
+  - 3a.1 Sistema: muestra "Seleccione una compra."
+- 3b. La orden no está despachada.
+  - 3b.1 Sistema: muestra "La orden no está despachada o no le pertenece."
+
+![Figura CU15-a. Diagrama de clases](diagramas/cu/CU15_clases.svg)
+
+![Figura CU15-b. Modelo de datos](diagramas/cu/CU15_der.svg)
+
+![Figura CU15-c. Diagrama de secuencia](diagramas/secuencias_png/CU15.png)
+
+
+### CU16 Liquidar vendedor
+
+**Actor principal:** Área comercial.
+**Precondiciones:** existe una liquidación disponible (CU15).
+**Postcondiciones:** la liquidación queda pagada.
+
+**Flujo principal**
+
+1. Usuario: abre "Pedidos y liquidaciones" y elige la pestaña "Liquidaciones".
+2. Sistema: muestra las liquidaciones disponibles.
+3. Usuario: selecciona una liquidación y presiona "Ordenar transferencia al vendedor".
+4. Sistema: pregunta "¿Ordenar la transferencia al vendedor por el saldo neto?" con los botones "Sí" y "No".
+5. Usuario: presiona "Sí".
+6. Sistema: muestra "Transferencia ordenada. La liquidación quedó pagada." y quita la liquidación de la lista.
+
+**Flujos alternativos**
+
+- 3a. Usuario presiona "Ordenar transferencia al vendedor" sin seleccionar una liquidación.
+  - 3a.1 Sistema: muestra "Seleccione una liquidación."
+- 5a. Usuario presiona "No".
+  - 5a.1 Sistema: vuelve a la lista sin cambios.
+- 5b. La liquidación ya no está disponible.
+  - 5b.1 Sistema: muestra "La liquidación no está disponible para pagar."
+
+![Figura CU16-a. Diagrama de clases](diagramas/cu/CU16_clases.svg)
+
+![Figura CU16-b. Modelo de datos](diagramas/cu/CU16_der.svg)
+
+![Figura CU16-c. Diagrama de secuencia](diagramas/secuencias_png/CU16.png)
+
+
+### CU17 Presentar reclamo
+
+**Actor principal:** Comprador (ciudadano).
+**Precondiciones:** el comprador tiene una orden despachada.
+**Postcondiciones:** queda registrado el reclamo y la liquidación del vendedor queda congelada.
+
+**Flujo principal**
+
+1. Usuario: abre "Reclamos" y elige la pestaña "Presentar reclamo".
+2. Sistema: muestra las órdenes del comprador.
+3. Usuario: selecciona una orden, escribe el "Motivo:" y presiona "Presentar reclamo".
+4. Sistema: muestra "Reclamo {id} presentado. El saldo del vendedor quedó congelado hasta su resolución."
+
+**Flujos alternativos**
+
+- 3a. Usuario presiona "Presentar reclamo" sin seleccionar una orden.
+  - 3a.1 Sistema: muestra "Seleccione la orden a reclamar."
+- 3b. Motivo vacío.
+  - 3b.1 Sistema: muestra "Describa el motivo del reclamo."
+- 3c. La orden no es despachada o no es propia.
+  - 3c.1 Sistema: muestra "Solo puede reclamar órdenes despachadas propias."
+
+![Figura CU17-a. Diagrama de clases](diagramas/cu/CU17_clases.svg)
+
+![Figura CU17-b. Modelo de datos](diagramas/cu/CU17_der.svg)
+
+![Figura CU17-c. Diagrama de secuencia](diagramas/secuencias_png/CU17.png)
+
+
+### CU18 Resolver reclamo
+
+**Actor principal:** Área comercial.
+**Precondiciones:** existe al menos un reclamo abierto (CU17).
+**Postcondiciones:** el reclamo queda resuelto como procedente o improcedente, y la liquidación se actualiza según la resolución.
+
+**Flujo principal**
+
+1. Usuario: abre "Reclamos" y elige la pestaña "Resolver reclamos".
+2. Sistema: muestra la lista de reclamos abiertos.
+3. Usuario: selecciona un reclamo y presiona "Reclamo procedente".
+4. Sistema: muestra "Reclamo procedente: la orden se devolvió, el stock se restituyó y la liquidación se canceló." y quita el reclamo de la lista.
+
+**Flujos alternativos**
+
+- 3a. Usuario presiona "Reclamo improcedente".
+  - 3a.1 Sistema: muestra "Reclamo improcedente: la liquidación volvió a retenida hasta la confirmación del comprador."
+- 3b. Usuario presiona un botón sin seleccionar un reclamo.
+  - 3b.1 Sistema: muestra "Seleccione un reclamo."
+- 3c. El reclamo ya no está abierto.
+  - 3c.1 Sistema: muestra "El reclamo no está abierto."
+
+![Figura CU18-a. Diagrama de clases](diagramas/cu/CU18_clases.svg)
+
+![Figura CU18-b. Modelo de datos](diagramas/cu/CU18_der.svg)
+
+![Figura CU18-c. Diagrama de secuencia](diagramas/secuencias_png/CU18.png)
+
 
 ### 6. Diagrama de secuencia
 
@@ -264,56 +574,105 @@ Cada caso de uso tiene su secuencia (figuras de CU07 a CU11 arriba).
 
 ### 5. Especificación de casos de uso
 
-![Figura N03-3. Diagrama de casos de uso del proceso N03](diagramas/procesos/N03_casos_de_uso.svg)
+### CU01 Declarar material
 
-**CU01. Declarar material y recibir recomendación** (existente, reformulado)
+**Actor principal:** Ciudadano.
+**Precondiciones:** el usuario tiene sesión iniciada con el rol CIUDADANO.
+**Postcondiciones:** queda registrada la declaración y su recomendación (reutilizar o entregar).
 
-| Ítem | Detalle |
-|---|---|
-| Objetivo | Que el ciudadano conozca la mejor forma de disponer de su material. |
-| Actor principal | Ciudadano. |
-| Actor secundario | Operador de punto verde (solo si elige entrega oficial, ver CU02). |
-| Disparador | El ciudadano elige "Declarar material". |
-| Precondiciones | El ciudadano está registrado y autenticado y tiene una ubicación cargada. |
-| Escenario principal | 1. El ciudadano ingresa tipo y cantidad de material. 2. El sistema valida los datos. 3. El sistema cruza la ubicación con los puntos verdes y las guías disponibles para ese material. 4. El sistema presenta las dos mejores opciones: reutilizar o entregar. 5. El ciudadano elige reutilizar. 6. El sistema muestra la guía práctica. 7. El ciudadano confirma la reutilización. 8. El sistema acredita los Eco-Puntos. |
-| Flujos alternativos | 2a. Datos inválidos: el sistema informa el error y finaliza. 5a. El ciudadano elige entrega oficial: el sistema muestra el punto verde más cercano y se extiende con CU02. |
-| Postcondiciones | Queda registrada la recomendación con la opción elegida. Si el ciudadano confirmó, queda el movimiento de Eco-Puntos. |
+**Flujo principal**
 
-![Figura N03-4. Diagrama de clases de CU01](diagramas/cu/CU01_clases.svg)
-![Figura N03-5. Modelo de datos de CU01](diagramas/cu/CU01_der.svg)
-![Figura N03-6. Diagrama de secuencia de CU01](diagramas/cu/CU01_secuencia.svg)
+1. Usuario: elige el material en la lista "Material" y escribe la cantidad en "Cantidad (kg)".
+2. Usuario: presiona "Declarar".
+3. Sistema: muestra la "Opción 1: reutilizar en casa" con la guía del material y la "Opción 2: entregar en el punto verde más cercano".
+4. Usuario: presiona "Reutilizar en casa (confirmar)".
+5. Sistema: muestra "Reutilización confirmada. Saldo actual: {saldo} Eco-Puntos."
 
-**CU02. Registrar recepción de material en punto verde** (extiende a CU01)
+**Flujos alternativos**
 
-| Ítem | Detalle |
-|---|---|
-| Objetivo | Registrar físicamente el material entregado y acreditar los Eco-Puntos. |
-| Actores | Operador de punto verde, Área de administración. |
-| Disparador | El ciudadano llega al punto verde con el material. |
-| Precondiciones | Existe una declaración con opción de entrega elegida (CU01). |
-| Escenario principal | 1. El operador busca la declaración del ciudadano. 2. El operador registra el peso por material. 3. El sistema valida que el material esté aceptado en el punto verde y calcula los Eco-Puntos según la tabla vigente. 4. El operador confirma la recepción. 5. El área de administración acredita los Eco-Puntos. |
-| Flujos alternativos | 3a. Material no aceptado o contaminado: el operador rechaza la carga y se cancela. 3b. Límite diario excedido: se procesa hasta el tope. |
-| Postcondiciones | El acopio queda registrado y los Eco-Puntos acreditados. |
+- 1a. El material no tiene guía cargada.
+  - 1a.1 Sistema: muestra "Opción 1: reutilizar en casa (declare un material primero)." y deshabilita "Reutilizar en casa (confirmar)".
+  - 1a.2 Usuario: presiona "Entregar en punto verde".
+  - 1a.3 Sistema: muestra "Entrega oficial registrada. Los Eco-Puntos se acreditarán cuando el punto verde confirme el peso."
+- 4a. Usuario presiona "Entregar en punto verde" en lugar de reutilizar.
+  - 4a.1 Sistema: muestra "Entrega oficial registrada. Los Eco-Puntos se acreditarán cuando el punto verde confirme el peso."
+- 2a. Cantidad vacía, cero o negativa.
+  - 2a.1 Sistema: muestra "La cantidad debe ser mayor a cero."
+- 2b. Usuario presiona "Declarar" sin elegir material.
+  - 2b.1 Sistema: muestra "Seleccione un material."
 
-![Figura N03-7. Diagrama de clases de CU02](diagramas/cu/CU02_clases.svg)
-![Figura N03-8. Modelo de datos de CU02](diagramas/cu/CU02_der.svg)
-![Figura N03-9. Diagrama de secuencia de CU02](diagramas/cu/CU02_secuencia.svg)
+![Figura CU01-a. Diagrama de clases](diagramas/cu/CU01_clases.svg)
 
-**CU03. Canjear Eco-Puntos por cupón o envío bonificado**
+![Figura CU01-b. Modelo de datos](diagramas/cu/CU01_der.svg)
 
-| Ítem | Detalle |
-|---|---|
-| Objetivo | Que el ciudadano convierta sus Eco-Puntos en beneficios. |
-| Actores | Ciudadano, Área de administración. |
-| Disparador | El ciudadano elige "Canjear". |
-| Precondiciones | El ciudadano tiene saldo de Eco-Puntos. |
-| Escenario principal | 1. El ciudadano consulta su saldo y los beneficios disponibles. 2. Elige un beneficio. 3. El sistema verifica el saldo y descuenta los puntos. 4. El sistema genera el cupón o el envío bonificado y registra el costo. |
-| Flujos alternativos | 3a. Saldo insuficiente: el sistema informa y no realiza el canje. |
-| Postcondiciones | Los puntos quedan descontados y el beneficio entregado. |
+![Figura CU01-c. Diagrama de secuencia](diagramas/secuencias_png/CU01.png)
 
-![Figura N03-10. Diagrama de clases de CU03](diagramas/cu/CU03_clases.svg)
-![Figura N03-11. Modelo de datos de CU03](diagramas/cu/CU03_der.svg)
-![Figura N03-12. Diagrama de secuencia de CU03](diagramas/cu/CU03_secuencia.svg)
+
+### CU02 Registrar recepción de material
+
+**Actor principal:** Operador de punto verde.
+**Precondiciones:** el operador tiene sesión iniciada con el rol OPERADOR_PUNTO_VERDE y existe al menos una declaración pendiente en el punto verde.
+**Postcondiciones:** la declaración queda entregada y el ciudadano recibe los Eco-Puntos del peso registrado.
+
+**Flujo principal**
+
+1. Usuario: elige el punto verde en la lista "Punto verde".
+2. Sistema: muestra en "Declaraciones pendientes de entrega" las declaraciones de ese punto verde.
+3. Usuario: selecciona una declaración.
+4. Sistema: muestra en "Peso pesado (kg)" el peso que declaró el ciudadano.
+5. Usuario: confirma o corrige el peso y presiona "Registrar recepción".
+6. Sistema: muestra "Recepción registrada. Se acreditaron {puntos} Eco-Puntos al ciudadano." y la declaración sale de la lista.
+
+**Flujos alternativos**
+
+- 2a. El punto verde no tiene declaraciones pendientes.
+  - 2a.1 Sistema: la lista queda vacía.
+- 5a. Usuario presiona "Registrar recepción" sin seleccionar una declaración.
+  - 5a.1 Sistema: muestra "Seleccione una declaración pendiente."
+- 5b. El punto verde no acepta el material de la declaración.
+  - 5b.1 Sistema: muestra "El punto verde no acepta este material. Se rechaza la carga."
+- 5c. Peso vacío, cero o no numérico.
+  - 5c.1 Sistema: muestra "El peso debe ser mayor a cero." o "Peso: ingrese un número válido.".
+
+![Figura CU02-a. Diagrama de clases](diagramas/cu/CU02_clases.svg)
+
+![Figura CU02-b. Modelo de datos](diagramas/cu/CU02_der.svg)
+
+![Figura CU02-c. Diagrama de secuencia](diagramas/secuencias_png/CU02.png)
+
+
+### CU03 Canjear Eco-Puntos
+
+**Actor principal:** Ciudadano.
+**Precondiciones:** el usuario tiene sesión iniciada y una cuenta de Eco-Puntos.
+**Postcondiciones:** se descuentan los puntos del beneficio y queda registrado el canje.
+
+**Flujo principal**
+
+1. Usuario: abre "Canjear Eco-Puntos".
+2. Sistema: muestra "Saldo: {saldo} Eco-Puntos", la lista "Beneficios disponibles" y los "Movimientos de mi cuenta".
+3. Usuario: selecciona un beneficio y presiona "Canjear beneficio seleccionado".
+4. Sistema: pregunta "¿Canjear \"{descripción}\"?" con los botones "Sí" y "No".
+5. Usuario: presiona "Sí".
+6. Sistema: muestra "Canje realizado. Su cupón o envío bonificado quedó registrado." y actualiza el saldo y los movimientos.
+
+**Flujos alternativos**
+
+- 3a. Usuario presiona "Canjear beneficio seleccionado" sin seleccionar un beneficio.
+  - 3a.1 Sistema: muestra "Seleccione un beneficio."
+- 5a. Usuario presiona "No".
+  - 5a.1 Sistema: vuelve a la pantalla sin cambios.
+- 5b. Saldo insuficiente.
+  - 5b.1 Sistema: muestra "Saldo insuficiente de Eco-Puntos."
+- 5c. El beneficio dejó de estar disponible.
+  - 5c.1 Sistema: muestra "El beneficio no está disponible."
+
+![Figura CU03-a. Diagrama de clases](diagramas/cu/CU03_clases.svg)
+
+![Figura CU03-b. Modelo de datos](diagramas/cu/CU03_der.svg)
+
+![Figura CU03-c. Diagrama de secuencia](diagramas/secuencias_png/CU03.png)
+
 
 ### 6. Diagrama de secuencia
 
