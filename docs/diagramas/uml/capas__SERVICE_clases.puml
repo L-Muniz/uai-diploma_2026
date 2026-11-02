@@ -83,6 +83,4 @@ class "SV_Singleton" as SV_Singleton <<SERVICE>> {
 }
 SV_IdiomaManager ..> ISV_IdiomaObserver
 SV_IdiomaManager ..> ISV_ProveedorTraduccion
-SV_Mensajes ..> SV_IdiomaManager
-SV_Serializacion ..> SV_ArchivoInvalidoException
 @enduml
