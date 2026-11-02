@@ -1,15 +1,17 @@
 @startuml
 skinparam classAttributeIconSize 0
-title cu__CU12_clases
-class "BE_USUARIO" as USUARIO {
-  +ID: int
+title CU12 - Clases afectadas
+class "BE_USUARIO" as BE_USUARIO <<BE>> {
   +Username: string
   +HashedPassword: string
+  +ID: int
   +Bloqueado: bool
   +DVHorizontal: int
   +Rol: string
+  --
+  +ToString(): string
 }
-class "BE_Producto" as PRODUCTO {
+class "BE_Producto" as BE_Producto <<BE>> {
   +ID: int
   +IDVendedor: int
   +IDTarifa: int?
@@ -19,6 +21,7 @@ class "BE_Producto" as PRODUCTO {
   +Precio: decimal
   +Stock: int
   +Estado: string
+  --
+  +ToString(): string
 }
-USUARIO "1" -- "0..*" PRODUCTO
 @enduml

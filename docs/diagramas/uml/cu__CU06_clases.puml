@@ -1,15 +1,17 @@
 @startuml
 skinparam classAttributeIconSize 0
-title cu__CU06_clases
-class "BE_USUARIO" as USUARIO {
-  +ID: int
+title CU06 - Clases afectadas
+class "BE_USUARIO" as BE_USUARIO <<BE>> {
   +Username: string
   +HashedPassword: string
+  +ID: int
   +Bloqueado: bool
   +DVHorizontal: int
   +Rol: string
+  --
+  +ToString(): string
 }
-class "BE_PuntoVerde" as PUNTO_VERDE {
+class "BE_PuntoVerde" as BE_PuntoVerde <<BE>> {
   +ID: int
   +Nombre: string
   +Direccion: string
@@ -17,15 +19,18 @@ class "BE_PuntoVerde" as PUNTO_VERDE {
   +Longitud: decimal?
   +Horario: string
   +Activo: bool
-  +MaterialesAceptados: List<BE_Material>
+  --
+  +ToString(): string
 }
-class "BE_Material" as MATERIAL {
+class "BE_Material" as BE_Material <<BE>> {
   +ID: int
   +Nombre: string
   +Categoria: string
   +UnidadMedida: string
+  --
+  +ToString(): string
 }
-class "BE_Decision" as DECISION {
+class "BE_Decision" as BE_Decision <<BE>> {
   +ID: int
   +IDInforme: int?
   +IDUsuario: int
@@ -34,17 +39,12 @@ class "BE_Decision" as DECISION {
   +Descripcion: string
   +Fecha: DateTime
 }
-class "BE_InformeGestion" as INFORME {
+class "BE_InformeGestion" as BE_InformeGestion <<BE>> {
   +ID: int
   +IDUsuario: int
   +Tipo: string
   +Periodo: string
   +FechaGeneracion: DateTime
 }
-PUNTO_VERDE "0..*" -- "0..*" MATERIAL
-USUARIO "1" -- "0..*" INFORME
-INFORME "1" -- "0..*" DECISION
-DECISION "0..*" -- "0..1" PUNTO_VERDE
-USUARIO "1" -- "0..*" DECISION
-USUARIO "0..*" -- "0..*" MATERIAL
+BE_PuntoVerde "1" o-- "0..*" BE_Material : MaterialesAceptados
 @enduml

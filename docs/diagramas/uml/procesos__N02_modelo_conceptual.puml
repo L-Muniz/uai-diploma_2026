@@ -1,29 +1,31 @@
 @startuml
 skinparam classAttributeIconSize 0
-title procesos__N02_modelo_conceptual
-class "BE_USUARIO" as USUARIO {
-  +ID: int
+title N02 - Venta de productos sustentables y comisión
+class "BE_USUARIO" as BE_USUARIO <<BE>> {
   +Username: string
   +HashedPassword: string
+  +ID: int
   +Bloqueado: bool
   +DVHorizontal: int
   +Rol: string
+  --
+  +ToString(): string
 }
-class "BE_DatosUsuario" as DATOS_USUARIO {
+class "BE_DatosUsuario" as BE_DatosUsuario <<BE>> {
   +IDUsuario: int
   +FechaNacimiento: DateTime?
   +Latitud: decimal?
   +Longitud: decimal?
   +Localidad: string
 }
-class "BE_VerificacionVendedor" as VERIFICACION {
+class "BE_VerificacionVendedor" as BE_VerificacionVendedor <<BE>> {
   +ID: int
   +IDUsuario: int
   +Fecha: DateTime
   +Estado: string
   +DocumentoRef: string
 }
-class "BE_Producto" as PRODUCTO {
+class "BE_Producto" as BE_Producto <<BE>> {
   +ID: int
   +IDVendedor: int
   +IDTarifa: int?
@@ -33,15 +35,17 @@ class "BE_Producto" as PRODUCTO {
   +Precio: decimal
   +Stock: int
   +Estado: string
+  --
+  +ToString(): string
 }
-class "BE_TarifaComision" as TARIFA {
+class "BE_TarifaComision" as BE_TarifaComision <<BE>> {
   +ID: int
   +IDDecision: int?
   +Categoria: string
   +Porcentaje: decimal
   +VigenteDesde: DateTime
 }
-class "BE_OrdenVenta" as ORDEN {
+class "BE_OrdenVenta" as BE_OrdenVenta <<BE>> {
   +ID: int
   +IDComprador: int
   +IDVendedor: int
@@ -49,14 +53,12 @@ class "BE_OrdenVenta" as ORDEN {
   +Estado: string
   +MontoBruto: decimal
   +DireccionEnvio: string
-  +Items: List<BE_ItemOrden>
 }
-class "BE_ItemOrden" as ITEM {
-  +Producto: BE_Producto
+class "BE_ItemOrden" as BE_ItemOrden <<BE>> {
   +Cantidad: int
   +PrecioUnitario: decimal
 }
-class "BE_Pago" as PAGO {
+class "BE_Pago" as BE_Pago <<BE>> {
   +ID: int
   +IDOrden: int
   +ReferenciaPasarela: string
@@ -64,14 +66,14 @@ class "BE_Pago" as PAGO {
   +Estado: string
   +Fecha: DateTime
 }
-class "BE_Comision" as COMISION {
+class "BE_Comision" as BE_Comision <<BE>> {
   +ID: int
   +IDOrden: int
   +Porcentaje: decimal
   +Monto: decimal
   +Fecha: DateTime
 }
-class "BE_LiquidacionVendedor" as LIQUIDACION {
+class "BE_LiquidacionVendedor" as BE_LiquidacionVendedor <<BE>> {
   +ID: int
   +IDOrden: int
   +MontoNeto: decimal
@@ -79,7 +81,7 @@ class "BE_LiquidacionVendedor" as LIQUIDACION {
   +FechaDisponible: DateTime?
   +FechaPago: DateTime?
 }
-class "BE_Reclamo" as RECLAMO {
+class "BE_Reclamo" as BE_Reclamo <<BE>> {
   +ID: int
   +IDOrden: int
   +IDUsuario: int
@@ -87,17 +89,6 @@ class "BE_Reclamo" as RECLAMO {
   +Estado: string
   +Fecha: DateTime
 }
-USUARIO "1" -- "0..*" VERIFICACION
-USUARIO "1" -- "0..*" PRODUCTO
-USUARIO "1" -- "0..*" ORDEN
-USUARIO "1" -- "0..*" ORDEN
-ORDEN "1" *-- "1..*" ITEM
-PRODUCTO "1" -- "0..*" ITEM
-ORDEN "1" -- "1..*" PAGO
-ORDEN "1" -- "1" COMISION
-ORDEN "1" -- "1" LIQUIDACION
-ORDEN "1" -- "0..*" RECLAMO
-USUARIO "1" -- "0..*" RECLAMO
-TARIFA "1" -- "0..*" PRODUCTO
-USUARIO "1" -- "0..1" DATOS_USUARIO
+BE_OrdenVenta "1" o-- "0..*" BE_ItemOrden : Items
+BE_ItemOrden "1" o-- "0..1" BE_Producto : Producto
 @enduml

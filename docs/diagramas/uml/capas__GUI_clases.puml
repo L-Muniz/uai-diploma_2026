@@ -1,0 +1,232 @@
+@startuml
+skinparam classAttributeIconSize 0
+title Capa GUI
+class "Bitacora" as Bitacora <<GUI>> {
+  +ID: int
+  +Usuario: string
+  +TipoEvento: string
+  +Descripcion: string
+  +Fecha: DateTime
+  --
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+class "DataGridViewSortHelper" as DataGridViewSortHelper <<GUI>> {
+  +HabilitarOrdenamiento(DataGridView dgv): void
+}
+class "FormAgregarIdioma" as FormAgregarIdioma <<GUI>> {
+  +IdiomaAgregado: bool
+  +Clave: string
+  +Traduccion: string
+  --
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+class "FormAuditoria" as FormAuditoria <<GUI>> {
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+class "FormAyuda" as FormAyuda <<GUI>> {
+}
+class "FormBackups" as FormBackups <<GUI>> {
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+class "FormBeneficios" as FormBeneficios <<GUI>> {
+}
+class "FormCambiarIdioma" as FormCambiarIdioma <<GUI>> {
+}
+class "FormCanjeEcoPuntos" as FormCanjeEcoPuntos <<GUI>> {
+}
+class "FormCompraMarketplace" as FormCompraMarketplace <<GUI>> {
+}
+class "FormDeclararMaterial" as FormDeclararMaterial <<GUI>> {
+}
+class "FormEstadisticasVentas" as FormEstadisticasVentas <<GUI>> {
+}
+class "FormGestionUsuarios" as FormGestionUsuarios <<GUI>> {
+  +ID: int
+  +Nombre: string
+  +Etiqueta: string
+  --
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+class "FormGuias" as FormGuias <<GUI>> {
+}
+class "FormIndicadores" as FormIndicadores <<GUI>> {
+}
+class "FormIntegridad" as FormIntegridad <<GUI>> {
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+class "FormLiquidacion" as FormLiquidacion <<GUI>> {
+}
+class "FormMateriales" as FormMateriales <<GUI>> {
+}
+class "FormMiPerfil" as FormMiPerfil <<GUI>> {
+}
+class "FormPermisoABM" as FormPermisoABM <<GUI>> {
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+class "FormPublicarProducto" as FormPublicarProducto <<GUI>> {
+}
+class "FormPuntosVerdes" as FormPuntosVerdes <<GUI>> {
+}
+class "FormRecepcionAcopio" as FormRecepcionAcopio <<GUI>> {
+}
+class "FormReclamos" as FormReclamos <<GUI>> {
+}
+class "FormRoles" as FormRoles <<GUI>> {
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+class "FormSnapshots" as FormSnapshots <<GUI>> {
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+class "FormSuscripciones" as FormSuscripciones <<GUI>> {
+}
+class "FormTarifas" as FormTarifas <<GUI>> {
+}
+class "FormUnico" as FormUnico <<GUI>> {
+}
+class "FormVerificacionVendedor" as FormVerificacionVendedor <<GUI>> {
+}
+class "ItemLista" as ItemLista <<GUI>> {
+  +ID: int
+  +Texto: string
+  --
+  +ToString(): string
+}
+class "LogInOut" as LogInOut <<GUI>> {
+  +ObtenerTraduccion(string clave, string codigoIdioma): string
+  +ObtenerIdiomasDisponibles(): List<string>
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+class "MainForm" as MainForm <<GUI>> {
+  +ObtenerUsuario(): BE_USUARIO
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+class "ManejoErrores" as ManejoErrores <<GUI>> {
+  +MostrarError(Exception ex): void
+}
+class "Register" as Register <<GUI>> {
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
+}
+class "SortableBindingList" as SortableBindingList <<GUI>> {
+}
+class "UIHelper" as UIHelper <<GUI>> {
+  +ID: int
+  +Texto: string
+  --
+  +ToString(): string
+  +CargarRecurso(string nombre): Image
+  +Informar(string mensaje): void
+  +Error(Exception ex): void
+  +Confirmar(string pregunta): bool
+  +LeerDecimal(string texto, string nombreCampo): decimal
+  +CargarCombo(ComboBox combo, DataTable datos, string campoMostrar, string campoValor): void
+  +CargarGrilla(DataGridView grilla, DataTable datos): void
+  +ValorId(DataGridViewRow fila, string columna): int?
+}
+class "UITheme" as UITheme <<GUI>> {
+  +FondoApp: Color
+  +FondoPanel: Color
+  +FondoTarjeta: Color
+  +Acento: Color
+  +AcentoOscuro: Color
+  +AcentoClaro: Color
+  +Texto: Color
+  +TextoSuave: Color
+  +Borde: Color
+  +GridHeader: Color
+  +GridAlt: Color
+  +GridLinea: Color
+  +Seleccion: Color
+  +MenuFondo: Color
+  +MenuTexto: Color
+  +BotonDeshabilitadoFondo: Color
+  +BotonDeshabilitadoTexto: Color
+  +BotonDeshabilitadoBorde: Color
+  +FuenteNormal: Font
+  +FuenteTitulo: Font
+  +FuenteMenu: Font
+  +AcentoRoles: Color
+  +FondoRoles: Color
+  +AcentoPerfiles: Color
+  +FondoPerfiles: Color
+  --
+  +Aplicar(Form form): void
+  +DiferenciarModulo(Panel panelBotones, Panel panelIzquierdo, string titulo, string subtitulo, Color acento, Color fondoSuave, params Button[] botonesAccion): void
+  +AplicarLogin(Form form): void
+  +EstilizarGrid(DataGridView grid): void
+  +EstilizarMenu(MenuStrip menu): void
+}
+Bitacora ..> DataGridViewSortHelper
+Bitacora ..> MainForm
+Bitacora ..> SortableBindingList
+DataGridViewSortHelper ..> SortableBindingList
+DataGridViewSortHelper ..> UITheme
+FormAgregarIdioma ..> DataGridViewSortHelper
+FormAuditoria ..> DataGridViewSortHelper
+FormBackups ..> DataGridViewSortHelper
+FormBeneficios ..> UIHelper
+FormCanjeEcoPuntos ..> UIHelper
+FormCompraMarketplace ..> UIHelper
+FormDeclararMaterial ..> UIHelper
+FormEstadisticasVentas ..> UIHelper
+FormGestionUsuarios ..> DataGridViewSortHelper
+FormGestionUsuarios ..> ManejoErrores
+FormGuias ..> UIHelper
+FormIndicadores ..> UIHelper
+FormIntegridad ..> ManejoErrores
+FormLiquidacion ..> UIHelper
+FormMateriales ..> UIHelper
+FormMiPerfil ..> UIHelper
+FormPermisoABM ..> DataGridViewSortHelper
+FormPublicarProducto ..> UIHelper
+FormPuntosVerdes ..> ItemLista
+FormPuntosVerdes ..> UIHelper
+FormRecepcionAcopio ..> UIHelper
+FormReclamos ..> UIHelper
+FormRoles ..> DataGridViewSortHelper
+FormRoles ..> UITheme
+FormSnapshots ..> DataGridViewSortHelper
+FormSuscripciones ..> ItemLista
+FormSuscripciones ..> UIHelper
+FormTarifas ..> UIHelper
+FormUnico ..> UITheme
+FormVerificacionVendedor ..> UIHelper
+LogInOut ..> FormBackups
+LogInOut ..> FormIntegridad
+LogInOut ..> FormUnico
+LogInOut ..> MainForm
+LogInOut ..> Register
+LogInOut ..> UIHelper
+LogInOut ..> UITheme
+MainForm ..> FormAgregarIdioma
+MainForm ..> FormAuditoria
+MainForm ..> FormAyuda
+MainForm ..> FormBackups
+MainForm ..> FormBeneficios
+MainForm ..> FormCanjeEcoPuntos
+MainForm ..> FormCompraMarketplace
+MainForm ..> FormDeclararMaterial
+MainForm ..> FormEstadisticasVentas
+MainForm ..> FormGestionUsuarios
+MainForm ..> FormGuias
+MainForm ..> FormIndicadores
+MainForm ..> FormIntegridad
+MainForm ..> FormLiquidacion
+MainForm ..> FormMateriales
+MainForm ..> FormMiPerfil
+MainForm ..> FormPermisoABM
+MainForm ..> FormPublicarProducto
+MainForm ..> FormPuntosVerdes
+MainForm ..> FormRecepcionAcopio
+MainForm ..> FormReclamos
+MainForm ..> FormRoles
+MainForm ..> FormSnapshots
+MainForm ..> FormSuscripciones
+MainForm ..> FormTarifas
+MainForm ..> FormUnico
+MainForm ..> FormVerificacionVendedor
+MainForm ..> ManejoErrores
+MainForm ..> UIHelper
+MainForm ..> UITheme
+Register ..> UITheme
+UIHelper ..> ItemLista
+@enduml

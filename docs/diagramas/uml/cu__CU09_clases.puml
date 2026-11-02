@@ -1,28 +1,28 @@
 @startuml
 skinparam classAttributeIconSize 0
-title cu__CU09_clases
-class "BE_USUARIO" as USUARIO {
-  +ID: int
+title CU09 - Clases afectadas
+class "BE_USUARIO" as BE_USUARIO <<BE>> {
   +Username: string
   +HashedPassword: string
+  +ID: int
   +Bloqueado: bool
   +DVHorizontal: int
   +Rol: string
+  --
+  +ToString(): string
 }
-class "BE_DatosUsuario" as DATOS_USUARIO {
+class "BE_DatosUsuario" as BE_DatosUsuario <<BE>> {
   +IDUsuario: int
   +FechaNacimiento: DateTime?
   +Latitud: decimal?
   +Longitud: decimal?
   +Localidad: string
 }
-class "BE_VerificacionVendedor" as VERIFICACION {
+class "BE_VerificacionVendedor" as BE_VerificacionVendedor <<BE>> {
   +ID: int
   +IDUsuario: int
   +Fecha: DateTime
   +Estado: string
   +DocumentoRef: string
 }
-USUARIO "1" -- "0..*" VERIFICACION
-USUARIO "1" -- "0..1" DATOS_USUARIO
 @enduml

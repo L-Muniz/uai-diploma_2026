@@ -1,51 +1,50 @@
 @startuml
 skinparam classAttributeIconSize 0
-title procesos__N03_modelo_conceptual
-class "BE_USUARIO" as USUARIO {
-  +ID: int
+title N03 - Reconocimiento por reciclaje y canje
+class "BE_USUARIO" as BE_USUARIO <<BE>> {
   +Username: string
   +HashedPassword: string
+  +ID: int
   +Bloqueado: bool
   +DVHorizontal: int
   +Rol: string
+  --
+  +ToString(): string
 }
-class "BE_DatosUsuario" as DATOS_USUARIO {
+class "BE_DatosUsuario" as BE_DatosUsuario <<BE>> {
   +IDUsuario: int
   +FechaNacimiento: DateTime?
   +Latitud: decimal?
   +Longitud: decimal?
   +Localidad: string
 }
-class "BE_DeclaracionMaterial" as DECLARACION {
+class "BE_DeclaracionMaterial" as BE_DeclaracionMaterial <<BE>> {
   +ID: int
   +IDUsuario: int
-  +Material: BE_Material
   +Cantidad: decimal
   +Fecha: DateTime
   +Estado: string
 }
-class "BE_Material" as MATERIAL {
+class "BE_Material" as BE_Material <<BE>> {
   +ID: int
   +Nombre: string
   +Categoria: string
   +UnidadMedida: string
+  --
+  +ToString(): string
 }
-class "BE_Recomendacion" as RECOMENDACION {
+class "BE_Recomendacion" as BE_Recomendacion <<BE>> {
   +ID: int
-  +Declaracion: BE_DeclaracionMaterial
-  +Guia: BE_GuiaReutilizacion
-  +PuntoVerde: BE_PuntoVerde
   +TipoOpcionElegida: string
   +FechaGeneracion: DateTime
 }
-class "BE_GuiaReutilizacion" as GUIA {
+class "BE_GuiaReutilizacion" as BE_GuiaReutilizacion <<BE>> {
   +ID: int
-  +Material: BE_Material
   +Titulo: string
   +Pasos: string
   +Dificultad: string
 }
-class "BE_PuntoVerde" as PUNTO_VERDE {
+class "BE_PuntoVerde" as BE_PuntoVerde <<BE>> {
   +ID: int
   +Nombre: string
   +Direccion: string
@@ -53,15 +52,16 @@ class "BE_PuntoVerde" as PUNTO_VERDE {
   +Longitud: decimal?
   +Horario: string
   +Activo: bool
-  +MaterialesAceptados: List<BE_Material>
+  --
+  +ToString(): string
 }
-class "BE_CuentaEcoPuntos" as CUENTA {
+class "BE_CuentaEcoPuntos" as BE_CuentaEcoPuntos <<BE>> {
   +ID: int
   +IDUsuario: int
   +Saldo: int
   +Nivel: int
 }
-class "BE_MovimientoEcoPuntos" as MOVIMIENTO {
+class "BE_MovimientoEcoPuntos" as BE_MovimientoEcoPuntos <<BE>> {
   +ID: int
   +IDCuenta: int
   +Tipo: string
@@ -69,46 +69,37 @@ class "BE_MovimientoEcoPuntos" as MOVIMIENTO {
   +Fecha: DateTime
   +Motivo: string
 }
-class "BE_Acopio" as ACOPIO {
+class "BE_Acopio" as BE_Acopio <<BE>> {
   +ID: int
   +IDDeclaracion: int?
-  +PuntoVerde: BE_PuntoVerde
-  +Material: BE_Material
   +PesoKg: decimal
   +FechaRecepcion: DateTime
   +Estado: string
 }
-class "BE_Canje" as CANJE {
+class "BE_Canje" as BE_Canje <<BE>> {
   +ID: int
   +IDUsuario: int
-  +Beneficio: BE_Beneficio
   +PuntosUsados: int
   +Fecha: DateTime
   +Estado: string
 }
-class "BE_Beneficio" as BENEFICIO {
+class "BE_Beneficio" as BE_Beneficio <<BE>> {
   +ID: int
   +Tipo: string
   +Descripcion: string
   +PuntosRequeridos: int
   +CostoEmpresa: decimal
   +Activo: bool
+  --
+  +ToString(): string
 }
-USUARIO "1" -- "0..*" DECLARACION
-DECLARACION "0..*" -- "1" MATERIAL
-DECLARACION "1" -- "0..1" RECOMENDACION
-RECOMENDACION "0..*" -- "0..1" GUIA
-RECOMENDACION "0..*" -- "0..1" PUNTO_VERDE
-DECLARACION "1" -- "0..1" ACOPIO
-PUNTO_VERDE "1" -- "0..*" ACOPIO
-MATERIAL "1" -- "0..*" ACOPIO
-PUNTO_VERDE "0..*" -- "0..*" MATERIAL
-USUARIO "1" -- "1" CUENTA
-CUENTA "1" -- "0..*" MOVIMIENTO
-USUARIO "1" -- "0..*" CANJE
-BENEFICIO "1" -- "0..*" CANJE
-CUENTA "1" -- "0..*" CANJE
-MATERIAL "1" -- "0..*" GUIA
-USUARIO "1" -- "0..1" DATOS_USUARIO
-USUARIO "0..*" -- "0..*" MATERIAL
+BE_DeclaracionMaterial "1" o-- "0..1" BE_Material : Material
+BE_Recomendacion "1" o-- "0..1" BE_DeclaracionMaterial : Declaracion
+BE_Recomendacion "1" o-- "0..1" BE_GuiaReutilizacion : Guia
+BE_Recomendacion "1" o-- "0..1" BE_PuntoVerde : PuntoVerde
+BE_GuiaReutilizacion "1" o-- "0..1" BE_Material : Material
+BE_PuntoVerde "1" o-- "0..*" BE_Material : MaterialesAceptados
+BE_Acopio "1" o-- "0..1" BE_PuntoVerde : PuntoVerde
+BE_Acopio "1" o-- "0..1" BE_Material : Material
+BE_Canje "1" o-- "0..1" BE_Beneficio : Beneficio
 @enduml

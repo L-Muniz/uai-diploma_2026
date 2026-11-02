@@ -1,15 +1,17 @@
 @startuml
 skinparam classAttributeIconSize 0
-title cu__CU14_clases
-class "BE_USUARIO" as USUARIO {
-  +ID: int
+title CU14 - Clases afectadas
+class "BE_USUARIO" as BE_USUARIO <<BE>> {
   +Username: string
   +HashedPassword: string
+  +ID: int
   +Bloqueado: bool
   +DVHorizontal: int
   +Rol: string
+  --
+  +ToString(): string
 }
-class "BE_OrdenVenta" as ORDEN {
+class "BE_OrdenVenta" as BE_OrdenVenta <<BE>> {
   +ID: int
   +IDComprador: int
   +IDVendedor: int
@@ -17,14 +19,10 @@ class "BE_OrdenVenta" as ORDEN {
   +Estado: string
   +MontoBruto: decimal
   +DireccionEnvio: string
-  +Items: List<BE_ItemOrden>
 }
-class "BE_ItemOrden" as ITEM {
-  +Producto: BE_Producto
+class "BE_ItemOrden" as BE_ItemOrden <<BE>> {
   +Cantidad: int
   +PrecioUnitario: decimal
 }
-USUARIO "1" -- "0..*" ORDEN
-USUARIO "1" -- "0..*" ORDEN
-ORDEN "1" *-- "1..*" ITEM
+BE_OrdenVenta "1" o-- "0..*" BE_ItemOrden : Items
 @enduml

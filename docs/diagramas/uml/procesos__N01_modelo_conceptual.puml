@@ -1,38 +1,37 @@
 @startuml
 skinparam classAttributeIconSize 0
-title procesos__N01_modelo_conceptual
-class "BE_USUARIO" as USUARIO {
-  +ID: int
+title N01 - Gestión de la red de puntos verdes y tarifas
+class "BE_USUARIO" as BE_USUARIO <<BE>> {
   +Username: string
   +HashedPassword: string
+  +ID: int
   +Bloqueado: bool
   +DVHorizontal: int
   +Rol: string
+  --
+  +ToString(): string
 }
-class "BE_InformeGestion" as INFORME {
+class "BE_InformeGestion" as BE_InformeGestion <<BE>> {
   +ID: int
   +IDUsuario: int
   +Tipo: string
   +Periodo: string
   +FechaGeneracion: DateTime
 }
-class "BE_InformeIndicadores" as IND {
+class "BE_InformeIndicadores" as BE_InformeIndicadores <<BE>> {
   +Version: string
   +Periodo: string
   +FechaGeneracion: DateTime
   +Generado: string
-  +Indicadores: List<BE_IndicadorItem>
 }
-class "BE_Acopio" as ACOPIO {
+class "BE_Acopio" as BE_Acopio <<BE>> {
   +ID: int
   +IDDeclaracion: int?
-  +PuntoVerde: BE_PuntoVerde
-  +Material: BE_Material
   +PesoKg: decimal
   +FechaRecepcion: DateTime
   +Estado: string
 }
-class "BE_PuntoVerde" as PUNTO_VERDE {
+class "BE_PuntoVerde" as BE_PuntoVerde <<BE>> {
   +ID: int
   +Nombre: string
   +Direccion: string
@@ -40,15 +39,18 @@ class "BE_PuntoVerde" as PUNTO_VERDE {
   +Longitud: decimal?
   +Horario: string
   +Activo: bool
-  +MaterialesAceptados: List<BE_Material>
+  --
+  +ToString(): string
 }
-class "BE_Material" as MATERIAL {
+class "BE_Material" as BE_Material <<BE>> {
   +ID: int
   +Nombre: string
   +Categoria: string
   +UnidadMedida: string
+  --
+  +ToString(): string
 }
-class "BE_OrdenVenta" as ORDEN {
+class "BE_OrdenVenta" as BE_OrdenVenta <<BE>> {
   +ID: int
   +IDComprador: int
   +IDVendedor: int
@@ -56,32 +58,32 @@ class "BE_OrdenVenta" as ORDEN {
   +Estado: string
   +MontoBruto: decimal
   +DireccionEnvio: string
-  +Items: List<BE_ItemOrden>
 }
-class "BE_Comision" as COMISION {
+class "BE_Comision" as BE_Comision <<BE>> {
   +ID: int
   +IDOrden: int
   +Porcentaje: decimal
   +Monto: decimal
   +Fecha: DateTime
 }
-class "BE_Canje" as CANJE {
+class "BE_Canje" as BE_Canje <<BE>> {
   +ID: int
   +IDUsuario: int
-  +Beneficio: BE_Beneficio
   +PuntosUsados: int
   +Fecha: DateTime
   +Estado: string
 }
-class "BE_Beneficio" as BENEFICIO {
+class "BE_Beneficio" as BE_Beneficio <<BE>> {
   +ID: int
   +Tipo: string
   +Descripcion: string
   +PuntosRequeridos: int
   +CostoEmpresa: decimal
   +Activo: bool
+  --
+  +ToString(): string
 }
-class "BE_Decision" as DECISION {
+class "BE_Decision" as BE_Decision <<BE>> {
   +ID: int
   +IDInforme: int?
   +IDUsuario: int
@@ -90,36 +92,22 @@ class "BE_Decision" as DECISION {
   +Descripcion: string
   +Fecha: DateTime
 }
-class "BE_TarifaComision" as TARIFA {
+class "BE_TarifaComision" as BE_TarifaComision <<BE>> {
   +ID: int
   +IDDecision: int?
   +Categoria: string
   +Porcentaje: decimal
   +VigenteDesde: DateTime
 }
-class "BE_TablaConversion" as CONVERSION {
+class "BE_TablaConversion" as BE_TablaConversion <<BE>> {
   +ID: int
   +IDDecision: int?
-  +Material: BE_Material
   +PuntosPorKg: decimal
   +VigenteDesde: DateTime
 }
-PUNTO_VERDE "1" -- "0..*" ACOPIO
-MATERIAL "1" -- "0..*" ACOPIO
-PUNTO_VERDE "0..*" -- "0..*" MATERIAL
-USUARIO "1" -- "0..*" CANJE
-BENEFICIO "1" -- "0..*" CANJE
-USUARIO "1" -- "0..*" INFORME
-INFORME "1" -- "0..*" ACOPIO
-INFORME "1" -- "0..*" DECISION
-DECISION "1" -- "0..*" TARIFA
-DECISION "0..*" -- "0..1" PUNTO_VERDE
-DECISION "1" -- "0..*" CONVERSION
-MATERIAL "1" -- "0..*" CONVERSION
-USUARIO "1" -- "0..*" DECISION
-USUARIO "1" -- "0..*" ORDEN
-USUARIO "1" -- "0..*" ORDEN
-ORDEN "1" -- "1" COMISION
-USUARIO "0..*" -- "0..*" MATERIAL
-INFORME "1" -- "0..1" IND
+BE_Acopio "1" o-- "0..1" BE_PuntoVerde : PuntoVerde
+BE_Acopio "1" o-- "0..1" BE_Material : Material
+BE_PuntoVerde "1" o-- "0..*" BE_Material : MaterialesAceptados
+BE_Canje "1" o-- "0..1" BE_Beneficio : Beneficio
+BE_TablaConversion "1" o-- "0..1" BE_Material : Material
 @enduml

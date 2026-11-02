@@ -1,22 +1,24 @@
 @startuml
 skinparam classAttributeIconSize 0
-title cu__CU11_clases
-class "BE_USUARIO" as USUARIO {
-  +ID: int
+title CU11 - Clases afectadas
+class "BE_USUARIO" as BE_USUARIO <<BE>> {
   +Username: string
   +HashedPassword: string
+  +ID: int
   +Bloqueado: bool
   +DVHorizontal: int
   +Rol: string
+  --
+  +ToString(): string
 }
-class "BE_VerificacionVendedor" as VERIFICACION {
+class "BE_VerificacionVendedor" as BE_VerificacionVendedor <<BE>> {
   +ID: int
   +IDUsuario: int
   +Fecha: DateTime
   +Estado: string
   +DocumentoRef: string
 }
-class "BE_Producto" as PRODUCTO {
+class "BE_Producto" as BE_Producto <<BE>> {
   +ID: int
   +IDVendedor: int
   +IDTarifa: int?
@@ -26,15 +28,14 @@ class "BE_Producto" as PRODUCTO {
   +Precio: decimal
   +Stock: int
   +Estado: string
+  --
+  +ToString(): string
 }
-class "BE_TarifaComision" as TARIFA {
+class "BE_TarifaComision" as BE_TarifaComision <<BE>> {
   +ID: int
   +IDDecision: int?
   +Categoria: string
   +Porcentaje: decimal
   +VigenteDesde: DateTime
 }
-USUARIO "1" -- "0..*" VERIFICACION
-USUARIO "1" -- "0..*" PRODUCTO
-TARIFA "1" -- "0..*" PRODUCTO
 @enduml

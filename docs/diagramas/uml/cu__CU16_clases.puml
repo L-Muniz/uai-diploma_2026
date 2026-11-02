@@ -1,15 +1,17 @@
 @startuml
 skinparam classAttributeIconSize 0
-title cu__CU16_clases
-class "BE_USUARIO" as USUARIO {
-  +ID: int
+title CU16 - Clases afectadas
+class "BE_USUARIO" as BE_USUARIO <<BE>> {
   +Username: string
   +HashedPassword: string
+  +ID: int
   +Bloqueado: bool
   +DVHorizontal: int
   +Rol: string
+  --
+  +ToString(): string
 }
-class "BE_LiquidacionVendedor" as LIQUIDACION {
+class "BE_LiquidacionVendedor" as BE_LiquidacionVendedor <<BE>> {
   +ID: int
   +IDOrden: int
   +MontoNeto: decimal
@@ -17,7 +19,7 @@ class "BE_LiquidacionVendedor" as LIQUIDACION {
   +FechaDisponible: DateTime?
   +FechaPago: DateTime?
 }
-class "BE_OrdenVenta" as ORDEN {
+class "BE_OrdenVenta" as BE_OrdenVenta <<BE>> {
   +ID: int
   +IDComprador: int
   +IDVendedor: int
@@ -25,9 +27,5 @@ class "BE_OrdenVenta" as ORDEN {
   +Estado: string
   +MontoBruto: decimal
   +DireccionEnvio: string
-  +Items: List<BE_ItemOrden>
 }
-USUARIO "1" -- "0..*" ORDEN
-USUARIO "1" -- "0..*" ORDEN
-ORDEN "1" -- "1" LIQUIDACION
 @enduml

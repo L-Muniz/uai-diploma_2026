@@ -1,32 +1,31 @@
 @startuml
 skinparam classAttributeIconSize 0
-title cu__CU02_clases
-class "BE_USUARIO" as USUARIO {
-  +ID: int
+title CU02 - Clases afectadas
+class "BE_USUARIO" as BE_USUARIO <<BE>> {
   +Username: string
   +HashedPassword: string
+  +ID: int
   +Bloqueado: bool
   +DVHorizontal: int
   +Rol: string
+  --
+  +ToString(): string
 }
-class "BE_DeclaracionMaterial" as DECLARACION {
+class "BE_DeclaracionMaterial" as BE_DeclaracionMaterial <<BE>> {
   +ID: int
   +IDUsuario: int
-  +Material: BE_Material
   +Cantidad: decimal
   +Fecha: DateTime
   +Estado: string
 }
-class "BE_Acopio" as ACOPIO {
+class "BE_Acopio" as BE_Acopio <<BE>> {
   +ID: int
   +IDDeclaracion: int?
-  +PuntoVerde: BE_PuntoVerde
-  +Material: BE_Material
   +PesoKg: decimal
   +FechaRecepcion: DateTime
   +Estado: string
 }
-class "BE_PuntoVerde" as PUNTO_VERDE {
+class "BE_PuntoVerde" as BE_PuntoVerde <<BE>> {
   +ID: int
   +Nombre: string
   +Direccion: string
@@ -34,21 +33,24 @@ class "BE_PuntoVerde" as PUNTO_VERDE {
   +Longitud: decimal?
   +Horario: string
   +Activo: bool
-  +MaterialesAceptados: List<BE_Material>
+  --
+  +ToString(): string
 }
-class "BE_Material" as MATERIAL {
+class "BE_Material" as BE_Material <<BE>> {
   +ID: int
   +Nombre: string
   +Categoria: string
   +UnidadMedida: string
+  --
+  +ToString(): string
 }
-class "BE_CuentaEcoPuntos" as CUENTA {
+class "BE_CuentaEcoPuntos" as BE_CuentaEcoPuntos <<BE>> {
   +ID: int
   +IDUsuario: int
   +Saldo: int
   +Nivel: int
 }
-class "BE_MovimientoEcoPuntos" as MOVIMIENTO {
+class "BE_MovimientoEcoPuntos" as BE_MovimientoEcoPuntos <<BE>> {
   +ID: int
   +IDCuenta: int
   +Tipo: string
@@ -56,13 +58,8 @@ class "BE_MovimientoEcoPuntos" as MOVIMIENTO {
   +Fecha: DateTime
   +Motivo: string
 }
-USUARIO "1" -- "0..*" DECLARACION
-DECLARACION "0..*" -- "1" MATERIAL
-DECLARACION "1" -- "0..1" ACOPIO
-PUNTO_VERDE "1" -- "0..*" ACOPIO
-MATERIAL "1" -- "0..*" ACOPIO
-PUNTO_VERDE "0..*" -- "0..*" MATERIAL
-USUARIO "1" -- "1" CUENTA
-CUENTA "1" -- "0..*" MOVIMIENTO
-USUARIO "0..*" -- "0..*" MATERIAL
+BE_DeclaracionMaterial "1" o-- "0..1" BE_Material : Material
+BE_Acopio "1" o-- "0..1" BE_PuntoVerde : PuntoVerde
+BE_Acopio "1" o-- "0..1" BE_Material : Material
+BE_PuntoVerde "1" o-- "0..*" BE_Material : MaterialesAceptados
 @enduml

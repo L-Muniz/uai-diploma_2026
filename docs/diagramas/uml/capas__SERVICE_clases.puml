@@ -1,53 +1,89 @@
 @startuml
 skinparam classAttributeIconSize 0
-title capas__SERVICE_clases
-class "<<interface>> ISV_IdiomaObserver" as ISV_IdiomaObserver {
+title Capa SERVICE
+interface "ISV_IdiomaObserver" as ISV_IdiomaObserver <<SERVICE>> {
+  +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo): void
 }
-class "<<interface>> ISV_ProveedorTraduccion" as ISV_ProveedorTraduccion {
-  +instancia: static SV_IdiomaManager
-  +codigoIdiomaActual: string
-  +observadores: List<ISV_IdiomaObserver>
-  +proveedorTraduccion: ISV_ProveedorTraduccion
+interface "ISV_ProveedorTraduccion" as ISV_ProveedorTraduccion <<SERVICE>> {
+  +ObtenerTraduccion(string clave, string codigoIdioma): string
+  +ObtenerIdiomasDisponibles(): List<string>
 }
-class "SV_ArchivoInvalidoException" as SV_ArchivoInvalidoException {
+class "SV_ArchivoInvalidoException" as SV_ArchivoInvalidoException <<SERVICE>> {
 }
-class "SV_DigitoVerificadorHorizontal" as SV_DigitoVerificadorHorizontal {
+class "SV_DigitoVerificadorHorizontal" as SV_DigitoVerificadorHorizontal <<SERVICE>> {
+  +CalcularDV(string datos): int
+  +VerificarDV(string datos, int dvAlmacenado): bool
+  +ObtenerDVString(string datos): string
 }
-class "SV_DigitoVerificadorVertical" as SV_DigitoVerificadorVertical {
+class "SV_DigitoVerificadorVertical" as SV_DigitoVerificadorVertical <<SERVICE>> {
+  +CalcularDVAtributo(string valorAtributo, int posicionAtributo): int
+  +VerificarDVAtributo(string valorAtributo, int posicionAtributo, int dvAlmacenado): bool
+  +VerificarDVVEntidad(Dictionary<string, string> atributos, Dictionary<string, int> dvvAlmacenados): bool
 }
-class "SV_Encriptacion" as SV_Encriptacion {
-  +Salt: static readonly byte[]
+class "SV_Encriptacion" as SV_Encriptacion <<SERVICE>> {
+  +Encriptar(string textoPlano): string
+  +Desencriptar(string textoEncriptado): string
+  +EstaEncriptado(string texto): bool
+  +EncriptarArchivo(string rutaArchivo): void
+  +LeerArchivoDesencriptado(string rutaArchivo): string
 }
-class "SV_GeneradorPdf" as SV_GeneradorPdf {
+class "SV_GeneradorPdf" as SV_GeneradorPdf <<SERVICE>> {
+  +GenerarTabla(string ruta, string titulo, string subtitulo, string[] columnas, IList<string[]> filas, string pie = null): void
 }
-class "SV_Hash" as SV_Hash {
+class "SV_Hash" as SV_Hash <<SERVICE>> {
+  +HashPassword(string password): string
+  +EsHashValido(string storedHash): bool
+  +VerifyPassword(string password, string storedHash): bool
 }
-class "SV_IdiomaManager" as SV_IdiomaManager {
-  +instancia: static SV_IdiomaManager
-  +codigoIdiomaActual: string
-  +observadores: List<ISV_IdiomaObserver>
-  +proveedorTraduccion: ISV_ProveedorTraduccion
+class "SV_IdiomaManager" as SV_IdiomaManager <<SERVICE>> {
+  +GetInstance(): SV_IdiomaManager
+  +EstablecerProveedorTraduccion(ISV_ProveedorTraduccion proveedor): void
+  +ObtenerIdiomaActual(): string
+  +ObtenerIdiomasSoportados(): List<string>
+  +CambiarIdioma(string codigoIdioma): void
+  +Obtener(string clave): string
+  +Obtener(string clave, params object[] args): string
+  +RegistrarObservador(ISV_IdiomaObserver observador): void
+  +DesregistrarObservador(ISV_IdiomaObserver observador): void
+  +ContarObservadores(): int
 }
-class "SV_IdiomaObserverBase" as SV_IdiomaObserverBase {
+class "SV_IdiomaObserverBase" as SV_IdiomaObserverBase <<SERVICE>> {
+  +ObtenerNombre(): string
 }
-class "SV_Mensajes" as SV_Mensajes {
-  +idiomaManager: static SV_IdiomaManager
+class "SV_Mensajes" as SV_Mensajes <<SERVICE>> {
+  +GetLoginMessage(): string
+  +GetLogoutMessage(): string
+  +GetNewUserMessage(): string
+  +GetUsuarioBloqueadoMessage(): string
+  +GetIntentoFallidoMessage(int intento, int intentosMaximos): string
+  +GetUsuarioBloqueadoPorIntentosMessage(): string
+  +GetErrorIntegridadDatos(): string
+  +GetErrorIntegridadDVH(): string
+  +GetErrorIntegridadDVV(): string
+  +GetVerificacionIntegridadExitosa(): string
+  +Obtener(string clave): string
+  +Obtener(string clave, params object[] args): string
 }
-class "SV_PerfilComposite" as SV_PerfilComposite {
+class "SV_PerfilComposite" as SV_PerfilComposite <<SERVICE>> {
+  +ConstructorArbolPerfiles(List<BE_Perfil> perfilesPlanos): List<BE_Perfil>
+  +VisualizarArbolPerfiles(List<BE_Perfil> raices): string
+  +ObtenerRutaPerfil(BE_Perfil perfil): string
+  +ContarPermisosEnArbol(List<BE_Perfil> raices): int
+  +BuscarPerfilPorNombre(List<BE_Perfil> raices, string nombre): BE_Perfil
+  +ObtenerTodosLosPerfiles(List<BE_Perfil> raices): List<BE_Perfil>
+  +ObtenerProfundidadMaxima(List<BE_Perfil> raices): int
 }
-class "SV_Serializacion" as SV_Serializacion {
+class "SV_Serializacion" as SV_Serializacion <<SERVICE>> {
+  +GuardarInforme(string ruta, BE_InformeIndicadores informe): void
+  +CargarInforme(string ruta): BE_InformeIndicadores
 }
-class "SV_Singleton" as SV_Singleton {
-  +singleton: static SV_Singleton
-  +usuario: BE_USUARIO
+class "SV_Singleton" as SV_Singleton <<SERVICE>> {
+  +GetInstance(): SV_Singleton
+  +LimpiarSesion(): void
 }
-ISV_IdiomaObserver ..> SV_IdiomaObserverBase
-ISV_ProveedorTraduccion ..> SV_IdiomaManager
-ISV_ProveedorTraduccion ..> ISV_IdiomaObserver
-SV_ArchivoInvalidoException ..> SV_Serializacion
-SV_IdiomaManager ..> ISV_ProveedorTraduccion
 SV_IdiomaManager ..> ISV_IdiomaObserver
-SV_IdiomaObserverBase ..> ISV_IdiomaObserver
+SV_IdiomaManager ..> ISV_ProveedorTraduccion
+SV_IdiomaObserverBase ..|> ISV_IdiomaObserver
 SV_Mensajes ..> SV_IdiomaManager
 SV_Serializacion ..> SV_ArchivoInvalidoException
 @enduml

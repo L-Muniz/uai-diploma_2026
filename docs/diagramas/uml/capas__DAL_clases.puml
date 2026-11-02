@@ -1,58 +1,205 @@
 @startuml
 skinparam classAttributeIconSize 0
-title capas__DAL_clases
-class "ACCESO" as ACCESO {
+title Capa DAL
+class "ACCESO" as ACCESO <<DAL>> {
+  +Abrir(): void
+  +Cerrar(): void
+  +Escribir(string sql, List<SqlParameter> parametros = null): int
+  +Escalar(string sp, List<SqlParameter> parametros = null): object
+  +Verificar(string sql, List<SqlParameter> parametros = null): int
+  +Leer(string sql, List<SqlParameter> parametros = null): DataTable
+  +CrearComando(string sql, List<SqlParameter> parametros): SqlCommand
+  +CrearParametro(string key, string value): SqlParameter
+  +CrearParametro(string key, int value): SqlParameter
+  +CrearParametro(string key, DateTime value): SqlParameter
+  +CrearParametro(string key, bool value): SqlParameter
+  +CrearParametro(string key, decimal value): SqlParameter
+  +CrearParametroObj(string key, object value): SqlParameter
+  +GetConexion(): SqlConnection
 }
-class "MAPPER" as MAPPER {
+class "MAPPER" as MAPPER <<DAL>> {
 }
-class "MP_BITACORA" as MP_BITACORA {
+class "MP_BITACORA" as MP_BITACORA <<DAL>> {
+  +Alta(BE_BITACORA obj): int
+  +Borrar(BE_BITACORA obj): int
+  +Editar(BE_BITACORA obj): int
+  +Listar(): List<BE_BITACORA>
+  +ListarXID(BE_USUARIO user): List<BE_BITACORA>
 }
-class "MP_CATALOGO" as MP_CATALOGO {
+class "MP_CATALOGO" as MP_CATALOGO <<DAL>> {
+  +ListarMateriales(): DataTable
+  +AltaMaterial(BE_Material m): int
+  +ModificarMaterial(BE_Material m): void
+  +EliminarMaterial(int id): void
+  +ListarGuias(): DataTable
+  +AltaGuia(BE_GuiaReutilizacion g): int
+  +ModificarGuia(BE_GuiaReutilizacion g): void
+  +EliminarGuia(int id): void
+  +ListarBeneficios(): DataTable
+  +AltaBeneficio(BE_Beneficio b): int
+  +ModificarBeneficio(BE_Beneficio b): void
+  +CambiarEstadoBeneficio(int id, bool activo): void
 }
-class "MP_CambiosEntidad" as MP_CambiosEntidad {
+class "MP_CambiosEntidad" as MP_CambiosEntidad <<DAL>> {
+  +Alta(BE_CambiosEntidad obj): int
+  +Borrar(BE_CambiosEntidad obj): int
+  +Editar(BE_CambiosEntidad obj): int
+  +Listar(): List<BE_CambiosEntidad>
+  +ListarPorEntidad(string tipoEntidad, int idEntidad): List<BE_CambiosEntidad>
+  +ListarPorUsuario(int idUsuario): List<BE_CambiosEntidad>
+  +ListarPorFechas(DateTime fechaDesde, DateTime fechaHasta): List<BE_CambiosEntidad>
 }
-class "MP_DATOS_USUARIO" as MP_DATOS_USUARIO {
+class "MP_DATOS_USUARIO" as MP_DATOS_USUARIO <<DAL>> {
+  +Obtener(int idUsuario): BE_DatosUsuario
+  +Guardar(BE_DatosUsuario datos): void
+  +ListarSuscripciones(int idUsuario): DataTable
+  +GuardarSuscripciones(int idUsuario, List<int> idMateriales): void
+  +ListarGuiasSuscriptas(int idUsuario): DataTable
 }
-class "MP_DigitoVerificadorVertical" as MP_DigitoVerificadorVertical {
+class "MP_DigitoVerificadorVertical" as MP_DigitoVerificadorVertical <<DAL>> {
+  +Alta(BE_DigitoVerificadorVertical obj): int
+  +Borrar(BE_DigitoVerificadorVertical obj): int
+  +Editar(BE_DigitoVerificadorVertical obj): int
+  +Listar(): List<BE_DigitoVerificadorVertical>
+  +BuscarPorTipoEntidad(string tipoEntidad): BE_DigitoVerificadorVertical
+  +BuscarPorIdEntidad(int idEntidad, string tipoEntidad): BE_DigitoVerificadorVertical
 }
-class "MP_ECOPUNTOS" as MP_ECOPUNTOS {
+class "MP_ECOPUNTOS" as MP_ECOPUNTOS <<DAL>> {
+  +AcreditarPuntos(int idUsuario, int puntos, string tipo, string motivo): int
+  +ObtenerSaldo(int idUsuario): int
+  +ListarMovimientos(int idUsuario): DataTable
+  +ListarBeneficiosActivos(): DataTable
+  +RegistrarCanje(int idUsuario, int idBeneficio): int
+  +ListarCanjes(int idUsuario): DataTable
 }
-class "MP_ESTADISTICAS" as MP_ESTADISTICAS {
+class "MP_ESTADISTICAS" as MP_ESTADISTICAS <<DAL>> {
+  +ResumenVentas(int idVendedor, DateTime desde, DateTime hasta): DataTable
+  +VentasPorProducto(int idVendedor, DateTime desde, DateTime hasta): DataTable
 }
-class "MP_GESTION" as MP_GESTION {
+class "MP_GESTION" as MP_GESTION <<DAL>> {
+  +AltaInforme(int idUsuario, string tipo, string periodo): int
+  +IndicadorAcopioPorMaterial(string periodo): DataTable
+  +IndicadorVentas(string periodo): DataTable
+  +IndicadorCostoCanjes(string periodo): decimal
+  +AltaDecision(int? idInforme, int idUsuario, int? idPuntoVerde, string tipo, string descripcion): int
+  +AltaTarifa(int? idDecision, string categoria, decimal porcentaje): int
+  +ListarTarifasVigentes(): DataTable
+  +ObtenerPorcentajeVigente(string categoria): decimal?
+  +ObtenerIdTarifaVigente(string categoria): int?
+  +AltaConversion(int? idDecision, int idMaterial, decimal puntosPorKg): int
+  +ListarConversionesVigentes(): DataTable
+  +ObtenerPuntosPorKgVigente(int idMaterial): decimal?
 }
-class "MP_MARKETPLACE" as MP_MARKETPLACE {
+class "MP_MARKETPLACE" as MP_MARKETPLACE <<DAL>> {
+  +AltaVerificacion(int idUsuario, string estado, string documentoRef): int
+  +UltimoEstadoVerificacion(int idUsuario): string
+  +ListarSolicitudesVerificacion(): DataTable
+  +AltaProducto(BE_Producto producto): int
+  +ModificarProducto(int idProducto, int idVendedor, decimal precio, int stock): void
+  +ListarProductosPendientes(): DataTable
+  +AprobarProducto(int idProducto): void
+  +ListarCatalogo(): DataTable
+  +ListarProductosDeVendedor(int idVendedor): DataTable
+  +ObtenerProducto(int idProducto): BE_Producto
+  +RegistrarVentaAprobada(BE_ItemOrden item, int idComprador, int idVendedor, string direccion, string referenciaPasarela, decimal porcentajeComision): int
+  +ListarOrdenesComprador(int idComprador): DataTable
+  +ListarOrdenesVendedor(int idVendedor): DataTable
+  +MarcarDespachada(int idOrden, int idVendedor): void
+  +ConfirmarRecepcion(int idOrden, int idComprador): void
+  +ListarLiquidacionesDeVendedor(int idVendedor): DataTable
+  +ListarLiquidaciones(string estado): DataTable
+  +PagarLiquidacion(int idLiquidacion): void
+  +RegistrarReclamo(int idOrden, int idUsuario, string motivo): int
+  +ListarReclamosAbiertos(): DataTable
+  +ResolverReclamo(int idReclamo, bool procedente): void
 }
-class "MP_PERFIL" as MP_PERFIL {
+class "MP_PERFIL" as MP_PERFIL <<DAL>> {
+  +Alta(BE_Perfil obj): int
+  +Borrar(BE_Perfil obj): int
+  +Editar(BE_Perfil obj): int
+  +AsignarPadre(int idPerfil, int? idPerfilPadre): int
+  +Listar(): List<BE_Perfil>
+  +ListarTodos(): List<BE_Perfil>
+  +ObtenerPerfilesHijos(int idPerfilPadre): List<BE_Perfil>
+  +ObtenerPorId(int idPerfil): BE_Perfil
+  +ObtenerPermisos(int idPerfil): List<BE_Permiso>
+  +ObtenerTodosLosPermisos(): List<BE_Permiso>
+  +AgregarPermiso(int idPerfil, int idPermiso): void
+  +QuitarPermiso(int idPerfil, int idPermiso): void
 }
-class "MP_PERMISO" as MP_PERMISO {
+class "MP_PERMISO" as MP_PERMISO <<DAL>> {
+  +Alta(BE_Permiso permiso): int
+  +Editar(BE_Permiso permiso): void
+  +Borrar(int idPermiso): void
+  +Listar(): List<BE_Permiso>
+  +ObtenerPorId(int idPermiso): BE_Permiso
+  +ExisteCodigoDuplicado(string codigo, int idPermisoExcluir = 0): bool
+  +AgregarComponente(int idPermisoCompuesto, int idPermisoComponente): void
+  +QuitarComponente(int idPermisoCompuesto, int idPermisoComponente): void
+  +ObtenerComponentes(int idPermisoCompuesto): List<BE_Permiso>
+  +MarcarComoCompuesto(int idPermiso): void
 }
-class "MP_RECICLAJE" as MP_RECICLAJE {
+class "MP_RECICLAJE" as MP_RECICLAJE <<DAL>> {
+  +ListarPuntosVerdes(): DataTable
+  +ListarMaterialesAceptados(int idPuntoVerde): DataTable
+  +AltaPuntoVerde(BE_PuntoVerde pv): int
+  +ModificarPuntoVerde(BE_PuntoVerde pv): void
+  +GuardarMaterialesAceptados(int idPuntoVerde, List<int> idMateriales): void
+  +ListarPuntosVerdesPorMaterial(int idMaterial): DataTable
+  +ListarGuiasPorMaterial(int idMaterial): DataTable
+  +AltaDeclaracion(int idUsuario, int idMaterial, decimal cantidad): int
+  +ListarDeclaracionesPendientesDePuntoVerde(int idPuntoVerde): DataTable
+  +ListarDeclaracionesPendientes(): DataTable
+  +ListarDeclaracionesDeUsuario(int idUsuario): DataTable
+  +GuardarRecomendacion(int idDeclaracion, int? idGuia, int? idPuntoVerde, string opcionElegida, string nuevoEstado): void
+  +RegistrarAcopio(int? idDeclaracion, int idPuntoVerde, int idMaterial, decimal pesoKg): int
 }
-class "MP_ROL" as MP_ROL {
+class "MP_ROL" as MP_ROL <<DAL>> {
+  +Alta(BE_Rol obj): int
+  +Borrar(BE_Rol obj): int
+  +Editar(BE_Rol obj): int
+  +Listar(): List<BE_Rol>
+  +ListarTodos(): List<BE_Rol>
+  +ObtenerPorId(int idRol): BE_Rol
+  +ObtenerPermisos(int idRol): List<BE_Permiso>
+  +ObtenerTodosLosPermisos(): List<BE_Permiso>
+  +AgregarPermiso(int idRol, int idPermiso): void
+  +QuitarPermiso(int idRol, int idPermiso): void
+  +ObtenerPorID(int idRol): BE_Rol
 }
-class "MP_USUARIO" as MP_USUARIO {
+class "MP_USUARIO" as MP_USUARIO <<DAL>> {
+  +Alta(BE_USUARIO obj): int
+  +Borrar(BE_USUARIO obj): int
+  +BuscarPorUserName(string username): BE_USUARIO
+  +BuscarPorId(int id): BE_USUARIO
+  +Editar(BE_USUARIO obj): int
+  +AsignarRol(int idUsuario, int idRol): int
+  +Listar(): List<BE_USUARIO>
+  +BloquearUsuario(BE_USUARIO usuario): int
+  +DesbloquearUsuario(BE_USUARIO usuario): int
+  +ActualizarDVHorizontal(BE_USUARIO usuario): int
+  +ObtenerRolUsuario(int idUsuario): string
 }
+MP_BITACORA --|> MAPPER
 MP_BITACORA ..> ACCESO
-MP_BITACORA ..> MAPPER
 MP_BITACORA ..> MP_USUARIO
 MP_CATALOGO ..> ACCESO
+MP_CambiosEntidad --|> MAPPER
 MP_CambiosEntidad ..> ACCESO
-MP_CambiosEntidad ..> MAPPER
 MP_CambiosEntidad ..> MP_USUARIO
 MP_DATOS_USUARIO ..> ACCESO
+MP_DigitoVerificadorVertical --|> MAPPER
 MP_DigitoVerificadorVertical ..> ACCESO
-MP_DigitoVerificadorVertical ..> MAPPER
 MP_ECOPUNTOS ..> ACCESO
 MP_ESTADISTICAS ..> ACCESO
 MP_GESTION ..> ACCESO
 MP_MARKETPLACE ..> ACCESO
+MP_PERFIL --|> MAPPER
 MP_PERFIL ..> ACCESO
-MP_PERFIL ..> MAPPER
 MP_PERMISO ..> ACCESO
 MP_RECICLAJE ..> ACCESO
+MP_ROL --|> MAPPER
 MP_ROL ..> ACCESO
-MP_ROL ..> MAPPER
+MP_USUARIO --|> MAPPER
 MP_USUARIO ..> ACCESO
-MP_USUARIO ..> MAPPER
 @enduml
