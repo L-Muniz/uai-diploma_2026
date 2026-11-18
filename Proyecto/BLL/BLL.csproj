@@ -49,7 +49,6 @@
     <Compile Include="BLL_GESTOR.cs" />
     <Compile Include="BLL_Idioma.cs" />
     <Compile Include="BLL_IntegridadDatos.cs" />
-    <Compile Include="BLL_PERFIL.cs" />
     <Compile Include="BLL_PERMISO.cs" />
     <Compile Include="BLL_ROL.cs" />
     <Compile Include="BLL_Rollback.cs" />

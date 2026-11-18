@@ -1,0 +1,117 @@
+@startuml CU03_clases
+title CU-003 Bloquear Usuario - Diagrama de clases
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+left to right direction
+
+package "GUI" {
+  class FormGestionUsuarios {
+    -AlternarBloqueoUsuario() : void
+    -ObtenerUsuarioSeleccionado() : BE_USUARIO
+    -CargarUsuarios() : void
+  }
+}
+
+package "BLL" {
+  class BLL_USUARIO {
+    +ActualizarUsuario(BE_USUARIO usuario) : void
+    +{static} EsRolAdministrador(string rol) : bool
+    -CalcularYGuardarDVHUsuario(BE_USUARIO usuario, MP_USUARIO mpUsuario) : void
+    -CalcularYGuardarDVVUsuario(BE_USUARIO usuario) : void
+  }
+  class BLL_Rollback <<static>> {
+    +GuardarSnapshotUsuario(BE_USUARIO usuario, string descripcion) : (bool exito, string mensaje)
+  }
+  class BLL_ControlCambios <<static>> {
+    +RegistrarCambio(string tipoEntidad, int idEntidad, string nombreAtributo, string valorAnterior, string valorNuevo, BE_USUARIO usuarioModifico, string descripcion) : void
+  }
+  class BLL_BITACORA {
+    +IngresarRegistro(BE_USUARIO usuario, string descripcion) : void
+  }
+  class BLL_IntegridadDatos <<static>> {
+    +CalcularDVHUsuario(BE_USUARIO usuario) : void
+    +CalcularDVVUsuario(BE_USUARIO usuario) : BE_DigitoVerificadorVertical
+    +PersistirDVVUsuario(BE_DigitoVerificadorVertical dvv) : void
+  }
+}
+
+package "DAL" {
+  abstract class "MAPPER<T>" as MAPPER {
+    +{abstract} Alta(T obj) : int
+    +{abstract} Editar(T obj) : int
+  }
+  class MP_USUARIO {
+    +ObtenerRolUsuario(int idUsuario) : string
+    +BloquearUsuario(BE_USUARIO usuario) : int
+    +ActualizarDVHorizontal(BE_USUARIO usuario) : int
+  }
+  class MP_CambiosEntidad {
+    +Alta(BE_CambiosEntidad obj) : int
+  }
+  class MP_BITACORA {
+    +Alta(BE_BITACORA obj) : int
+  }
+  class MP_DigitoVerificadorVertical {
+    +Listar() : List<BE_DigitoVerificadorVertical>
+    +Editar(BE_DigitoVerificadorVertical obj) : int
+  }
+}
+
+package "SERVICE" {
+  class SV_Singleton <<static>> {
+    +GetInstance() : SV_Singleton
+    +Usuario : BE_USUARIO
+  }
+}
+
+package "BE" {
+  class BE_USUARIO {
+    +ID : int
+    +Username : string
+    +Bloqueado : bool
+    +DVHorizontal : int
+    +Rol : string
+  }
+  class BE_CambiosEntidad {
+    +TipoEntidad : string
+    +IdEntidad : int
+    +NombreAtributo : string
+    +ValorAnterior : string
+    +ValorNuevo : string
+  }
+  class BE_BITACORA {
+    +Usuario : BE_USUARIO
+    +Descripcion : string
+  }
+  class BE_DigitoVerificadorVertical {
+    +IdEntidad : int
+    +TipoEntidad : string
+    +DVUsername : int
+    +DVHashedPassword : int
+    +DVBloqueado : int
+  }
+}
+
+FormGestionUsuarios --> BLL_USUARIO
+FormGestionUsuarios --> BE_USUARIO
+BLL_USUARIO --> MP_USUARIO
+BLL_USUARIO --> BLL_Rollback
+BLL_USUARIO --> BLL_ControlCambios
+BLL_USUARIO --> BLL_BITACORA
+BLL_USUARIO --> BLL_IntegridadDatos
+BLL_USUARIO --> SV_Singleton
+BLL_ControlCambios --> MP_CambiosEntidad
+BLL_BITACORA --> MP_BITACORA
+BLL_IntegridadDatos --> MP_DigitoVerificadorVertical
+BLL_IntegridadDatos --> BE_DigitoVerificadorVertical
+MP_USUARIO --> BE_USUARIO
+MP_CambiosEntidad --> BE_CambiosEntidad
+MP_BITACORA --> BE_BITACORA
+MP_DigitoVerificadorVertical --> BE_DigitoVerificadorVertical
+MP_USUARIO --|> MAPPER
+MP_CambiosEntidad --|> MAPPER
+MP_BITACORA --|> MAPPER
+MP_DigitoVerificadorVertical --|> MAPPER
+BE_BITACORA --> BE_USUARIO : Usuario
+SV_Singleton --> BE_USUARIO : Usuario
+@enduml

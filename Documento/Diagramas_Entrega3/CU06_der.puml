@@ -1,0 +1,38 @@
+@startuml CU06_der
+title CU-006 Realizar Backup - Tablas incluidas en el backup (ProyectoC)
+hide circle
+skinparam linetype ortho
+
+entity "USUARIO" as USUARIO {
+  *ID_USUARIO : int <<PK>>
+  --
+  USERNAME : varchar(50)
+  PASS : varchar(255)
+  BLOQUEADO : bit
+  DVH_HORIZONTAL : int
+  CODIGO_IDIOMA : nvarchar(5)
+}
+entity "ROL" as ROL {
+  *ID_ROL : int <<PK>>
+  --
+  NOMBRE : varchar(50)
+  DESCRIPCION : varchar(255)
+  ACTIVO : bit
+  ID_ROL_PADRE : int
+}
+entity "BITACORA" as BITACORA {
+  *ID_BITACORA : int <<PK>>
+  --
+  ID_USUARIO : int <<FK>>
+  DESCRIPCION : varchar(50)
+  FECHA : datetime
+}
+entity "DIGITO_VERIFICADOR_VERTICAL" as DVV {
+  *ID_DVV : int <<PK>>
+  --
+  ID_ENTIDAD : int
+  TIPO_ENTIDAD : varchar(50)
+}
+
+USUARIO ||--o{ BITACORA
+@enduml

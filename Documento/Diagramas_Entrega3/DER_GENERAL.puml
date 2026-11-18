@@ -1,0 +1,108 @@
+@startuml DER_GENERAL
+title Modelo entidad-relación general (ProyectoC)
+hide circle
+skinparam linetype ortho
+
+entity "BITACORA" as BITACORA {
+  *ID_BITACORA : int <<PK>>
+  ID_USUARIO : int
+  DESCRIPCION : varchar
+  FECHA : datetime
+}
+
+entity "CAMBIOS_ENTIDAD" as CAMBIOS_ENTIDAD {
+  *ID_CAMBIO : int <<PK>>
+  TIPO_ENTIDAD : varchar
+  ID_ENTIDAD : int
+  NOMBRE_ATRIBUTO : varchar
+  VALOR_ANTERIOR : varchar
+  VALOR_NUEVO : varchar
+  ID_USUARIO_MODIFICO : int
+  FECHA_CAMBIO : datetime
+  DESCRIPCION : varchar
+}
+
+entity "DIGITO_VERIFICADOR_VERTICAL" as DIGITO_VERIFICADOR_VERTICAL {
+  *ID_DVV : int <<PK>>
+  ID_ENTIDAD : int
+  TIPO_ENTIDAD : varchar
+  DV_USERNAME : int
+  DV_PASSWORD : int
+  DV_BLOQUEADO : int
+  FECHA_CREACION : datetime
+}
+
+entity "IDIOMA" as IDIOMA {
+  *ID_IDIOMA : int <<PK>>
+  CODIGO : varchar
+  NOMBRE : varchar
+  ACTIVO : bit
+}
+
+entity "PERMISO" as PERMISO {
+  *ID_PERMISO : int <<PK>>
+  CODIGO : varchar
+  NOMBRE : varchar
+  DESCRIPCION : varchar
+  ES_COMPUESTO : bit
+}
+
+entity "PERMISO_COMPONENTE" as PERMISO_COMPONENTE {
+  *ID : int <<PK>>
+  ID_PERMISO_PADRE : int <<FK>>
+  ID_PERMISO_HIJO : int <<FK>>
+  FECHA_CREACION : datetime
+}
+
+entity "ROL" as ROL {
+  *ID_ROL : int <<PK>>
+  NOMBRE : varchar
+  DESCRIPCION : varchar
+  ACTIVO : bit
+  ID_ROL_PADRE : int
+}
+
+entity "ROL_PERMISO" as ROL_PERMISO {
+  *ID_ROL : int <<PK, FK>>
+  *ID_PERMISO : int <<PK, FK>>
+}
+
+entity "SNAPSHOTS" as SNAPSHOTS {
+  *ID_SNAPSHOT : int <<PK>>
+  NOMBRE : nvarchar
+  DESCRIPCION : nvarchar
+  CONTENIDO : nvarchar
+  FECHA_CREACION : datetime
+  ID_USUARIO : int <<FK>>
+}
+
+entity "TRADUCCION" as TRADUCCION {
+  *ID_TRADUCCION : int <<PK>>
+  CLAVE : varchar
+  ID_IDIOMA : int <<FK>>
+  VALOR : varchar
+}
+
+entity "USUARIO" as USUARIO {
+  *ID_USUARIO : int <<PK>>
+  USERNAME : varchar
+  PASS : varchar
+  BLOQUEADO : bit
+  DVH_HORIZONTAL : int
+  CODIGO_IDIOMA : nvarchar
+}
+
+entity "USUARIO_ROL" as USUARIO_ROL {
+  *ID_USUARIO : int <<PK, FK>>
+  *ID_ROL : int <<PK, FK>>
+}
+
+IDIOMA ||--o{ TRADUCCION
+ROL ||--o{ USUARIO_ROL
+ROL ||--o{ ROL_PERMISO
+USUARIO ||--o{ USUARIO_ROL
+USUARIO ||--o{ SNAPSHOTS
+PERMISO ||--o{ ROL_PERMISO
+PERMISO ||--o{ PERMISO_COMPONENTE
+PERMISO ||--o{ PERMISO_COMPONENTE
+@enduml

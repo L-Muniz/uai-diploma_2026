@@ -1,0 +1,83 @@
+@startuml CU05_clases
+title CU-005 Cambiar Idioma - Diagrama de clases
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+left to right direction
+
+package "GUI" {
+  class MainForm {
+    -ActualizarItemMenu(ToolStripMenuItem item) : void
+    +ActualizarIdioma(string codigoIdiomaAnterior, string codigoIdiomaNuevo) : void
+  }
+  class LogInOut {
+    +ObtenerIdiomasDisponibles() : List<string>
+    +ObtenerTraduccion(string clave, string codigoIdioma) : string
+  }
+}
+
+package "BLL" {
+  class BLL_Idioma {
+    +ObtenerIdiomasDisponibles() : List<string>
+    +ObtenerTodosCatalogo(string codigoIdioma) : Dictionary<string, string>
+    +ObtenerTraduccion(string clave, string codigoIdioma) : string
+  }
+  class BLL_USUARIO {
+    +{static} GuardarIdiomaPreferidoActual(string codigoIdioma) : void
+    +GuardarIdiomaPreferido(BE_USUARIO usuario, string codigoIdioma) : void
+  }
+  class BLL_ControlCambios <<static>> {
+    +RegistrarCambio(string tipoEntidad, int idEntidad, string nombreAtributo, string valorAnterior, string valorNuevo, BE_USUARIO usuarioModifico, string descripcion) : void
+  }
+}
+
+package "DAL" {
+  abstract class "MAPPER<T>" as MAPPER {
+    +{abstract} Alta(T obj) : int
+  }
+  class MP_USUARIO {
+    +ActualizarIdiomaPreferido(int idUsuario, string codigoIdioma) : void
+    +ObtenerIdiomaPreferido(int idUsuario) : string
+  }
+  class MP_CambiosEntidad {
+    +Alta(BE_CambiosEntidad obj) : int
+  }
+}
+
+package "SERVICE" {
+  class SV_IdiomaManager <<singleton>> {
+    +GetInstance() : SV_IdiomaManager
+    +CambiarIdioma(string codigoIdioma) : void
+    +Obtener(string clave) : string
+    -NotificarCambioIdioma(string anterior, string nuevo) : void
+  }
+  class SV_Singleton <<static>> {
+    +Usuario : BE_USUARIO
+  }
+}
+
+package "BE" {
+  class BE_USUARIO {
+    +ID : int
+    +CodigoIdioma : string
+  }
+  class BE_CambiosEntidad {
+    +TipoEntidad : string
+    +NombreAtributo : string
+  }
+}
+
+MainForm --> SV_IdiomaManager
+MainForm --> BLL_USUARIO
+SV_IdiomaManager --> LogInOut
+LogInOut --> BLL_Idioma
+SV_IdiomaManager --> BLL_Idioma
+BLL_USUARIO --> MP_USUARIO
+BLL_USUARIO --> BLL_ControlCambios
+BLL_USUARIO --> SV_Singleton
+BLL_ControlCambios --> MP_CambiosEntidad
+MP_USUARIO --> BE_USUARIO
+MP_CambiosEntidad --> BE_CambiosEntidad
+MP_USUARIO --|> MAPPER
+MP_CambiosEntidad --|> MAPPER
+SV_Singleton --> BE_USUARIO : Usuario
+@enduml

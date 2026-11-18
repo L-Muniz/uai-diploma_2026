@@ -1,0 +1,214 @@
+@startuml CAPA_BE
+title Capa BE - Diagrama de clases
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class BE_BITACORA {
+  - id : int
+  - user : BE_USUARIO
+  - descripcion : string
+  - fecha : DateTime
+  --
+  + ToString() : string
+}
+
+class BE_CambiosEntidad {
+  - id : int
+  - tipoEntidad : string
+  - idEntidad : int
+  - nombreAtributo : string
+  - valorAnterior : string
+  - valorNuevo : string
+  + ValorAnteriorMostrado : string
+  + ValorNuevoMostrado : string
+  - EsMemento : bool
+  + AtributoMostrado : string
+  - usuarioModifico : BE_USUARIO
+  - fechaCambio : DateTime
+  - descripcion : string
+  --
+  + ToString() : string
+}
+
+class BE_ComponenteAcceso {
+  + TipoPermiso : string
+  + TipoRol : string
+  + TipoPerfil : string
+  + ID : int
+  + Tipo : string
+  + Nombre : string
+  + Codigo : string
+  + Descripcion : string
+  + EsHeredado : bool
+  + Origen : string
+  + EsPermiso : bool
+  + EsRol : bool
+  + EsPerfil : bool
+  + SePuedeDesasignar : bool
+  + ProvieneDePerfil : bool
+  + ProvieneDeRolPadre : bool
+  + OrigenDirecto : string
+  + Etiqueta : string
+  --
+  + OrigenDesdePerfil(string nombrePerfil) : string
+  + OrigenDesdePerfiles(IList<string> nombresPerfil) : string
+  + OrigenDesdeRolPadre(string nombreRolPadre) : string
+  + CombinarOrigenes(IList<string> origenes) : string
+  + ToString() : string
+}
+
+class BE_DigitoVerificadorVertical {
+  - id : int
+  - idEntidad : int
+  - tipoEntidad : string
+  - dvUsername : int
+  - dvHashedPassword : int
+  - dvBloqueado : int
+  - fechaCalculoDV : DateTime
+  --
+  + BE_DigitoVerificadorVertical()
+  + ToString() : string
+}
+
+class BE_Idioma {
+  + Codigo : string
+  + Nombre : string
+  --
+  + ToString() : string
+}
+
+class BE_MementoRol {
+  + ID : int
+  + Nombre : string
+  + Descripcion : string
+  + IdsPermisos : List<int>
+  --
+  + ToSerializedString() : string
+  + FromSerializedString(string texto) : BE_MementoRol
+}
+
+class BE_MementoUsuario {
+  + ID : int
+  + Username : string
+  + HashedPassword : string
+  --
+  + ToSerializedString() : string
+  + FromSerializedString(string texto) : BE_MementoUsuario
+}
+
+class BE_Perfil {
+  - id : int
+  - nombre : string
+  - descripcion : string
+  - idPadrePerfil : int?
+  - perfilPadre : BE_Perfil
+  - permisos : List<BE_Permiso>
+  - subperfiles : List<BE_Perfil>
+  --
+  + BE_Perfil()
+  + BE_Perfil(string nombre, string descripcion = "", int? idPadrePerfil = null)
+  + AgregarPermiso(BE_Permiso permiso) : void
+  + AgregarSubperfil(BE_Perfil subperfil) : void
+  + QuitarSubperfil(BE_Perfil subperfil) : void
+  + ObtenerPermisosHeredados() : HashSet<BE_Permiso>
+  + ObtenerTodosLosPermisos() : HashSet<BE_Permiso>
+  + TienePermiso(BE_Permiso permiso) : bool
+  + TienePermisoPorCodigo(string codigo) : bool
+  + ObtenerProfundidad() : int
+  + ContarPermisosTotal() : int
+  + ToString() : string
+}
+
+class BE_Permiso {
+  - id : int
+  - nombre : string
+  - descripcion : string
+  - codigo : string
+  - esCompuesto : bool
+  --
+  + BE_Permiso(string codigo, string nombre, string descripcion = "")
+  + ToString() : string
+  + Equals(object obj) : bool
+  + GetHashCode() : int
+}
+
+class BE_PermisoCompuesto {
+  + ID : int
+  + Nombre : string
+  + Descripcion : string
+  + Codigo : string
+  - componentes : List<I_ComponenteAcceso>
+  --
+  + BE_PermisoCompuesto()
+  + BE_PermisoCompuesto(string codigo, string nombre, string descripcion = "")
+  + AgregarComponente(I_ComponenteAcceso componente) : void
+  + QuitarComponente(I_ComponenteAcceso componente) : void
+  + ObtenerTodosLosPermisos() : HashSet<BE_PermisoSimple>
+  + TienePermiso(BE_PermisoSimple permiso) : bool
+  + TienePermisoPorCodigo(string codigo) : bool
+  + ToString() : string
+  + Equals(object obj) : bool
+  + GetHashCode() : int
+}
+
+class BE_PermisoSimple {
+  + ID : int
+  + Nombre : string
+  + Descripcion : string
+  + Codigo : string
+  --
+  + BE_PermisoSimple(string codigo, string nombre, string descripcion = "")
+  + ObtenerTodosLosPermisos() : HashSet<BE_PermisoSimple>
+  + TienePermiso(BE_PermisoSimple permiso) : bool
+  + TienePermisoPorCodigo(string codigo) : bool
+  + ToString() : string
+  + Equals(object obj) : bool
+  + GetHashCode() : int
+}
+
+class BE_Rol {
+  - id : int
+  - nombre : string
+  - descripcion : string
+  - componentes : List<I_ComponenteAcceso>
+  --
+  + BE_Rol()
+  + BE_Rol(string nombre, string descripcion = "")
+  + AgregarComponente(I_ComponenteAcceso componente) : void
+  + QuitarComponente(I_ComponenteAcceso componente) : void
+  + ObtenerTodosLosPermisos() : HashSet<BE_PermisoSimple>
+  + TienePermiso(BE_PermisoSimple permiso) : bool
+  + TienePermisoPorCodigo(string codigo) : bool
+  + ContarPermisosTotal() : int
+  + ToString() : string
+}
+
+class BE_Snapshot {
+  + ID : int
+  + Nombre : string
+  + Descripcion : string
+  + Fecha : DateTime
+}
+
+class BE_USUARIO {
+  - user : string
+  - pass : string
+  - id : int
+  - bloqueado : bool
+  - dvHorizontal : int
+  - rol : string
+  - codigoIdioma : string
+  --
+  + BE_USUARIO()
+  + BE_USUARIO(string user, string pass)
+  + ToString() : string
+}
+
+class I_ComponenteAcceso <<interface>> {
+}
+
+BE_BITACORA --> BE_USUARIO
+BE_CambiosEntidad --> BE_USUARIO
+BE_PermisoCompuesto --|> I_ComponenteAcceso
+BE_PermisoSimple --|> I_ComponenteAcceso
+@enduml

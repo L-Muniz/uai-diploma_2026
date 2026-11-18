@@ -1,0 +1,36 @@
+@startuml CU09_der
+title CU-009 Desasignar Permiso - Modelo entidad-relación (ProyectoC)
+hide circle
+skinparam linetype ortho
+
+entity "ROL" as ROL {
+  *ID_ROL : int <<PK>>
+  --
+  NOMBRE : varchar(50)
+  DESCRIPCION : varchar(255)
+  ACTIVO : bit
+}
+entity "ROL_PERMISO" as ROL_PERMISO {
+  *ID_ROL : int <<PK, FK>>
+  *ID_PERMISO : int <<PK, FK>>
+}
+entity "PERMISO" as PERMISO {
+  *ID_PERMISO : int <<PK>>
+  --
+  CODIGO : varchar(50)
+  NOMBRE : varchar(100)
+}
+entity "CAMBIOS_ENTIDAD" as CAMBIOS {
+  *ID_CAMBIO : int <<PK>>
+  --
+  TIPO_ENTIDAD : varchar(50)
+  ID_ENTIDAD : int
+  NOMBRE_ATRIBUTO : varchar(100)
+  VALOR_ANTERIOR : varchar(max)
+  VALOR_NUEVO : varchar(max)
+  FECHA_CAMBIO : datetime
+}
+
+ROL ||--o{ ROL_PERMISO
+PERMISO ||--o{ ROL_PERMISO
+@enduml

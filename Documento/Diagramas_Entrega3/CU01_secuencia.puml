@@ -1,0 +1,119 @@
+@startuml CU01_secuencia
+title CU-001 Iniciar Sesión
+actor "Usuario" as ACT
+boundary LogInOut
+participant BLL_USUARIO
+participant MP_USUARIO
+participant BLL_GESTOR
+participant SV_Mensajes
+participant BLL_IntegridadDatos
+participant MP_DigitoVerificadorVertical
+participant BLL_BITACORA
+participant MP_BITACORA
+participant SV_Singleton
+participant SV_IdiomaManager
+participant MainForm
+database "ProyectoC" as BD
+
+ACT -> LogInOut : accede a la pantalla de login
+LogInOut --> ACT : muestra el formulario de login
+ACT -> LogInOut : ingresa usuario y contraseña (txtUser, txtContra)
+LogInOut --> ACT : muestra los datos ingresados
+ACT -> LogInOut : click en Ingresar: btnIngresar_Click(object sender, EventArgs e) : void
+LogInOut -> BLL_USUARIO : Login(string username, string password) : BE_USUARIO
+BLL_USUARIO -> MP_USUARIO : BuscarPorUserName(string username) : BE_USUARIO
+MP_USUARIO -> BD : USUARIO_BUSCAR(username)
+BD --> MP_USUARIO : DataTable
+MP_USUARIO --> BLL_USUARIO : BE_USUARIO | null
+alt Usuario no encontrado (null)
+  BLL_USUARIO --> LogInOut : throw Exception("Usuario no encontrado.")
+  LogInOut --> ACT : MessageBox "Acceso Denegado"
+else Usuario encontrado
+  BLL_USUARIO -> BLL_GESTOR : EsHashValido(string storedHash) : bool
+  BLL_GESTOR --> BLL_USUARIO : bool
+  alt Hash de contraseña inválido
+    BLL_USUARIO --> LogInOut : throw Exception(mensaje)
+    LogInOut --> ACT : MessageBox de error
+  else Hash válido
+    alt Usuario bloqueado (Bloqueado = true)
+      BLL_USUARIO -> SV_Mensajes : GetUsuarioBloqueadoMessage() : string
+      SV_Mensajes --> BLL_USUARIO : string
+      BLL_USUARIO --> LogInOut : throw Exception(mensaje)
+      LogInOut --> ACT : MessageBox "bloqueado"
+    else Usuario no bloqueado
+      BLL_USUARIO -> BLL_GESTOR : VerifyPassword(string password, string storedHash) : bool
+      BLL_GESTOR --> BLL_USUARIO : bool
+      alt Clave incorrecta
+        BLL_USUARIO -> BLL_USUARIO : intentosLoginActuales++
+        alt intentosLoginActuales >= INTENTOS_MAXIMOS
+          BLL_USUARIO -> BLL_USUARIO : BloquearUsuario(BE_USUARIO usuario) : void
+          BLL_USUARIO -> MP_USUARIO : BloquearUsuario(BE_USUARIO usuario) : int
+          MP_USUARIO -> BD : USUARIO_BLOQUEAR(id)
+          BLL_USUARIO -> SV_Mensajes : GetUsuarioBloqueadoPorIntentosMessage() : string
+          BLL_USUARIO --> LogInOut : throw Exception(mensaje)
+        else intentosLoginActuales < INTENTOS_MAXIMOS
+          BLL_USUARIO -> SV_Mensajes : GetIntentoFallidoMessage(int intento, int intentosMaximos) : string
+          BLL_USUARIO --> LogInOut : throw Exception(intentos restantes)
+        end
+        LogInOut --> ACT : MessageBox "intento fallido"
+      else Clave correcta
+        BLL_USUARIO -> BLL_USUARIO : ObtenerDVVDelUsuario(int idUsuario) : BE_DigitoVerificadorVertical
+        BLL_USUARIO -> MP_DigitoVerificadorVertical : BuscarPorTipoEntidad(string "USUARIO") : BE_DigitoVerificadorVertical
+        MP_DigitoVerificadorVertical -> BD : DVV_BUSCAR_X_TIPO("USUARIO")
+        BD --> MP_DigitoVerificadorVertical : DataRow
+        MP_DigitoVerificadorVertical --> BLL_USUARIO : BE_DigitoVerificadorVertical
+        BLL_USUARIO -> BLL_IntegridadDatos : VerificarIntegridadCompleta(BE_USUARIO usuario, BE_DigitoVerificadorVertical dvv) : (bool esValido, string mensaje)
+        BLL_IntegridadDatos -> BLL_IntegridadDatos : VerificarIntegridadDVHUsuario(BE_USUARIO usuario) : bool
+        BLL_IntegridadDatos -> BLL_IntegridadDatos : VerificarIntegridadDVVUsuario(BE_USUARIO usuario, BE_DigitoVerificadorVertical dvv) : bool
+        BLL_IntegridadDatos --> BLL_USUARIO : (bool esValido, string mensaje)
+        alt Integridad inválida (se registra advertencia)
+          BLL_USUARIO -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string "ADVERTENCIA DE INTEGRIDAD: ...") : void
+          BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj) : int
+          MP_BITACORA -> BD : REGISTRO
+          BD --> MP_BITACORA : int
+          MP_BITACORA --> BLL_BITACORA : int filas
+          BLL_BITACORA --> BLL_USUARIO : void
+        else Integridad válida
+        end
+        BLL_USUARIO -> MP_USUARIO : ObtenerRolUsuario(int idUsuario) : string
+        MP_USUARIO -> BD : USUARIO_OBTENER_ROL(id)
+        BD --> MP_USUARIO : string rol
+        MP_USUARIO --> BLL_USUARIO : string rol
+        BLL_USUARIO -> MP_USUARIO : ObtenerIdiomaPreferido(int idUsuario) : string
+        MP_USUARIO -> BD : USUARIO_OBTENER_IDIOMA(id)
+        BD --> MP_USUARIO : string codigoIdioma | null
+        MP_USUARIO --> BLL_USUARIO : string codigoIdioma
+        BLL_USUARIO -> SV_Singleton : GetInstance().Usuario = usuario
+        BLL_USUARIO -> SV_Mensajes : GetLoginMessage() : string
+        BLL_USUARIO -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string "Inicio de sesión") : void
+        BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj) : int
+        MP_BITACORA -> BD : REGISTRO
+        BD --> MP_BITACORA : int
+        MP_BITACORA --> BLL_BITACORA : int filas
+        BLL_BITACORA --> BLL_USUARIO : void
+        BLL_USUARIO --> LogInOut : BE_USUARIO usuario
+        alt Integridad inválida y rol distinto de ADMIN
+          LogInOut -> BLL_USUARIO : Logout() : void
+          BLL_USUARIO -> SV_Singleton : LimpiarSesion() : void
+          LogInOut --> ACT : MessageBox "El servicio no está disponible"
+          LogInOut -> LogInOut : LimpiarCampos() : void
+        else Acceso permitido
+          alt Integridad inválida y rol ADMIN
+            LogInOut --> ACT : MessageBox: restaurar / recalcular DV / continuar
+          else Integridad válida
+          end
+          LogInOut --> ACT : MessageBox "Login correcto"
+          alt Idioma preferido distinto de null
+            LogInOut -> LogInOut : AplicarIdiomaPreferido(BE_USUARIO usuario) : void
+            LogInOut -> SV_IdiomaManager : CambiarIdioma(string codigoIdioma) : void
+          else Sin idioma preferido
+          end
+          LogInOut -> MainForm : new MainForm(BE_USUARIO usuario) : MainForm
+          LogInOut -> MainForm : Show() : void
+          MainForm --> ACT : muestra el menú principal según el Rol
+        end
+      end
+    end
+  end
+end
+@enduml

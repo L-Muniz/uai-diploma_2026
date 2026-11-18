@@ -48,7 +48,6 @@
     <Compile Include="MP_BITACORA.cs" />
     <Compile Include="MP_CambiosEntidad.cs" />
     <Compile Include="MP_DigitoVerificadorVertical.cs" />
-    <Compile Include="MP_PERFIL.cs" />
     <Compile Include="MP_PERMISO.cs" />
     <Compile Include="MP_ROL.cs" />
     <Compile Include="MP_USUARIO.cs" />

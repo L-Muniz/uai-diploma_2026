@@ -1,0 +1,178 @@
+@startuml CAPA_BLL
+title Capa BLL - Diagrama de clases
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class BLL_BackupRestore {
+  - rutaBackup : string
+  --
+  + RealizarBackup() : (bool exito, string mensaje)
+  + ObtenerUltimoBackup() : string
+  + ListarBackups() : List<string>
+  + RestaurarDesdeBackup(string rutaArchivo) : (bool exito, string mensaje)
+  + RestaurarUltimoBackup() : (bool exito, string mensaje)
+  + ObtenerInfoBackups() : Dictionary<string, object>
+  + ConfigurarBackupAutomatico(int intervalMinutos) : void
+}
+
+class BLL_BITACORA {
+  + Listar() : List<BE_BITACORA>
+  + ListarXID(BE_USUARIO usuario) : List<BE_BITACORA>
+  + IngresarRegistro(BE_USUARIO usuario, string descripcion) : void
+  + ObtenerTodosLosRegistros() : List<BE_BITACORA>
+  + FiltrarPorUsuario(BE_USUARIO usuario) : List<BE_BITACORA>
+  + FiltrarPorFechas(DateTime fechaDesde, DateTime fechaHasta) : List<BE_BITACORA>
+  + FiltrarPorTipoEvento(TipoEvento tipo) : List<BE_BITACORA>
+  + FiltrarPorDescripcion(string textoBusqueda) : List<BE_BITACORA>
+  + FiltrarAvanzado(CriteriosBusqueda criterios) : List<BE_BITACORA>
+  + ClasificarTipoEvento(string descripcion) : TipoEvento
+  + ObtenerNombreTipoEvento(string descripcion) : string
+  + ObtenerEstadisticasPorTipo() : Dictionary<string, int>
+  + ObtenerUltimosRegistros(int cantidad = 10) : List<BE_BITACORA>
+  + ObtenerActividadUsuarioPorPeriodo(BE_USUARIO usuario, DateTime fechaDesde, DateTime fechaHasta) : List<BE_BITACORA>
+  + GenerarReporteActividad(List<BE_BITACORA> registros) : string
+}
+
+class BLL_ControlCambios {
+  - mpCambios : MP_CambiosEntidad
+  --
+  + RegistrarMementoRol(BE_MementoRol anterior, BE_MementoRol despues, BE_USUARIO usuario, string descripcion) : void
+  + RegistrarMementoUsuario(BE_MementoUsuario anterior, BE_MementoUsuario despues, BE_USUARIO usuario, string descripcion) : void
+  + ObtenerHistorialEntidad(string tipoEntidad, int idEntidad) : List<BE_CambiosEntidad>
+  + ObtenerCambiosPorUsuario(int idUsuario) : List<BE_CambiosEntidad>
+  + ObtenerCambiosPorFechas(DateTime fechaDesde, DateTime fechaHasta) : List<BE_CambiosEntidad>
+  + ObtenerCambiosRecientes(int cantidad = 50) : List<BE_CambiosEntidad>
+  + GenerarReporteCambios(List<BE_CambiosEntidad> cambios) : string
+  + ObtenerEstadisticasPorEntidad() : Dictionary<string, int>
+  + ObtenerEstadisticasPorUsuario() : Dictionary<string, int>
+  + RevertirCambio(BE_CambiosEntidad cambio, BE_USUARIO usuarioReverti) : (bool exito, string mensaje)
+}
+
+class BLL_GESTOR {
+  + HashPassword(string password) : string
+  + VerifyPassword(string password, string storedHash) : bool
+  + EsHashValido(string storedHash) : bool
+}
+
+class BLL_Idioma {
+  + ObtenerIdiomas() : List<BE_Idioma>
+  + ObtenerIdiomasDisponibles() : List<string>
+  + ObtenerTraduccion(string clave, string codigoIdioma) : string
+  + ObtenerTodosCatalogo(string codigoIdioma) : Dictionary<string, string>
+  + AgregarIdioma(string codigo, string nombre) : bool
+  + ObtenerTodasLasClaves() : List<string>
+  + AgregarTraduccion(string clave, string codigoIdioma, string valor) : bool
+}
+
+class BLL_IntegridadDatos {
+  + CalcularDVHUsuario(BE_USUARIO usuario) : void
+  + VerificarIntegridadDVHUsuario(BE_USUARIO usuario) : bool
+  + CalcularDVVUsuario(BE_USUARIO usuario) : BE_DigitoVerificadorVertical
+  + PersistirDVVUsuario(BE_DigitoVerificadorVertical dvv) : void
+  + VerificarIntegridadDVVUsuario(BE_USUARIO usuario, BE_DigitoVerificadorVertical dvv) : bool
+  + VerificarSoloDVH(BE_USUARIO usuario) : (bool esValido, string mensaje)
+  + VerificarSoloDVV(BE_DigitoVerificadorVertical dvv) : (bool esValido, string mensaje)
+  + DetectarFalloIntegridadPrioritario() : (bool esValido, string mensaje)
+  + VerificarIntegridadCompleta(BE_USUARIO usuario, BE_DigitoVerificadorVertical dvv) : (bool esValido, string mensaje)
+  + VerificarTodasLasEntidades() : (bool esValido, string detalle)
+  + RecalcularTodosLosDV() : (bool exito, string mensaje, string detalle)
+  + CalcularDVHRol(BE_Rol rol) : void
+  + VerificarIntegridadDVHRol(BE_Rol rol) : bool
+}
+
+class BLL_PERFIL {
+  - mp : MP_PERFIL
+  --
+  + ObtenerPerfilesPrincipales() : List<BE_Perfil>
+  + ObtenerTodosLosPerfiles() : List<BE_Perfil>
+  + ObtenerPerfilesHijos(int idPerfilPadre) : List<BE_Perfil>
+  + ObtenerPermisosDelPerfil(int idPerfil) : List<BE_Permiso>
+  + ObtenerTodosLosPermisos() : List<BE_Permiso>
+  + ObtenerPermisosConHerencia(int idPerfil) : List<BE_Permiso>
+  + ObtenerComponentesDelPerfil(int idPerfil) : List<BE_ComponenteAcceso>
+  + ObtenerComponentesDisponiblesParaAsignar(int idPerfil) : List<BE_ComponenteAcceso>
+  + FormariaReferenciaCircular(int idPerfil, int? idNuevoPadre) : bool
+  + ValidarAsignacionPadre(int idPerfil, int? idNuevoPadre) : void
+  + CrearPerfil(string nombre, string descripcion) : void
+  + CrearPerfil(BE_Perfil perfil) : void
+  + ActualizarPerfil(BE_Perfil perfil) : void
+  + AsignarSubPerfil(int idPerfilPadre, int idPerfilHijo) : void
+  + DesasignarSubPerfil(int idPerfilPadre, int idPerfilHijo) : void
+  + AsignarComponente(int idPerfil, BE_ComponenteAcceso componente) : void
+  + DesasignarComponente(int idPerfil, BE_ComponenteAcceso componente) : void
+  + EliminarPerfil(int idPerfil) : void
+  + AgregarPermisoAlPerfil(int idPerfil, int idPermiso) : void
+  + QuitarPermisoDelPerfil(int idPerfil, int idPermiso) : void
+  + ObtenerPerfilesCandidatosComoPadre(int idPerfilHijo) : List<BE_Perfil>
+}
+
+class BLL_PERMISO {
+  - mpPermiso : MP_PERMISO
+  - bllBitacora : BLL_BITACORA
+  --
+  + BLL_PERMISO()
+  + CrearPermiso(BE_Permiso permiso) : void
+  + ActualizarPermiso(BE_Permiso permiso) : void
+  + EliminarPermiso(int idPermiso) : void
+  + ObtenerTodosLosPermisos() : List<BE_Permiso>
+  + ObtenerPermisoPorId(int idPermiso) : BE_Permiso
+  + AgregarComponente(int idPermisoCompuesto, int idPermisoComponente) : void
+  + ContieneRecursivamente(int idRaiz, int idBuscado, HashSet<int> visitados) : bool
+  + QuitarComponente(int idPermisoCompuesto, int idPermisoComponente) : void
+  + ObtenerComponentes(int idPermisoCompuesto) : List<BE_Permiso>
+  + MarcarComoCompuesto(int idPermiso) : void
+}
+
+class BLL_ROL {
+  - mp : MP_ROL
+  --
+  + ObtenerRolesPrincipales() : List<BE_Rol>
+  + ObtenerTodosLosRoles() : List<BE_Rol>
+  + ObtenerPermisosDelRol(int idRol) : List<BE_Permiso>
+  + ObtenerComponentesDelRol(int idRol) : List<BE_ComponenteAcceso>
+  + ObtenerComponentesDisponiblesParaAsignar(int idRol) : List<BE_ComponenteAcceso>
+  + ObtenerTodosLosPermisos() : List<BE_Permiso>
+  + CrearRol(BE_Rol rol) : void
+  + ActualizarRol(BE_Rol rol) : void
+  + CrearMemento(int idRol) : BE_MementoRol
+  + RestaurarMemento(BE_MementoRol memento) : void
+  + DesasignarComponente(int idRol, BE_ComponenteAcceso componente) : void
+  + AsignarComponente(int idRol, BE_ComponenteAcceso componente) : void
+  + EliminarRol(int idRol) : void
+  + AgregarPermisoAlRol(int idRol, int idPermiso) : void
+  + QuitarPermisoDelRol(int idRol, int idPermiso) : void
+  + ObtenerRolPorID(int idRol) : BE_Rol
+}
+
+class BLL_Rollback {
+  + GuardarSnapshot(string nombre, string descripcion, string contenido = null) : (bool exito, string mensaje)
+  + RevertirASnapshot(int idSnapshot) : (bool exito, string mensaje)
+  + ListarSnapshots() : List<BE_Snapshot>
+  + EliminarSnapshot(int idSnapshot) : (bool exito, string mensaje)
+  + GuardarSnapshotUsuario(BE_USUARIO usuario, string descripcion) : (bool exito, string mensaje)
+}
+
+class BLL_USUARIO {
+  - INTENTOS_MAXIMOS : int
+  - intentosLoginActuales : int
+  --
+  + Login(string username, string password) : BE_USUARIO
+  + Logout() : void
+  + CrearUsuario(string username, string password) : void
+  + DesbloquearUsuario(BE_USUARIO usuario) : void
+  + ActualizarUsuario(BE_USUARIO usuario) : void
+  + GuardarIdiomaPreferido(BE_USUARIO usuario, string codigoIdioma) : void
+  + GuardarIdiomaPreferidoActual(string codigoIdioma) : void
+  + EsRolAdministrador(string rol) : bool
+  + ObtenerIntentosMaximos() : int
+  + ListarUsuarios() : List<BE_USUARIO>
+  + EditarUsuario(int idUsuario, string nuevoUsername, string nuevaPassword = null) : void
+  + CrearMementoUsuario(BE_USUARIO usuario) : BE_MementoUsuario
+  + RestaurarMementoUsuario(BE_MementoUsuario memento) : void
+  + EliminarUsuario(int idUsuario) : void
+  + AsignarRolUsuario(int idUsuario, int idRol, string nombreRol) : void
+  + ObtenerDVVDelUsuario(int idUsuario) : BE_DigitoVerificadorVertical
+}
+
+BLL_PERMISO --> BLL_BITACORA
+@enduml

@@ -1,0 +1,21 @@
+@startuml CU02_der
+title CU-002 Cerrar Sesión - Modelo entidad-relación (ProyectoC)
+hide circle
+skinparam linetype ortho
+
+entity "USUARIO" as USUARIO {
+  *ID_USUARIO : int <<PK>>
+  --
+  USERNAME : varchar(50)
+  BLOQUEADO : bit
+}
+entity "BITACORA" as BITACORA {
+  *ID_BITACORA : int <<PK>>
+  --
+  ID_USUARIO : int <<FK>>
+  DESCRIPCION : varchar(50)
+  FECHA : datetime
+}
+
+USUARIO ||--o{ BITACORA
+@enduml

@@ -1,0 +1,46 @@
+@startuml CU03_der
+title CU-003 Bloquear Usuario - Modelo entidad-relación (ProyectoC)
+hide circle
+skinparam linetype ortho
+
+entity "USUARIO" as USUARIO {
+  *ID_USUARIO : int <<PK>>
+  --
+  USERNAME : varchar(50)
+  PASS : varchar(255)
+  BLOQUEADO : bit
+  DVH_HORIZONTAL : int
+}
+entity "CAMBIOS_ENTIDAD" as CAMBIOS {
+  *ID_CAMBIO : int <<PK>>
+  --
+  TIPO_ENTIDAD : varchar(50)
+  ID_ENTIDAD : int
+  NOMBRE_ATRIBUTO : varchar(100)
+  VALOR_ANTERIOR : varchar(max)
+  VALOR_NUEVO : varchar(max)
+  ID_USUARIO_MODIFICO : int
+  FECHA_CAMBIO : datetime
+  DESCRIPCION : varchar(500)
+}
+entity "BITACORA" as BITACORA {
+  *ID_BITACORA : int <<PK>>
+  --
+  ID_USUARIO : int <<FK>>
+  DESCRIPCION : varchar(50)
+  FECHA : datetime
+}
+entity "DIGITO_VERIFICADOR_VERTICAL" as DVV {
+  *ID_DVV : int <<PK>>
+  --
+  ID_ENTIDAD : int
+  TIPO_ENTIDAD : varchar(50)
+  DV_USERNAME : int
+  DV_PASSWORD : int
+  DV_BLOQUEADO : int
+}
+
+USUARIO ||--o{ BITACORA
+USUARIO ||--o{ CAMBIOS
+USUARIO ||--o{ DVV
+@enduml

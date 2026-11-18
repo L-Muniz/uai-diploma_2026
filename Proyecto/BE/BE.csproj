@@ -48,7 +48,6 @@
     <Compile Include="BE_DigitoVerificadorVertical.cs" />
     <Compile Include="BE_Idioma.cs" />
     <Compile Include="BE_Permiso.cs" />
-    <Compile Include="BE_Perfil.cs" />
     <Compile Include="BE_PermisoCompuesto.cs" />
     <Compile Include="BE_PermisoSimple.cs" />
     <Compile Include="BE_Rol.cs" />

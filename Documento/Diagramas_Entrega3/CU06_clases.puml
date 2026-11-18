@@ -1,0 +1,42 @@
+@startuml CU06_clases
+title CU-006 Realizar Backup - Diagrama de clases
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+left to right direction
+
+package "GUI" {
+  class FormBackups {
+    -btnBackupAhora_Click(object sender, EventArgs e) : void
+    -RealizarBackupAhora() : void
+    -CargarBackups() : void
+  }
+}
+
+package "BLL" {
+  class BLL_BackupRestore <<static>> {
+    +RealizarBackup() : (bool exito, string mensaje)
+    +ListarBackups() : List<string>
+    +ObtenerInfoBackups() : Dictionary<string, object>
+  }
+}
+
+package "DAL" {
+  class ACCESO {
+    +Abrir() : void
+    +Cerrar() : void
+    +GetConexion() : SqlConnection
+    +Leer(string sql) : DataTable
+  }
+}
+
+package "SERVICE" {
+  class SV_Encriptacion <<static>> {
+    +Encriptar(string contenidoPlano) : string
+    +LeerArchivoDesencriptado(string ruta) : string
+  }
+}
+
+FormBackups --> BLL_BackupRestore
+BLL_BackupRestore --> ACCESO
+BLL_BackupRestore --> SV_Encriptacion
+@enduml

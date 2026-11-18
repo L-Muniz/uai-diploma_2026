@@ -1,0 +1,46 @@
+@startuml CU05_secuencia
+title CU-005 Cambiar Idioma
+actor "Usuario" as ACT
+boundary MainForm
+boundary LogInOut
+participant SV_IdiomaManager
+participant BLL_Idioma
+participant BLL_USUARIO
+participant MP_USUARIO
+participant BLL_ControlCambios
+participant MP_CambiosEntidad
+database "ProyectoC" as BD
+
+ACT -> MainForm : selecciona un idioma en Opciones > Idioma
+MainForm -> SV_IdiomaManager : CambiarIdioma(string codigoIdioma) : void
+SV_IdiomaManager -> LogInOut : ObtenerIdiomasDisponibles() : List<string>
+LogInOut -> BLL_Idioma : ObtenerIdiomasDisponibles() : List<string>
+BLL_Idioma -> BD : SELECT_IDIOMA_TODOS
+BD --> BLL_Idioma : DataTable
+BLL_Idioma --> LogInOut : List<string> idiomas
+LogInOut --> SV_IdiomaManager : List<string> idiomas
+SV_IdiomaManager -> BLL_Idioma : ObtenerTodosCatalogo(string codigoIdioma) : Dictionary<string, string>
+BLL_Idioma -> BD : SELECT_TRADUCCION(codigoIdioma)
+BD --> BLL_Idioma : DataTable
+BLL_Idioma --> SV_IdiomaManager : Dictionary<string, string> catalogo
+SV_IdiomaManager -> SV_IdiomaManager : NotificarCambioIdioma(string anterior, string nuevo) : void
+SV_IdiomaManager -> MainForm : ActualizarIdioma(string anterior, string nuevo) : void
+MainForm -> BLL_USUARIO : GuardarIdiomaPreferidoActual(string codigoIdioma) : void
+BLL_USUARIO -> MP_USUARIO : ActualizarIdiomaPreferido(int idUsuario, string codigoIdioma) : void
+MP_USUARIO -> BD : USUARIO_ACTUALIZAR_IDIOMA(id, codigo)
+BD --> MP_USUARIO : filas
+MP_USUARIO --> BLL_USUARIO : void
+BLL_USUARIO -> BLL_ControlCambios : RegistrarCambio("USUARIO", id, "IDIOMA", anterior, nuevo, usuario, "Idioma preferido actualizado") : void
+BLL_ControlCambios -> MP_CambiosEntidad : Alta(BE_CambiosEntidad cambio) : int
+MP_CambiosEntidad -> BD : CAMBIOS_ENTIDAD_ALTA
+BD --> MP_CambiosEntidad : int filas
+MP_CambiosEntidad --> BLL_ControlCambios : int filas
+BLL_ControlCambios --> BLL_USUARIO : void
+BLL_USUARIO --> MainForm : void
+MainForm --> ACT : la interfaz se muestra en el idioma seleccionado
+alt Clave de traducción inexistente
+  MainForm -> SV_IdiomaManager : Obtener(string clave) : string
+  SV_IdiomaManager --> MainForm : "[CLAVE]"
+  MainForm --> ACT : muestra la clave entre corchetes
+end
+@enduml

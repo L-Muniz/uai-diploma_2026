@@ -1,0 +1,118 @@
+@startuml CAPA_DAL
+title Capa DAL - Diagrama de clases
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class ACCESO {
+  + Abrir() : void
+  + Cerrar() : void
+  + Escribir(string sql, List<SqlParameter> parametros = null) : int
+  + Verificar(string sql, List<SqlParameter> parametros = null) : int
+  + Leer(string sql, List<SqlParameter> parametros = null) : DataTable
+  + CrearComando(string sql, List<SqlParameter> parametros) : SqlCommand
+  + CrearParametro(string key, string value) : SqlParameter
+  + CrearParametro(string key, int value) : SqlParameter
+  + CrearParametro(string key, DateTime value) : SqlParameter
+  + CrearParametro(string key, bool value) : SqlParameter
+  + GetConexion() : SqlConnection
+}
+
+abstract class MAPPER {
+  + Alta(T obj) : int
+  + Editar(T obj) : int
+  + Borrar(T obj) : int
+  + Listar() : List<T>
+}
+
+class MP_BITACORA {
+  + Alta(BE_BITACORA obj) : int
+  + Borrar(BE_BITACORA obj) : int
+  + Editar(BE_BITACORA obj) : int
+  + Listar() : List<BE_BITACORA>
+  + ListarXID(BE_USUARIO user) : List<BE_BITACORA>
+}
+
+class MP_CambiosEntidad {
+  + Alta(BE_CambiosEntidad obj) : int
+  + Borrar(BE_CambiosEntidad obj) : int
+  + Editar(BE_CambiosEntidad obj) : int
+  + Listar() : List<BE_CambiosEntidad>
+  + ListarPorEntidad(string tipoEntidad, int idEntidad) : List<BE_CambiosEntidad>
+  + ListarPorUsuario(int idUsuario) : List<BE_CambiosEntidad>
+  + ListarPorFechas(DateTime fechaDesde, DateTime fechaHasta) : List<BE_CambiosEntidad>
+}
+
+class MP_DigitoVerificadorVertical {
+  + Alta(BE_DigitoVerificadorVertical obj) : int
+  + Borrar(BE_DigitoVerificadorVertical obj) : int
+  + Editar(BE_DigitoVerificadorVertical obj) : int
+  + Listar() : List<BE_DigitoVerificadorVertical>
+  + BuscarPorTipoEntidad(string tipoEntidad) : BE_DigitoVerificadorVertical
+  + BuscarPorIdEntidad(int idEntidad, string tipoEntidad) : BE_DigitoVerificadorVertical
+}
+
+class MP_PERFIL {
+  + Alta(BE_Perfil obj) : int
+  + Borrar(BE_Perfil obj) : int
+  + Editar(BE_Perfil obj) : int
+  + AsignarPadre(int idPerfil, int? idPerfilPadre) : int
+  + Listar() : List<BE_Perfil>
+  + ListarTodos() : List<BE_Perfil>
+  + ObtenerPerfilesHijos(int idPerfilPadre) : List<BE_Perfil>
+  + ObtenerPorId(int idPerfil) : BE_Perfil
+  + ObtenerPermisos(int idPerfil) : List<BE_Permiso>
+  + ObtenerTodosLosPermisos() : List<BE_Permiso>
+  + AgregarPermiso(int idPerfil, int idPermiso) : void
+  + QuitarPermiso(int idPerfil, int idPermiso) : void
+}
+
+class MP_PERMISO {
+  + Alta(BE_Permiso permiso) : int
+  + Editar(BE_Permiso permiso) : void
+  + Borrar(int idPermiso) : void
+  + Listar() : List<BE_Permiso>
+  + ObtenerPorId(int idPermiso) : BE_Permiso
+  + ExisteCodigoDuplicado(string codigo, int idPermisoExcluir = 0) : bool
+  + AgregarComponente(int idPermisoCompuesto, int idPermisoComponente) : void
+  + QuitarComponente(int idPermisoCompuesto, int idPermisoComponente) : void
+  + ObtenerComponentes(int idPermisoCompuesto) : List<BE_Permiso>
+  + MarcarComoCompuesto(int idPermiso) : void
+}
+
+class MP_ROL {
+  + Alta(BE_Rol obj) : int
+  + Borrar(BE_Rol obj) : int
+  + Editar(BE_Rol obj) : int
+  + Listar() : List<BE_Rol>
+  + ListarTodos() : List<BE_Rol>
+  + ObtenerPorId(int idRol) : BE_Rol
+  + ObtenerPermisos(int idRol) : List<BE_Permiso>
+  + ObtenerTodosLosPermisos() : List<BE_Permiso>
+  + AgregarPermiso(int idRol, int idPermiso) : void
+  + QuitarPermiso(int idRol, int idPermiso) : void
+  + ObtenerPorID(int idRol) : BE_Rol
+}
+
+class MP_USUARIO {
+  + Alta(BE_USUARIO obj) : int
+  + Borrar(BE_USUARIO obj) : int
+  + BuscarPorUserName(string username) : BE_USUARIO
+  + BuscarPorId(int id) : BE_USUARIO
+  + Editar(BE_USUARIO obj) : int
+  + AsignarRol(int idUsuario, int idRol) : int
+  + Listar() : List<BE_USUARIO>
+  + BloquearUsuario(BE_USUARIO usuario) : int
+  + DesbloquearUsuario(BE_USUARIO usuario) : int
+  + ActualizarDVHorizontal(BE_USUARIO usuario) : int
+  + ObtenerRolUsuario(int idUsuario) : string
+  + ObtenerIdiomaPreferido(int idUsuario) : string
+  + ActualizarIdiomaPreferido(int idUsuario, string codigoIdioma) : void
+}
+
+MP_BITACORA --|> MAPPER
+MP_CambiosEntidad --|> MAPPER
+MP_DigitoVerificadorVertical --|> MAPPER
+MP_PERFIL --|> MAPPER
+MP_ROL --|> MAPPER
+MP_USUARIO --|> MAPPER
+@enduml

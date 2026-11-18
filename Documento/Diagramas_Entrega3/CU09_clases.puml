@@ -1,0 +1,65 @@
+@startuml CU09_clases
+title CU-009 Desasignar Permiso - Diagrama de clases
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+left to right direction
+
+package "GUI" {
+  class FormRoles {
+    -DesasignarComponente() : void
+    -CargarRoles() : void
+  }
+}
+
+package "BLL" {
+  class BLL_ROL {
+    +DesasignarComponente(int idRol, BE_ComponenteAcceso componente) : void
+    -QuitarPermisoDelRol(int idRol, int idPermiso) : void
+    +CrearMemento(int idRol) : BE_MementoRol
+  }
+  class BLL_ControlCambios <<static>> {
+    +RegistrarMementoRol(BE_MementoRol anterior, BE_MementoRol despues, BE_USUARIO usuario, string descripcion) : void
+  }
+  class BLL_BITACORA {
+    +IngresarRegistro(BE_USUARIO usuario, string descripcion) : void
+  }
+}
+
+package "DAL" {
+  abstract class "MAPPER<T>" as MAPPER {
+    +{abstract} Alta(T obj) : int
+  }
+  class MP_ROL {
+    +QuitarPermiso(int idRol, int idPermiso) : void
+  }
+  class MP_CambiosEntidad {
+    +Alta(BE_CambiosEntidad obj) : int
+  }
+  class MP_BITACORA {
+    +Alta(BE_BITACORA obj) : int
+  }
+}
+
+package "BE" {
+  class BE_ComponenteAcceso {
+    +ID : int
+    +EsHeredado : bool
+    +Origen : string
+  }
+  class BE_MementoRol {
+    +ID : int
+    +IdsPermisos : List<int>
+  }
+}
+
+FormRoles --> BLL_ROL
+BLL_ROL --> BLL_ControlCambios
+BLL_ROL --> BLL_BITACORA
+BLL_ROL --> MP_ROL
+BLL_ROL --> BE_ComponenteAcceso
+BLL_ROL --> BE_MementoRol
+BLL_ControlCambios --> MP_CambiosEntidad
+BLL_BITACORA --> MP_BITACORA
+MP_CambiosEntidad --|> MAPPER
+MP_BITACORA --|> MAPPER
+@enduml

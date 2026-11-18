@@ -1,0 +1,69 @@
+@startuml CU02_clases
+title CU-002 Cerrar Sesión - Diagrama de clases
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+left to right direction
+
+package "GUI" {
+  class MainForm {
+    -btnLogoff_Click(object sender, EventArgs e) : void
+  }
+  class LogInOut {
+    +LogInOut()
+  }
+}
+
+package "BLL" {
+  class BLL_USUARIO {
+    +Logout() : void
+  }
+  class BLL_BITACORA {
+    +IngresarRegistro(BE_USUARIO usuario, string descripcion) : void
+  }
+}
+
+package "DAL" {
+  abstract class "MAPPER<T>" as MAPPER {
+    +{abstract} Alta(T obj) : int
+  }
+  class MP_BITACORA {
+    +Alta(BE_BITACORA obj) : int
+  }
+}
+
+package "SERVICE" {
+  class SV_Singleton <<static>> {
+    +GetInstance() : SV_Singleton
+    +Usuario : BE_USUARIO
+    +LimpiarSesion() : void
+  }
+  class SV_Mensajes <<static>> {
+    +GetLogoutMessage() : string
+  }
+}
+
+package "BE" {
+  class BE_USUARIO {
+    +ID : int
+    +Username : string
+  }
+  class BE_BITACORA {
+    +ID : int
+    +Usuario : BE_USUARIO
+    +Descripcion : string
+    +Fecha : DateTime
+  }
+}
+
+MainForm --> BLL_USUARIO
+MainForm --> LogInOut
+BLL_USUARIO --> BLL_BITACORA
+BLL_USUARIO --> SV_Singleton
+BLL_USUARIO --> SV_Mensajes
+BLL_USUARIO --> BE_USUARIO
+BLL_BITACORA --> MP_BITACORA
+BLL_BITACORA --> BE_BITACORA
+MP_BITACORA --|> MAPPER
+BE_BITACORA --> BE_USUARIO : Usuario
+SV_Singleton --> BE_USUARIO : Usuario
+@enduml

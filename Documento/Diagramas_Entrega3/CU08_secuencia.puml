@@ -1,0 +1,61 @@
+@startuml CU08_secuencia
+title CU-008 Asignar Permiso
+actor "Administrador" as ACT
+boundary FormRoles
+participant BLL_ROL
+participant BLL_PERMISO
+participant MP_ROL
+participant BLL_ControlCambios
+participant MP_CambiosEntidad
+participant BLL_BITACORA
+participant MP_BITACORA
+database "ProyectoC" as BD
+
+ACT -> FormRoles : selecciona Administración > Roles
+FormRoles -> BLL_ROL : ObtenerTodosLosRoles() : List<BE_Rol>
+BLL_ROL -> MP_ROL : ListarTodos() : List<BE_Rol>
+MP_ROL -> BD : ROL_LISTAR_TODOS
+BD --> MP_ROL : DataTable
+MP_ROL --> BLL_ROL : List<BE_Rol>
+BLL_ROL --> FormRoles : List<BE_Rol>
+FormRoles --> ACT : muestra la lista de roles
+ACT -> FormRoles : selecciona un rol
+FormRoles -> BLL_ROL : ObtenerComponentesDelRol(int idRol) : List<BE_ComponenteAcceso>
+BLL_ROL -> MP_ROL : ObtenerPermisos(int idRol) : List<BE_Permiso>
+MP_ROL -> BD : ROL_OBTENER_PERMISOS(idRol)
+BD --> MP_ROL : DataTable
+MP_ROL --> BLL_ROL : List<BE_Permiso>
+loop por cada permiso asignado (recursivo sobre compuestos)
+  BLL_ROL -> BLL_PERMISO : ObtenerComponentes(int idPermisoCompuesto) : List<BE_Permiso>
+  BLL_PERMISO -> MP_PERMISO : ObtenerComponentes(int idPermisoCompuesto) : List<BE_Permiso>
+  MP_PERMISO -> BD : PERMISO_COMPONENTE_LISTAR
+  BD --> MP_PERMISO : DataTable
+  MP_PERMISO --> BLL_PERMISO : List<BE_Permiso>
+  BLL_PERMISO --> BLL_ROL : List<BE_Permiso>
+end
+BLL_ROL --> FormRoles : List<BE_ComponenteAcceso>
+FormRoles --> ACT : muestra componentes asignados (heredados marcados) y permisos disponibles
+ACT -> FormRoles : selecciona un permiso disponible y pulsa Agregar
+FormRoles -> BLL_ROL : AsignarComponente(int idRol, BE_ComponenteAcceso componente) : void
+BLL_ROL -> BLL_ROL : AgregarPermisoAlRol(int idRol, int idPermiso) : void
+BLL_ROL -> BLL_ROL : CrearMemento(int idRol) : BE_MementoRol
+BLL_ROL -> MP_ROL : AgregarPermiso(int idRol, int idPermiso) : void
+MP_ROL -> BD : ROL_AGREGAR_PERMISO
+BD --> MP_ROL : void
+MP_ROL --> BLL_ROL : void
+BLL_ROL -> BLL_ROL : CrearMemento(int idRol) : BE_MementoRol
+BLL_ROL -> BLL_ControlCambios : RegistrarMementoRol(BE_MementoRol anterior, BE_MementoRol despues, BE_USUARIO usuario, string descripcion) : void
+BLL_ControlCambios -> MP_CambiosEntidad : Alta(BE_CambiosEntidad cambio) : int
+MP_CambiosEntidad -> BD : CAMBIOS_ENTIDAD_ALTA
+BD --> MP_CambiosEntidad : int filas
+MP_CambiosEntidad --> BLL_ControlCambios : int filas
+BLL_ROL -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string "Permiso agregado a rol ID ...") : void
+BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj) : int
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : int filas
+MP_BITACORA --> BLL_BITACORA : int filas
+BLL_BITACORA --> BLL_ROL : void
+BLL_ROL --> FormRoles : void
+FormRoles -> FormRoles : CargarRoles() : void
+FormRoles --> ACT : MessageBox "Permiso agregado al rol"
+@enduml

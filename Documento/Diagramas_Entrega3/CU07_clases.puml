@@ -1,0 +1,39 @@
+@startuml CU07_clases
+title CU-007 Restaurar desde Backup - Diagrama de clases
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+left to right direction
+
+package "GUI" {
+  class FormBackups {
+    -btnRestaurar_Click(object sender, EventArgs e) : void
+    -RestaurarBackup() : void
+    -CargarBackups() : void
+  }
+}
+
+package "BLL" {
+  class BLL_BackupRestore <<static>> {
+    +RestaurarDesdeBackup(string rutaArchivo) : (bool exito, string mensaje)
+    +ListarBackups() : List<string>
+  }
+}
+
+package "DAL" {
+  class ACCESO {
+    +Abrir() : void
+    +Cerrar() : void
+    +GetConexion() : SqlConnection
+  }
+}
+
+package "SERVICE" {
+  class SV_Encriptacion <<static>> {
+    +LeerArchivoDesencriptado(string ruta) : string
+  }
+}
+
+FormBackups --> BLL_BackupRestore
+BLL_BackupRestore --> ACCESO
+BLL_BackupRestore --> SV_Encriptacion
+@enduml

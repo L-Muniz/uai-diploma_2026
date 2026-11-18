@@ -1,0 +1,36 @@
+@startuml CU07_secuencia
+title CU-007 Restaurar desde Backup
+actor "Administrador" as ACT
+boundary FormBackups
+participant BLL_BackupRestore
+participant SV_Encriptacion
+participant ACCESO
+database "ProyectoC" as BD
+
+ACT -> FormBackups : selecciona la sección Backups
+FormBackups -> BLL_BackupRestore : ListarBackups() : List<string>
+BLL_BackupRestore --> FormBackups : List<string> backups
+ACT -> FormBackups : selecciona un backup de la lista
+ACT -> FormBackups : click en Restaurar: btnRestaurar_Click(object sender, EventArgs e) : void
+FormBackups --> ACT : MessageBox de advertencia: se reemplazarán todos los datos. ¿Estás seguro?
+alt El administrador cancela
+  ACT -> FormBackups : responde No
+  FormBackups --> ACT : no realiza cambios
+else El administrador confirma
+  ACT -> FormBackups : responde Sí
+  FormBackups -> FormBackups : RestaurarBackup() : void
+  FormBackups -> BLL_BackupRestore : RestaurarDesdeBackup(string rutaArchivo) : (bool exito, string mensaje)
+  BLL_BackupRestore -> SV_Encriptacion : LeerArchivoDesencriptado(string ruta) : string
+  SV_Encriptacion --> BLL_BackupRestore : string scriptSQL
+  BLL_BackupRestore -> ACCESO : Abrir() : void
+  BLL_BackupRestore -> BD : ejecuta el script SQL del backup
+  BD --> BLL_BackupRestore : resultado
+  BLL_BackupRestore -> ACCESO : Cerrar() : void
+  BLL_BackupRestore --> FormBackups : (bool exito, string mensaje)
+  alt Restauración exitosa
+    FormBackups --> ACT : MessageBox "Base de datos restaurada exitosamente. Debe reiniciar la aplicación."
+  else Error durante la restauración
+    FormBackups --> ACT : MessageBox con el mensaje de error
+  end
+end
+@enduml

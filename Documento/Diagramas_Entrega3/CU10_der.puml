@@ -1,0 +1,22 @@
+@startuml CU10_der
+title CU-010 Agregar Idioma - Modelo entidad-relación (ProyectoC)
+hide circle
+skinparam linetype ortho
+
+entity "IDIOMA" as IDIOMA {
+  *ID_IDIOMA : int <<PK>>
+  --
+  CODIGO : varchar(10)
+  NOMBRE : varchar(100)
+  ACTIVO : bit
+}
+entity "TRADUCCION" as TRADUCCION {
+  *ID_TRADUCCION : int <<PK>>
+  --
+  CLAVE : varchar(200)
+  ID_IDIOMA : int <<FK>>
+  VALOR : varchar(500)
+}
+
+IDIOMA ||--o{ TRADUCCION
+@enduml

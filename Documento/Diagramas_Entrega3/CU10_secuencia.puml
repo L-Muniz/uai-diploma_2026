@@ -1,0 +1,46 @@
+@startuml CU10_secuencia
+title CU-010 Agregar Idioma
+actor "Administrador" as ACT
+boundary MainForm
+boundary FormAgregarIdioma
+participant BLL_Idioma
+participant ACCESO
+database "ProyectoC" as BD
+
+ACT -> MainForm : selecciona Opciones > Agregar idioma
+MainForm -> FormAgregarIdioma : new FormAgregarIdioma() : FormAgregarIdioma
+FormAgregarIdioma -> BLL_Idioma : ObtenerTodasLasClaves() : List<string>
+BLL_Idioma -> ACCESO : Leer("TRADUCCION_OBTENER_CLAVES") : DataTable
+ACCESO -> BD : TRADUCCION_OBTENER_CLAVES
+BD --> ACCESO : DataTable
+ACCESO --> BLL_Idioma : DataTable
+BLL_Idioma --> FormAgregarIdioma : List<string> claves
+FormAgregarIdioma --> ACT : muestra el formulario y la lista de claves pendientes de traducir
+ACT -> FormAgregarIdioma : ingresa código (2 caracteres), nombre y traducciones
+ACT -> FormAgregarIdioma : click en Guardar Idioma: btnGuardar_Click(object sender, EventArgs e) : void
+alt Falta código o nombre
+  FormAgregarIdioma --> ACT : MessageBox "Completa el código y nombre del idioma"
+else Código distinto de 2 caracteres
+  FormAgregarIdioma --> ACT : MessageBox "El código debe tener exactamente 2 caracteres"
+else Datos válidos
+  FormAgregarIdioma -> BLL_Idioma : AgregarIdioma(string codigo, string nombre) : bool
+  BLL_Idioma -> ACCESO : Escribir("IDIOMA_AGREGAR", codigo, nombre) : int
+  ACCESO -> BD : IDIOMA_AGREGAR
+  BD --> ACCESO : int filas
+  ACCESO --> BLL_Idioma : int filas
+  BLL_Idioma --> FormAgregarIdioma : bool exito
+  alt Idioma registrado
+    loop por cada clave con traducción
+      FormAgregarIdioma -> BLL_Idioma : AgregarTraduccion(string clave, string codigoIdioma, string valor) : bool
+      BLL_Idioma -> ACCESO : Escribir("TRADUCCION_AGREGAR", clave, codigo, valor) : int
+      ACCESO -> BD : TRADUCCION_AGREGAR
+      BD --> ACCESO : int filas
+      ACCESO --> BLL_Idioma : int filas
+      BLL_Idioma --> FormAgregarIdioma : bool exito
+    end
+    FormAgregarIdioma --> ACT : MessageBox con el resultado y campos limpios
+  else Error al registrar (código existente u otro error)
+    FormAgregarIdioma --> ACT : MessageBox de error, la pantalla queda abierta
+  end
+end
+@enduml

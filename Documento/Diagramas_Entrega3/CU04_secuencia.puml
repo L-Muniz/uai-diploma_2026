@@ -1,0 +1,68 @@
+@startuml CU04_secuencia
+title CU-004 Desbloquear Usuario
+actor "Administrador" as ACT
+boundary FormGestionUsuarios
+participant BLL_USUARIO
+participant MP_USUARIO
+participant BLL_Rollback
+participant BLL_ControlCambios
+participant MP_CambiosEntidad
+participant BLL_BITACORA
+participant MP_BITACORA
+participant BLL_IntegridadDatos
+participant MP_DigitoVerificadorVertical
+database "ProyectoC" as BD
+
+ACT -> FormGestionUsuarios : selecciona un usuario bloqueado en la grilla
+ACT -> FormGestionUsuarios : click en Bloquear / Desbloquear: AlternarBloqueoUsuario() : void
+FormGestionUsuarios -> FormGestionUsuarios : ObtenerUsuarioSeleccionado() : BE_USUARIO
+alt Usuario administrador (EsRolAdministrador = true)
+  FormGestionUsuarios -> BLL_USUARIO : EsRolAdministrador(string rol) : bool
+  BLL_USUARIO --> FormGestionUsuarios : bool
+  FormGestionUsuarios --> ACT : MessageBox "No se puede bloquear ni desbloquear a un usuario administrador."
+else Usuario no administrador
+  FormGestionUsuarios -> BLL_USUARIO : ActualizarUsuario(BE_USUARIO usuario) : void
+  BLL_USUARIO -> MP_USUARIO : ObtenerRolUsuario(int idUsuario) : string
+  MP_USUARIO -> BD : USUARIO_OBTENER_ROL(id)
+  BD --> MP_USUARIO : string rol
+  MP_USUARIO --> BLL_USUARIO : string rol
+  BLL_USUARIO -> BLL_Rollback : GuardarSnapshotUsuario(BE_USUARIO usuario, string descripcion) : (bool exito, string mensaje)
+  BLL_Rollback -> BD : INSERT en SNAPSHOTS (contenido SQL del usuario)
+  BD --> BLL_Rollback : filas
+  BLL_Rollback --> BLL_USUARIO : (bool exito, string mensaje)
+  BLL_USUARIO -> MP_USUARIO : DesbloquearUsuario(BE_USUARIO usuario) : int
+  MP_USUARIO -> BD : USUARIO_DESBLOQUEAR(id)
+  BD --> MP_USUARIO : int filas
+  MP_USUARIO --> BLL_USUARIO : int filas
+  BLL_USUARIO -> BLL_ControlCambios : RegistrarCambio("USUARIO", id, "BLOQUEADO", "true", "false", usuarioActual, descripcion) : void
+  BLL_ControlCambios -> MP_CambiosEntidad : Alta(BE_CambiosEntidad cambio) : int
+  MP_CambiosEntidad -> BD : CAMBIOS_ENTIDAD_ALTA
+  BD --> MP_CambiosEntidad : int filas
+  MP_CambiosEntidad --> BLL_ControlCambios : int filas
+  BLL_USUARIO -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuarioActual, string descripcion) : void
+  BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj) : int
+  MP_BITACORA -> BD : REGISTRO
+  BD --> MP_BITACORA : int
+  MP_BITACORA --> BLL_BITACORA : int filas
+  BLL_BITACORA --> BLL_USUARIO : void
+  BLL_USUARIO -> MP_USUARIO : ActualizarDVHorizontal(BE_USUARIO usuario) : int
+  MP_USUARIO -> BD : USUARIO_ACTUALIZAR_DVH(id, dvh)
+  BD --> MP_USUARIO : int filas
+  MP_USUARIO --> BLL_USUARIO : int filas
+  BLL_USUARIO -> BLL_IntegridadDatos : CalcularDVVUsuario(BE_USUARIO usuario) : BE_DigitoVerificadorVertical
+  BLL_IntegridadDatos -> MP_DigitoVerificadorVertical : Listar() : List<BE_DigitoVerificadorVertical>
+  MP_DigitoVerificadorVertical -> BD : DVV_LISTAR
+  BD --> MP_DigitoVerificadorVertical : DataTable
+  MP_DigitoVerificadorVertical --> BLL_IntegridadDatos : List<BE_DigitoVerificadorVertical>
+  BLL_IntegridadDatos --> BLL_USUARIO : BE_DigitoVerificadorVertical dvv
+  BLL_USUARIO -> BLL_IntegridadDatos : PersistirDVVUsuario(BE_DigitoVerificadorVertical dvv) : void
+  BLL_IntegridadDatos -> MP_DigitoVerificadorVertical : Editar(BE_DigitoVerificadorVertical obj) : int
+  MP_DigitoVerificadorVertical -> BD : DVV_EDITAR
+  BD --> MP_DigitoVerificadorVertical : int filas
+  MP_DigitoVerificadorVertical --> BLL_IntegridadDatos : int filas
+  BLL_IntegridadDatos --> BLL_USUARIO : void
+  BLL_USUARIO --> FormGestionUsuarios : void
+  FormGestionUsuarios --> ACT : MessageBox "Usuario desbloqueado"
+  FormGestionUsuarios -> FormGestionUsuarios : CargarUsuarios() : void
+end
+@enduml

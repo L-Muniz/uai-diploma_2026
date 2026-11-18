@@ -1,0 +1,35 @@
+@startuml CU06_secuencia
+title CU-006 Realizar Backup
+actor "Administrador" as ACT
+boundary FormBackups
+participant BLL_BackupRestore
+participant SV_Encriptacion
+participant ACCESO
+database "ProyectoC" as BD
+
+ACT -> FormBackups : selecciona la sección Backups
+FormBackups -> BLL_BackupRestore : ListarBackups() : List<string>
+BLL_BackupRestore --> FormBackups : List<string> backups
+ACT -> FormBackups : click en Realizar Backup: btnBackupAhora_Click(object sender, EventArgs e) : void
+FormBackups -> FormBackups : RealizarBackupAhora() : void
+FormBackups -> BLL_BackupRestore : RealizarBackup() : (bool exito, string mensaje)
+BLL_BackupRestore -> ACCESO : Abrir() : void
+BLL_BackupRestore -> BD : SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES
+BD --> BLL_BackupRestore : DataTable tablas
+loop por cada tabla
+  BLL_BackupRestore -> BD : SELECT * FROM tabla
+  BD --> BLL_BackupRestore : DataTable filas
+  BLL_BackupRestore -> BLL_BackupRestore : genera sentencias INSERT en el script
+end
+BLL_BackupRestore -> SV_Encriptacion : Encriptar(string contenidoPlano) : string
+SV_Encriptacion --> BLL_BackupRestore : string contenidoCifrado
+BLL_BackupRestore -> BLL_BackupRestore : File.WriteAllText(BD_BACKUP_yyyy-MM-dd_HH-mm-ss.sql, contenidoCifrado)
+BLL_BackupRestore -> ACCESO : Cerrar() : void
+BLL_BackupRestore --> FormBackups : (bool exito, string mensaje)
+alt Error al generar el script
+  FormBackups --> ACT : MessageBox con el detalle del error
+else Backup generado
+  FormBackups -> FormBackups : CargarBackups() : void
+  FormBackups --> ACT : MessageBox "Backup realizado" y muestra el backup en la lista
+end
+@enduml

@@ -1,0 +1,41 @@
+@startuml CU05_der
+title CU-005 Cambiar Idioma - Modelo entidad-relación (ProyectoC)
+hide circle
+skinparam linetype ortho
+
+entity "USUARIO" as USUARIO {
+  *ID_USUARIO : int <<PK>>
+  --
+  USERNAME : varchar(50)
+  BLOQUEADO : bit
+  CODIGO_IDIOMA : nvarchar(5)
+}
+entity "IDIOMA" as IDIOMA {
+  *ID_IDIOMA : int <<PK>>
+  --
+  CODIGO : varchar(10)
+  NOMBRE : varchar(100)
+  ACTIVO : bit
+}
+entity "TRADUCCION" as TRADUCCION {
+  *ID_TRADUCCION : int <<PK>>
+  --
+  CLAVE : varchar(200)
+  ID_IDIOMA : int <<FK>>
+  VALOR : varchar(500)
+}
+entity "CAMBIOS_ENTIDAD" as CAMBIOS {
+  *ID_CAMBIO : int <<PK>>
+  --
+  TIPO_ENTIDAD : varchar(50)
+  ID_ENTIDAD : int
+  NOMBRE_ATRIBUTO : varchar(100)
+  VALOR_ANTERIOR : varchar(max)
+  VALOR_NUEVO : varchar(max)
+  ID_USUARIO_MODIFICO : int
+  FECHA_CAMBIO : datetime
+}
+
+IDIOMA ||--o{ TRADUCCION
+USUARIO ||--o{ CAMBIOS
+@enduml

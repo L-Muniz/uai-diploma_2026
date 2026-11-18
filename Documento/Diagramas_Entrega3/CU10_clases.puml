@@ -1,0 +1,46 @@
+@startuml CU10_clases
+title CU-010 Agregar Idioma - Diagrama de clases
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+left to right direction
+
+package "GUI" {
+  class MainForm {
+    -ActualizarItemMenu(ToolStripMenuItem item) : void
+  }
+  class FormAgregarIdioma {
+    +FormAgregarIdioma()
+    -btnGuardar_Click(object sender, EventArgs e) : void
+  }
+}
+
+package "BLL" {
+  class BLL_Idioma {
+    +ObtenerTodasLasClaves() : List<string>
+    +AgregarIdioma(string codigo, string nombre) : bool
+    +AgregarTraduccion(string clave, string codigoIdioma, string valor) : bool
+  }
+}
+
+package "DAL" {
+  class ACCESO {
+    +Abrir() : void
+    +Cerrar() : void
+    +Leer(string sql, List<SqlParameter> parametros) : DataTable
+    +Escribir(string sql, List<SqlParameter> parametros) : int
+  }
+}
+
+package "BE" {
+  class BE_Idioma {
+    +ID : int
+    +Codigo : string
+    +Nombre : string
+  }
+}
+
+MainForm --> FormAgregarIdioma
+FormAgregarIdioma --> BLL_Idioma
+BLL_Idioma --> ACCESO
+BLL_Idioma --> BE_Idioma
+@enduml

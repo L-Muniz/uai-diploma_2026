@@ -1,0 +1,150 @@
+@startuml CU01_clases
+title CU-001 Iniciar Sesión - Diagrama de clases
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam packageStyle rectangle
+left to right direction
+
+package "GUI" {
+  class Program <<static>> {
+    +IntegridadFallo: bool
+    +MensajeIntegridad: string
+    +Main() : void
+    -VerificarIntegridadAlInicio() : void
+  }
+  class LogInOut {
+    -idiomaManager: SV_IdiomaManager
+    -btnIngresar_Click(object sender, EventArgs e) : void
+    -AplicarIdiomaPreferido(BE_USUARIO usuario) : void
+    -LimpiarCampos() : void
+  }
+  class MainForm {
+    +MainForm(BE_USUARIO usuario)
+  }
+}
+
+package "BLL" {
+  class BLL_USUARIO {
+    -intentosLoginActuales: int
+    -INTENTOS_MAXIMOS: int = 3
+    +Login(string username, string password) : BE_USUARIO
+    +Logout() : void
+    +ObtenerDVVDelUsuario(int idUsuario) : BE_DigitoVerificadorVertical
+    -BloquearUsuario(BE_USUARIO usuario) : void
+    -AsignarRol(BE_USUARIO usuario) : void
+  }
+  class BLL_GESTOR <<utility>> {
+    +EsHashValido(string storedHash) : bool
+    +VerifyPassword(string password, string storedHash) : bool
+  }
+  class BLL_IntegridadDatos <<static>> {
+    +VerificarIntegridadCompleta(BE_USUARIO usuario, BE_DigitoVerificadorVertical dvv) : (bool esValido, string mensaje)
+    +VerificarIntegridadDVHUsuario(BE_USUARIO usuario) : bool
+    +VerificarIntegridadDVVUsuario(BE_USUARIO usuario, BE_DigitoVerificadorVertical dvv) : bool
+  }
+  class BLL_BITACORA {
+    +IngresarRegistro(BE_USUARIO usuario, string descripcion) : void
+  }
+}
+
+package "DAL" {
+  abstract class "MAPPER<T>" as MAPPER {
+    +{abstract} Alta(T obj) : int
+    +{abstract} Editar(T obj) : int
+  }
+  class MP_USUARIO {
+    +BuscarPorUserName(string username) : BE_USUARIO
+    +BuscarPorId(int id) : BE_USUARIO
+    +BloquearUsuario(BE_USUARIO usuario) : int
+    +ObtenerRolUsuario(int idUsuario) : string
+    +ObtenerIdiomaPreferido(int idUsuario) : string
+  }
+  class MP_DigitoVerificadorVertical {
+    +BuscarPorTipoEntidad(string tipoEntidad) : BE_DigitoVerificadorVertical
+    +BuscarPorIdEntidad(int idEntidad, string tipoEntidad) : BE_DigitoVerificadorVertical
+  }
+  class MP_BITACORA {
+    +Alta(BE_BITACORA obj) : int
+  }
+}
+
+package "SERVICE" {
+  class SV_Singleton <<static>> {
+    +Usuario: BE_USUARIO
+    +GetInstance() : SV_Singleton
+    +LimpiarSesion() : void
+  }
+  class SV_Mensajes <<static>> {
+    +GetLoginMessage() : string
+    +GetLogoutMessage() : string
+    +GetUsuarioBloqueadoMessage() : string
+    +GetUsuarioBloqueadoPorIntentosMessage() : string
+    +GetIntentoFallidoMessage(int intento, int intentosMaximos) : string
+    +GetIntegridadNoDisponibleMessage() : string
+  }
+  class SV_IdiomaManager <<singleton>> {
+    +GetInstance() : SV_IdiomaManager
+    +CambiarIdioma(string codigoIdioma) : void
+  }
+}
+
+package "BE" {
+  class BE_USUARIO {
+    +ID: int
+    +Username: string
+    +HashedPassword: string
+    +Bloqueado: bool
+    +DVHorizontal: int
+    +Rol: string
+    +CodigoIdioma: string
+  }
+  class BE_DigitoVerificadorVertical {
+    +ID: int
+    +IdEntidad: int
+    +TipoEntidad: string
+    +DVUsername: int
+    +DVHashedPassword: int
+    +DVBloqueado: int
+    +FechaCreacion: DateTime
+  }
+  class BE_BITACORA {
+    +ID: int
+    +Usuario: BE_USUARIO
+    +Descripcion: string
+    +Fecha: DateTime
+  }
+}
+
+' Uso (dependencia): una clase utiliza a otra en sus métodos
+Program --> LogInOut
+LogInOut --> BLL_USUARIO
+LogInOut --> SV_IdiomaManager
+LogInOut --> SV_Mensajes
+LogInOut --> MainForm
+LogInOut --> BE_USUARIO
+BLL_USUARIO --> MP_USUARIO
+BLL_USUARIO --> BLL_GESTOR
+BLL_USUARIO --> BLL_IntegridadDatos
+BLL_USUARIO --> BLL_BITACORA
+BLL_USUARIO --> SV_Mensajes
+BLL_USUARIO --> MP_DigitoVerificadorVertical
+BLL_USUARIO --> BE_USUARIO
+BLL_USUARIO --> BE_DigitoVerificadorVertical
+BLL_IntegridadDatos --> BE_DigitoVerificadorVertical
+BLL_IntegridadDatos --> BE_USUARIO
+BLL_BITACORA --> MP_BITACORA
+BLL_BITACORA --> BE_BITACORA
+MP_USUARIO --> BE_USUARIO
+MP_DigitoVerificadorVertical --> BE_DigitoVerificadorVertical
+MP_BITACORA --> BE_BITACORA
+
+' Herencia: MP_* extiende MAPPER<T>
+MP_USUARIO --|> MAPPER
+MP_BITACORA --|> MAPPER
+MP_DigitoVerificadorVertical --|> MAPPER
+
+' Asociación con navegabilidad: la clase origen tiene un atributo de la clase destino
+BE_BITACORA --> BE_USUARIO : Usuario
+SV_Singleton --> BE_USUARIO : Usuario
+LogInOut --> SV_IdiomaManager : idiomaManager
+@enduml

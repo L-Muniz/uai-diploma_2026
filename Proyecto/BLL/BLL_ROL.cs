@@ -194,6 +194,9 @@ namespace BLL
             if (componente == null)
                 throw new ArgumentNullException(nameof(componente));
 
+            if (componente.EsHeredado)
+                throw new InvalidOperationException("Solo se pueden quitar permisos asignados directamente al rol.");
+
             if (componente.EsPermiso)
                 QuitarPermisoDelRol(idRol, componente.ID);
             else

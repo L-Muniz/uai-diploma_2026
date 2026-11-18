@@ -1,0 +1,29 @@
+@startuml CU02_secuencia
+title CU-002 Cerrar Sesión
+actor "Usuario" as ACT
+boundary MainForm
+participant BLL_USUARIO
+participant SV_Mensajes
+participant BLL_BITACORA
+participant MP_BITACORA
+participant SV_Singleton
+boundary LogInOut
+database "ProyectoC" as BD
+
+ACT -> MainForm : selecciona Sesión > Cerrar Sesión
+MainForm -> BLL_USUARIO : Logout() : void
+BLL_USUARIO -> SV_Singleton : GetInstance().Usuario : BE_USUARIO
+BLL_USUARIO -> SV_Mensajes : GetLogoutMessage() : string
+BLL_USUARIO -> BLL_BITACORA : IngresarRegistro(BE_USUARIO usuario, string "Cierre de sesión") : void
+BLL_BITACORA -> MP_BITACORA : Alta(BE_BITACORA obj) : int
+MP_BITACORA -> BD : REGISTRO
+BD --> MP_BITACORA : int
+MP_BITACORA --> BLL_BITACORA : int filas
+BLL_BITACORA --> BLL_USUARIO : void
+BLL_USUARIO -> SV_Singleton : LimpiarSesion() : void
+BLL_USUARIO --> MainForm : void
+MainForm -> MainForm : Close() : void
+MainForm -> LogInOut : new LogInOut() : LogInOut
+MainForm -> LogInOut : Show() : void
+LogInOut --> ACT : muestra la pantalla de login
+@enduml
