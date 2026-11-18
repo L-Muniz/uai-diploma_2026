@@ -86,7 +86,7 @@ namespace GUI
             dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "ID", DataPropertyName = "IdEntidad", Width = 50 });
             dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Fecha", DataPropertyName = "FechaCambio", Width = 150, DefaultCellStyle = new DataGridViewCellStyle() { Format = "dd/MM/yyyy HH:mm:ss" } });
             dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Entidad", DataPropertyName = "TipoEntidad", Width = 100 });
-            dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Atributo", DataPropertyName = "NombreAtributo", Width = 120 });
+            dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Atributo", DataPropertyName = "AtributoMostrado", Width = 120 });
             dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Valor Anterior", DataPropertyName = "ValorAnteriorMostrado", Width = 150 });
             dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Valor Nuevo", DataPropertyName = "ValorNuevoMostrado", Width = 150 });
             dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Usuario", DataPropertyName = "Usuario", Width = 100 });
@@ -174,7 +174,7 @@ namespace GUI
                 c.FechaCambio,
                 c.TipoEntidad,
                 c.IdEntidad,
-                c.NombreAtributo,
+                AtributoMostrado = c.AtributoMostrado,
                 ValorAnteriorMostrado = c.ValorAnteriorMostrado,
                 ValorNuevoMostrado = c.ValorNuevoMostrado,
                 Usuario = c.UsuarioModifico?.Username ?? "Sistema",

@@ -137,7 +137,7 @@ namespace BLL
             var despues = CrearMemento(rol.ID);
 
             var usuario = ObtenerUsuarioActual();
-            BLL_ControlCambios.RegistrarMementoRol(antes, despues, usuario, "Rol actualizado (Memento)");
+            BLL_ControlCambios.RegistrarMementoRol(antes, despues, usuario, "Rol actualizado");
 
             if (usuario != null)
             {
@@ -234,7 +234,7 @@ namespace BLL
             var despues = CrearMemento(idRol);
 
             var usuario = ObtenerUsuarioActual();
-            BLL_ControlCambios.RegistrarMementoRol(antes, despues, usuario, "Permiso agregado (Memento)");
+            BLL_ControlCambios.RegistrarMementoRol(antes, despues, usuario, "Permiso agregado");
 
             if (usuario != null)
             {
@@ -250,7 +250,7 @@ namespace BLL
             var despues = CrearMemento(idRol);
 
             var usuario = ObtenerUsuarioActual();
-            BLL_ControlCambios.RegistrarMementoRol(antes, despues, usuario, "Permiso quitado (Memento)");
+            BLL_ControlCambios.RegistrarMementoRol(antes, despues, usuario, "Permiso quitado");
 
             if (usuario != null)
             {

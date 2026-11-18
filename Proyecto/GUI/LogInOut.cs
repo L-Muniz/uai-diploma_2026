@@ -161,9 +161,19 @@ namespace GUI
 
                 if (usuario != null)
                 {
-                    MessageBox.Show("Login correcto");
-
                     bool esAdmin = usuario.Rol?.ToUpper() == "ADMIN" || usuario.Rol?.ToUpper() == "ADMINISTRADOR";
+
+                    // Con la BD con errores de integridad solo puede ingresar el administrador (para restaurarla).
+                    if (Program.IntegridadFallo && !esAdmin)
+                    {
+                        bll_usu.Logout();
+                        MessageBox.Show(SV_Mensajes.GetIntegridadNoDisponibleMessage(), "Servicio no disponible",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        LimpiarCampos();
+                        return;
+                    }
+
+                    MessageBox.Show("Login correcto");
 
                     if (Program.IntegridadFallo && esAdmin)
                     {

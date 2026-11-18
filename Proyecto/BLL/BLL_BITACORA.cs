@@ -131,7 +131,8 @@ namespace BLL
 
             if (criterios.IdUsuario.HasValue && criterios.IdUsuario.Value > 0)
             {
-                resultados = resultados.Where(b => b.Usuario.ID == criterios.IdUsuario.Value).ToList();
+                // Un registro puede quedar sin usuario si el usuario fue eliminado (Usuario == null).
+                resultados = resultados.Where(b => b.Usuario != null && b.Usuario.ID == criterios.IdUsuario.Value).ToList();
             }
 
             if (criterios.FechaDesde.HasValue)

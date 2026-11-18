@@ -11,6 +11,16 @@ namespace SERVICE
     {
         private static SV_IdiomaManager idiomaManager = SV_IdiomaManager.GetInstance();
 
+        /// <summary>
+        /// Obtiene la traducción de la clave. Si no existe en la BD (el proveedor devuelve "[clave]"),
+        /// usa el texto de respaldo en lugar de mostrar la clave.
+        /// </summary>
+        private static string ObtenerConRespaldo(string clave, string respaldo)
+        {
+            string texto = idiomaManager.Obtener(clave);
+            return string.IsNullOrWhiteSpace(texto) || texto.StartsWith("[") ? respaldo : texto;
+        }
+
         public static string GetLoginMessage()
         {
             return "Inicio de sesión";
@@ -28,7 +38,7 @@ namespace SERVICE
 
         public static string GetUsuarioBloqueadoMessage()
         {
-            return idiomaManager.Obtener("usuario.bloqueado", "El usuario está bloqueado. Contacte al administrador.");
+            return ObtenerConRespaldo("usuario.bloqueado", "El usuario está bloqueado. Contacte al administrador.");
         }
 
         /// <summary>
@@ -36,8 +46,8 @@ namespace SERVICE
         /// </summary>
         public static string GetIntegridadNoDisponibleMessage()
         {
-            return idiomaManager.Obtener("integridad.no_disponible",
-                "La información de integridad no está disponible en este momento. Contacte al administrador.");
+            return ObtenerConRespaldo("integridad.no_disponible",
+                "El servicio no está disponible en este momento. Contacte al administrador.");
         }
 
         public static string GetIntentoFallidoMessage(int intento, int intentosMaximos)

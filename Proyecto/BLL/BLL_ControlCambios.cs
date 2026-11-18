@@ -174,7 +174,7 @@ namespace BLL
             bllUsuario.RestaurarMementoUsuario(estadoAnterior);
 
             var despues = bllUsuario.CrearMementoUsuario(mpUsuario.BuscarPorId(estadoAnterior.ID));
-            RegistrarMementoUsuario(antes, despues, usuarioReverti, "Cambio revertido (Memento)");
+            RegistrarMementoUsuario(antes, despues, usuarioReverti, "Cambio revertido");
             return (true, "Usuario restaurado al estado anterior");
         }
 
@@ -207,7 +207,7 @@ namespace BLL
                     case "USERNAME":
                         usuario.Username = cambio.ValorAnterior;
                         RecalcularYPersistirUsuario(usuario, mpUsuario);
-                        RegistrarCambio("USUARIO", usuario.ID, "USERNAME", valorActual, cambio.ValorAnterior, usuarioReverti, $"Cambio revertido (Memento)");
+                        RegistrarCambio("USUARIO", usuario.ID, "USERNAME", valorActual, cambio.ValorAnterior, usuarioReverti, $"Cambio revertido");
                         return (true, $"Usuario revertido: {cambio.NombreAtributo}");
 
                     case "BLOQUEADO":
@@ -217,7 +217,7 @@ namespace BLL
                         else
                             mpUsuario.DesbloquearUsuario(usuario);
                         RecalcularYPersistirUsuario(usuario, mpUsuario);
-                        RegistrarCambio("USUARIO", usuario.ID, "BLOQUEADO", valorActual, cambio.ValorAnterior, usuarioReverti, $"Cambio revertido (Memento)");
+                        RegistrarCambio("USUARIO", usuario.ID, "BLOQUEADO", valorActual, cambio.ValorAnterior, usuarioReverti, $"Cambio revertido");
                         return (true, $"Usuario revertido: {cambio.NombreAtributo}");
 
                     case "PASS":
@@ -228,7 +228,7 @@ namespace BLL
                             return (false, "No hay hash anterior restaurable para PASS");
                         usuario.HashedPassword = cambio.ValorAnterior;
                         RecalcularYPersistirUsuario(usuario, mpUsuario);
-                        RegistrarCambio("USUARIO", usuario.ID, "PASS", valorActual, "[restaurado]", usuarioReverti, $"Cambio revertido (Memento)");
+                        RegistrarCambio("USUARIO", usuario.ID, "PASS", valorActual, "[restaurado]", usuarioReverti, $"Cambio revertido");
                         return (true, $"Usuario revertido: {cambio.NombreAtributo}");
 
                     case "ROL":
@@ -274,7 +274,7 @@ namespace BLL
             bllRol.RestaurarMemento(estadoAnterior);
             var despues = bllRol.CrearMemento(estadoAnterior.ID);
 
-            RegistrarMementoRol(antes, despues, usuarioReverti, "Cambio revertido (Memento)");
+            RegistrarMementoRol(antes, despues, usuarioReverti, "Cambio revertido");
             return (true, "Rol restaurado al estado anterior");
         }
 
@@ -307,13 +307,13 @@ namespace BLL
                     case "NOMBRE":
                         rol.Nombre = cambio.ValorAnterior;
                         mpRol.Editar(rol);
-                        RegistrarCambio("ROL", rol.ID, "NOMBRE", valorActual, cambio.ValorAnterior, usuarioReverti, $"Cambio revertido (Memento)");
+                        RegistrarCambio("ROL", rol.ID, "NOMBRE", valorActual, cambio.ValorAnterior, usuarioReverti, $"Cambio revertido");
                         return (true, $"Rol revertido: {cambio.NombreAtributo}");
 
                     case "DESCRIPCION":
                         rol.Descripcion = cambio.ValorAnterior;
                         mpRol.Editar(rol);
-                        RegistrarCambio("ROL", rol.ID, "DESCRIPCION", valorActual, cambio.ValorAnterior, usuarioReverti, $"Cambio revertido (Memento)");
+                        RegistrarCambio("ROL", rol.ID, "DESCRIPCION", valorActual, cambio.ValorAnterior, usuarioReverti, $"Cambio revertido");
                         return (true, $"Rol revertido: {cambio.NombreAtributo}");
 
                     default:

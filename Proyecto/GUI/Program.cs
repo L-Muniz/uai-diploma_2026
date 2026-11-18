@@ -27,10 +27,18 @@ namespace GUI
             {
                 VerificarIntegridadAlInicio();
 
-                var resultadoBackup = BLL_BackupRestore.RealizarBackup();
-                if (!resultadoBackup.exito)
+                // No se genera backup si la integridad falla: copiaría datos corruptos.
+                if (IntegridadFallo)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Advertencia: {resultadoBackup.mensaje}");
+                    System.Diagnostics.Debug.WriteLine("Backup de inicio omitido: la integridad de la BD no es válida.");
+                }
+                else
+                {
+                    var resultadoBackup = BLL_BackupRestore.RealizarBackup();
+                    if (!resultadoBackup.exito)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Advertencia: {resultadoBackup.mensaje}");
+                    }
                 }
 
                 int intervalo = 30;

@@ -350,22 +350,25 @@ namespace BLL
 
             BLL_Rollback.GuardarSnapshotUsuario(usuario, $"Antes de editar usuario {usuario.Username}");
 
+            // El memento registra en un solo registro el estado antes y después (username y hash),
+            // por eso no se duplican los registros USERNAME/PASS.
             var mementoAntes = CrearMementoUsuario(usuario);
             string usernameAnterior = usuario.Username;
+            bool cambioUsername = false;
+            bool cambioPassword = !string.IsNullOrWhiteSpace(nuevaPassword);
+
             if (!string.IsNullOrWhiteSpace(nuevoUsername) && nuevoUsername != usuario.Username)
             {
                 if (mpUsuario.BuscarPorUserName(nuevoUsername) != null)
                     throw new Exception("El nombre de usuario ya existe.");
 
                 usuario.Username = nuevoUsername;
-                BLL_ControlCambios.RegistrarCambio("USUARIO", usuario.ID, "USERNAME", usernameAnterior, nuevoUsername, usuarioActual, "Username editado");
+                cambioUsername = true;
             }
 
-            if (!string.IsNullOrWhiteSpace(nuevaPassword))
+            if (cambioPassword)
             {
-                string passAnterior = usuario.HashedPassword;
                 usuario.HashedPassword = BLL_GESTOR.HashPassword(nuevaPassword);
-                BLL_ControlCambios.RegistrarCambio("USUARIO", usuario.ID, "PASS", "[hash]", "[hash-nuevo]", usuarioActual, "Contraseña restablecida");
             }
 
             CalcularYGuardarDVHUsuario(usuario, mpUsuario);
@@ -374,7 +377,11 @@ namespace BLL
                 throw new Exception("Error al editar el usuario.");
 
             CalcularYGuardarDVVUsuario(usuario);
-            BLL_ControlCambios.RegistrarMementoUsuario(mementoAntes, CrearMementoUsuario(usuario), usuarioActual, "Usuario editado (Memento)");
+            string descripcionEdicion = cambioUsername && cambioPassword ? "Username y contraseña editados"
+                : cambioPassword ? "Contraseña restablecida"
+                : cambioUsername ? "Username editado"
+                : "Usuario editado";
+            BLL_ControlCambios.RegistrarMementoUsuario(mementoAntes, CrearMementoUsuario(usuario), usuarioActual, descripcionEdicion);
             bitacoraBLL.IngresarRegistro(usuarioActual ?? usuario, $"Usuario editado: {usernameAnterior} -> {usuario.Username}");
         }
 
