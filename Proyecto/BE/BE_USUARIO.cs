@@ -56,6 +56,15 @@ namespace BE
             set { rol = value; }
         }
 
+        private string codigoIdioma;
+
+        /// <summary>Código del idioma preferido del usuario (ej. "ES"). Null si no tiene preferencia.</summary>
+        public string CodigoIdioma
+        {
+            get { return codigoIdioma; }
+            set { codigoIdioma = value; }
+        }
+
         public BE_USUARIO()
         {
             Bloqueado = false;

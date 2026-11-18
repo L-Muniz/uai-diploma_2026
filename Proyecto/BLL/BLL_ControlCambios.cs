@@ -36,6 +36,32 @@ namespace BLL
             }
         }
 
+        /// <summary>
+        /// Caretaker del patrón Memento: guarda el estado del rol antes y después de un cambio.
+        /// Se registra como un único registro "MEMENTO" para poder recomponer el estado anterior completo
+        /// (nombre, descripción y permisos), no solo un atributo.
+        /// </summary>
+        public static void RegistrarMementoRol(BE_MementoRol anterior, BE_MementoRol despues, BE_USUARIO usuario, string descripcion)
+        {
+            if (anterior == null || despues == null)
+                return;
+
+            RegistrarCambio("ROL", despues.ID, "MEMENTO",
+                anterior.ToSerializedString(), despues.ToSerializedString(), usuario, descripcion);
+        }
+
+        /// <summary>
+        /// Caretaker del patrón Memento para usuarios: guarda nombre de usuario y hash antes y después de la edición.
+        /// </summary>
+        public static void RegistrarMementoUsuario(BE_MementoUsuario anterior, BE_MementoUsuario despues, BE_USUARIO usuario, string descripcion)
+        {
+            if (anterior == null || despues == null)
+                return;
+
+            RegistrarCambio("USUARIO", despues.ID, "MEMENTO",
+                anterior.ToSerializedString(), despues.ToSerializedString(), usuario, descripcion);
+        }
+
         public static List<BE_CambiosEntidad> ObtenerHistorialEntidad(string tipoEntidad, int idEntidad)
         {
             return mpCambios.ListarPorEntidad(tipoEntidad, idEntidad)
@@ -134,8 +160,38 @@ namespace BLL
             }
         }
 
+        private static (bool exito, string mensaje) RevertirMementoUsuario(BE_CambiosEntidad cambio, BE_USUARIO usuarioReverti)
+        {
+            var estadoAnterior = BE_MementoUsuario.FromSerializedString(cambio.ValorAnterior);
+            if (estadoAnterior == null)
+                return (false, "El registro de memento del usuario no es válido");
+
+            var bllUsuario = new BLL_USUARIO();
+            var mpUsuario = new MP_USUARIO();
+            var antes = bllUsuario.CrearMementoUsuario(mpUsuario.BuscarPorId(estadoAnterior.ID)
+                ?? throw new Exception("Usuario no encontrado"));
+
+            bllUsuario.RestaurarMementoUsuario(estadoAnterior);
+
+            var despues = bllUsuario.CrearMementoUsuario(mpUsuario.BuscarPorId(estadoAnterior.ID));
+            RegistrarMementoUsuario(antes, despues, usuarioReverti, "Cambio revertido (Memento)");
+            return (true, "Usuario restaurado al estado anterior");
+        }
+
         private static (bool exito, string mensaje) RevertirCambioUsuario(BE_CambiosEntidad cambio, BE_USUARIO usuarioReverti)
         {
+            if (string.Equals(cambio.NombreAtributo, "MEMENTO", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    return RevertirMementoUsuario(cambio, usuarioReverti);
+                }
+                catch (Exception ex)
+                {
+                    return (false, $"Error restaurando memento del usuario: {ex.Message}");
+                }
+            }
+
             try
             {
                 var mpUsuario = new MP_USUARIO();
@@ -204,8 +260,38 @@ namespace BLL
             BLL_IntegridadDatos.PersistirDVVUsuario(dvv);
         }
 
+        private static (bool exito, string mensaje) RevertirMementoRol(BE_CambiosEntidad cambio, BE_USUARIO usuarioReverti)
+        {
+            var estadoAnterior = BE_MementoRol.FromSerializedString(cambio.ValorAnterior);
+            if (estadoAnterior == null)
+                return (false, "El registro de memento del rol no es válido");
+
+            var bllRol = new BLL_ROL();
+            if (bllRol.ObtenerRolPorID(estadoAnterior.ID) == null)
+                return (false, "Rol no encontrado");
+
+            var antes = bllRol.CrearMemento(estadoAnterior.ID);
+            bllRol.RestaurarMemento(estadoAnterior);
+            var despues = bllRol.CrearMemento(estadoAnterior.ID);
+
+            RegistrarMementoRol(antes, despues, usuarioReverti, "Cambio revertido (Memento)");
+            return (true, "Rol restaurado al estado anterior");
+        }
+
         private static (bool exito, string mensaje) RevertirCambioRol(BE_CambiosEntidad cambio, BE_USUARIO usuarioReverti)
         {
+            if (string.Equals(cambio.NombreAtributo, "MEMENTO", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    return RevertirMementoRol(cambio, usuarioReverti);
+                }
+                catch (Exception ex)
+                {
+                    return (false, $"Error restaurando memento del rol: {ex.Message}");
+                }
+            }
+
             try
             {
                 var mpRol = new MP_ROL();

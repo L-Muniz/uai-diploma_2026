@@ -30,6 +30,11 @@ namespace BLL
 
             if (!BLL_GESTOR.EsHashValido(usuario.HashedPassword))
             {
+                // El detalle técnico solo se expone al administrador; el resto recibe un mensaje enmascarado.
+                AsignarRol(usuario);
+                if (!EsRolAdministrador(usuario.Rol))
+                    throw new Exception(SV_Mensajes.GetIntegridadNoDisponibleMessage());
+
                 throw new Exception(
                     "Error de integridad: el hash de contraseña del usuario está alterado o tiene un formato inválido. " +
                     "No se puede autenticar hasta restaurar o recalcular los dígitos verificadores.");
@@ -71,6 +76,7 @@ namespace BLL
             }
 
             AsignarRol(usuario);
+            usuario.CodigoIdioma = new MP_USUARIO().ObtenerIdiomaPreferido(usuario.ID);
 
             SV_Singleton.GetInstance().Usuario = usuario;
             bitacoraBLL.IngresarRegistro(usuario, SV_Mensajes.GetLoginMessage());
@@ -267,6 +273,33 @@ namespace BLL
             }
         }
 
+        /// <summary>
+        /// Guarda la preferencia de idioma del usuario y la deja auditada en el control de cambios.
+        /// </summary>
+        public void GuardarIdiomaPreferido(BE_USUARIO usuario, string codigoIdioma)
+        {
+            if (usuario == null || string.IsNullOrWhiteSpace(codigoIdioma))
+                return;
+
+            string anterior = usuario.CodigoIdioma;
+            new MP_USUARIO().ActualizarIdiomaPreferido(usuario.ID, codigoIdioma.ToUpperInvariant());
+            usuario.CodigoIdioma = codigoIdioma.ToUpperInvariant();
+
+            BLL_ControlCambios.RegistrarCambio("USUARIO", usuario.ID, "IDIOMA", anterior ?? "", usuario.CodigoIdioma, usuario, "Idioma preferido actualizado");
+        }
+
+        /// <summary>
+        /// Persiste el idioma elegido para el usuario de la sesión actual (si hay sesión iniciada).
+        /// </summary>
+        public static void GuardarIdiomaPreferidoActual(string codigoIdioma)
+        {
+            var usuario = SV_Singleton.GetInstance().Usuario;
+            if (usuario == null)
+                return;
+
+            new BLL_USUARIO().GuardarIdiomaPreferido(usuario, codigoIdioma);
+        }
+
         public static bool EsRolAdministrador(string rol)
         {
             if (string.IsNullOrWhiteSpace(rol))
@@ -317,6 +350,7 @@ namespace BLL
 
             BLL_Rollback.GuardarSnapshotUsuario(usuario, $"Antes de editar usuario {usuario.Username}");
 
+            var mementoAntes = CrearMementoUsuario(usuario);
             string usernameAnterior = usuario.Username;
             if (!string.IsNullOrWhiteSpace(nuevoUsername) && nuevoUsername != usuario.Username)
             {
@@ -340,7 +374,53 @@ namespace BLL
                 throw new Exception("Error al editar el usuario.");
 
             CalcularYGuardarDVVUsuario(usuario);
+            BLL_ControlCambios.RegistrarMementoUsuario(mementoAntes, CrearMementoUsuario(usuario), usuarioActual, "Usuario editado (Memento)");
             bitacoraBLL.IngresarRegistro(usuarioActual ?? usuario, $"Usuario editado: {usernameAnterior} -> {usuario.Username}");
+        }
+
+        /// <summary>
+        /// Originator del patrón Memento: captura el nombre de usuario y el hash de contraseña.
+        /// </summary>
+        public BE_MementoUsuario CrearMementoUsuario(BE_USUARIO usuario)
+        {
+            if (usuario == null)
+                throw new ArgumentNullException(nameof(usuario));
+
+            return new BE_MementoUsuario
+            {
+                ID = usuario.ID,
+                Username = usuario.Username,
+                HashedPassword = usuario.HashedPassword
+            };
+        }
+
+        /// <summary>
+        /// Originator del patrón Memento: restaura nombre de usuario y contraseña guardados.
+        /// Verifica que el nombre no esté tomado por otro usuario y recalcula DVH/DVV.
+        /// Quien llama registra el cambio en el control de cambios.
+        /// </summary>
+        public void RestaurarMementoUsuario(BE_MementoUsuario memento)
+        {
+            if (memento == null)
+                throw new ArgumentNullException(nameof(memento));
+
+            MP_USUARIO mpUsuario = new MP_USUARIO();
+            BE_USUARIO usuario = mpUsuario.BuscarPorId(memento.ID);
+            if (usuario == null)
+                throw new Exception("Usuario no encontrado.");
+
+            var otro = mpUsuario.BuscarPorUserName(memento.Username);
+            if (otro != null && otro.ID != usuario.ID)
+                throw new Exception("El nombre de usuario guardado ya está en uso por otro usuario.");
+
+            usuario.Username = memento.Username;
+            usuario.HashedPassword = memento.HashedPassword;
+
+            CalcularYGuardarDVHUsuario(usuario, mpUsuario);
+            if (mpUsuario.Editar(usuario) == 0)
+                throw new Exception("Error al restaurar el usuario.");
+
+            CalcularYGuardarDVVUsuario(usuario);
         }
 
         public void EliminarUsuario(int idUsuario)

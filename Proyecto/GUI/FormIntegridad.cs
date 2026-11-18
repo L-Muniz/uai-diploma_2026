@@ -69,8 +69,34 @@ namespace GUI
             if (btnCerrar != null) btnCerrar.Text = idiomaManager.Obtener("CERRAR");
         }
 
+        private static bool EsAdministradorActual()
+        {
+            return BLL_USUARIO.EsRolAdministrador(SV_Singleton.GetInstance().Usuario?.Rol);
+        }
+
+        /// <summary>
+        /// Solo el administrador ve el detalle de errores de integridad; para el resto se enmascara.
+        /// </summary>
+        private void MostrarErrorEnmascarado(Exception ex)
+        {
+            if (EsAdministradorActual())
+            {
+                ManejoErrores.MostrarError(ex);
+                return;
+            }
+
+            txtResultado.Text = SV_Mensajes.GetIntegridadNoDisponibleMessage();
+            System.Diagnostics.Debug.WriteLine($"[INTEGRIDAD] Error enmascarado: {ex.Message}");
+        }
+
         private void EjecutarVerificacion()
         {
+            if (!EsAdministradorActual())
+            {
+                txtResultado.Text = SV_Mensajes.GetIntegridadNoDisponibleMessage();
+                return;
+            }
+
             try
             {
                 var resultado = BLL_IntegridadDatos.VerificarTodasLasEntidades();
@@ -82,12 +108,18 @@ namespace GUI
             }
             catch (Exception ex)
             {
-                ManejoErrores.MostrarError(ex);
+                MostrarErrorEnmascarado(ex);
             }
         }
 
         private void EjecutarRecalculo()
         {
+            if (!EsAdministradorActual())
+            {
+                txtResultado.Text = SV_Mensajes.GetIntegridadNoDisponibleMessage();
+                return;
+            }
+
             try
             {
                 var confirm = MessageBox.Show(
@@ -105,7 +137,7 @@ namespace GUI
             }
             catch (Exception ex)
             {
-                ManejoErrores.MostrarError(ex);
+                MostrarErrorEnmascarado(ex);
             }
         }
 

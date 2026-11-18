@@ -190,5 +190,33 @@ namespace DAL
 
             return "USUARIO";
         }
+
+        public string ObtenerIdiomaPreferido(int idUsuario)
+        {
+            ACCESO acc = new ACCESO();
+            acc.Abrir();
+            string sql = "USUARIO_OBTENER_IDIOMA";
+            List<SqlParameter> parametros = new List<SqlParameter>();
+            parametros.Add(acc.CrearParametro("@ID_USUARIO", idUsuario));
+            DataTable dt = acc.Leer(sql, parametros);
+            acc.Cerrar();
+
+            if (dt.Rows.Count > 0 && dt.Rows[0]["CODIGO_IDIOMA"] != DBNull.Value)
+                return dt.Rows[0]["CODIGO_IDIOMA"].ToString();
+
+            return null;
+        }
+
+        public void ActualizarIdiomaPreferido(int idUsuario, string codigoIdioma)
+        {
+            ACCESO acc = new ACCESO();
+            acc.Abrir();
+            string sql = "USUARIO_ACTUALIZAR_IDIOMA";
+            List<SqlParameter> parametros = new List<SqlParameter>();
+            parametros.Add(acc.CrearParametro("@ID_USUARIO", idUsuario));
+            parametros.Add(acc.CrearParametro("@CODIGO_IDIOMA", codigoIdioma));
+            acc.Escribir(sql, parametros);
+            acc.Cerrar();
+        }
     }
 }

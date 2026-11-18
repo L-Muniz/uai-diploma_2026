@@ -51,6 +51,14 @@ namespace BE
             set { valorNuevo = value; }
         }
 
+        /// <summary>Valor de ValorAnterior apto para mostrar: los mementos (con hashes) se ocultan.</summary>
+        public string ValorAnteriorMostrado => EsMemento ? "[estado guardado]" : valorAnterior;
+
+        /// <summary>Valor de ValorNuevo apto para mostrar: los mementos (con hashes) se ocultan.</summary>
+        public string ValorNuevoMostrado => EsMemento ? "[estado guardado]" : valorNuevo;
+
+        private bool EsMemento => string.Equals(nombreAtributo, "MEMENTO", StringComparison.OrdinalIgnoreCase);
+
         private BE_USUARIO usuarioModifico;
         public BE_USUARIO UsuarioModifico
         {

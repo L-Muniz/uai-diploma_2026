@@ -165,6 +165,7 @@ namespace GUI
                 itemIdioma.Click += (s, e) =>
                 {
                     idiomaManager.CambiarIdioma(idioma.Key);
+                    BLL.BLL_USUARIO.GuardarIdiomaPreferidoActual(idioma.Key);
                 };
                 menuIdioma.DropDownItems.Add(itemIdioma);
             }
@@ -284,10 +285,6 @@ namespace GUI
             itemBackups.Tag = "BACKUPS";
             menuVer.DropDownItems.Add(itemBackups);
 
-            var itemSnapshots = new ToolStripMenuItem("&Snapshots", null, (s, e) => AbrirHijoMdi(new FormSnapshots()));
-            itemSnapshots.Tag = "SNAPSHOTS";
-            menuVer.DropDownItems.Add(itemSnapshots);
-
             ToolStripMenuItem menuOpciones = new ToolStripMenuItem("&Opciones");
             menuOpciones.Tag = "OPCIONES";
 
@@ -304,6 +301,7 @@ namespace GUI
                 itemIdioma.Click += (s, e) =>
                 {
                     idiomaManager.CambiarIdioma(idioma.Key);
+                    BLL.BLL_USUARIO.GuardarIdiomaPreferidoActual(idioma.Key);
                 };
                 menuIdioma.DropDownItems.Add(itemIdioma);
             }

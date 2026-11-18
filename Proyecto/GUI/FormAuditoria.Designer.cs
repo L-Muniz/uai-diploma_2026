@@ -74,7 +74,7 @@ namespace GUI
 
             this.cbEntidad.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbEntidad.FormattingEnabled = true;
-            this.cbEntidad.Items.AddRange(new object[] { "Todos", "USUARIO", "PERFIL" });
+            this.cbEntidad.Items.AddRange(new object[] { "Todos", "USUARIO", "ROL" });
             this.cbEntidad.Location = new System.Drawing.Point(120, 12);
             this.cbEntidad.Name = "cbEntidad";
             this.cbEntidad.Size = new System.Drawing.Size(150, 21);

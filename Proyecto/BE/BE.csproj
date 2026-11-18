@@ -53,6 +53,8 @@
     <Compile Include="BE_PermisoSimple.cs" />
     <Compile Include="BE_Rol.cs" />
     <Compile Include="BE_Snapshot.cs" />
+    <Compile Include="BE_MementoRol.cs" />
+    <Compile Include="BE_MementoUsuario.cs" />
     <Compile Include="BE_USUARIO.cs" />
     <Compile Include="I_ComponenteAcceso.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

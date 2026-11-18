@@ -17,18 +17,13 @@ namespace GUI
     {
         private SV_IdiomaManager idiomaManager;
         private List<BE_CambiosEntidad> cambiosActuales;
-        private BLL_Rollback bllRollback;
-        private ComboBox cbVista;
-        private bool mostrandoSnapshots = false;
 
         public FormAuditoria()
         {
             InitializeComponent();
 
             idiomaManager = SV_IdiomaManager.GetInstance();
-            bllRollback = new BLL_Rollback();
 
-            CrearComboVista();
 
             dtDesde.Value = DateTime.Now.AddDays(-30);
             dtHasta.Value = DateTime.Now;
@@ -43,92 +38,9 @@ namespace GUI
             CargarCambios();
         }
 
-        private void CrearComboVista()
-        {
-            cbVista = new ComboBox();
-            cbVista.Location = new Point(10, 10);
-            cbVista.Width = 150;
-            cbVista.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbVista.Items.Add("Auditoría");
-            cbVista.Items.Add("Snapshots");
-            cbVista.SelectedIndex = 0;
-            cbVista.SelectedIndexChanged += (s, e) => CambiarVista();
-            this.Controls.Add(cbVista);
-        }
-
-        private void CambiarVista()
-        {
-            mostrandoSnapshots = cbVista.SelectedIndex == 1;
-
-            if (mostrandoSnapshots)
-            {
-                dtDesde.Visible = false;
-                dtHasta.Visible = false;
-                cbEntidad.Visible = false;
-                btnFiltrar.Visible = false;
-                lblEntidad.Visible = false;
-                lblFechaDesde.Visible = false;
-                lblFechaHasta.Visible = false;
-
-                CargarSnapshots();
-            }
-            else
-            {
-                dtDesde.Visible = true;
-                dtHasta.Visible = true;
-                cbEntidad.Visible = true;
-                btnFiltrar.Visible = true;
-                lblEntidad.Visible = true;
-                lblFechaDesde.Visible = true;
-                lblFechaHasta.Visible = true;
-
-                CargarCambios();
-            }
-
-            ActualizarTextos();
-        }
-
         private void btnDeshacer_Click(object sender, EventArgs e)
         {
-            if (mostrandoSnapshots)
-            {
-                RevertirSnapshot();
-            }
-            else
-            {
-                RevertirCambio();
-            }
-        }
-
-        private void RevertirSnapshot()
-        {
-            if (dgvCambios.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Selecciona un snapshot para deshacer", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            var snapshot = dgvCambios.SelectedRows[0].DataBoundItem as BE_Snapshot;
-            int idSnapshot = snapshot != null
-                ? snapshot.ID
-                : Convert.ToInt32(dgvCambios.SelectedRows[0].Cells["ID"].Value);
-            string nombre = snapshot?.Nombre
-                ?? dgvCambios.SelectedRows[0].Cells["Nombre"].Value?.ToString()
-                ?? "desconocido";
-
-            if (MessageBox.Show($"¿Deshacer a '{nombre}'?\nEsta acción es irreversible.", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            {
-                var resultado = BLL_Rollback.RevertirASnapshot(idSnapshot);
-                if (resultado.exito)
-                {
-                    MessageBox.Show($"Snapshot restaurado: {resultado.mensaje}", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    CargarSnapshots();
-                }
-                else
-                {
-                    MessageBox.Show($"Error al restaurar: {resultado.mensaje}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
+            RevertirCambio();
         }
 
         private void RevertirCambio()
@@ -148,7 +60,7 @@ namespace GUI
             if (indiceRow >= 0 && indiceRow < cambiosActuales.Count)
             {
                 var cambio = cambiosActuales[indiceRow];
-                string descripcion = $"{cambio.TipoEntidad}({cambio.IdEntidad}).{cambio.NombreAtributo}: '{cambio.ValorNuevo}' -> '{cambio.ValorAnterior}'";
+                string descripcion = $"{cambio.TipoEntidad}({cambio.IdEntidad}).{cambio.NombreAtributo}: '{cambio.ValorNuevoMostrado}' -> '{cambio.ValorAnteriorMostrado}'";
 
                 if (MessageBox.Show($"¿Revertir este cambio?\n{descripcion}\n\nEsta acción es irreversible.", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
@@ -175,8 +87,8 @@ namespace GUI
             dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Fecha", DataPropertyName = "FechaCambio", Width = 150, DefaultCellStyle = new DataGridViewCellStyle() { Format = "dd/MM/yyyy HH:mm:ss" } });
             dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Entidad", DataPropertyName = "TipoEntidad", Width = 100 });
             dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Atributo", DataPropertyName = "NombreAtributo", Width = 120 });
-            dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Valor Anterior", DataPropertyName = "ValorAnterior", Width = 150 });
-            dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Valor Nuevo", DataPropertyName = "ValorNuevo", Width = 150 });
+            dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Valor Anterior", DataPropertyName = "ValorAnteriorMostrado", Width = 150 });
+            dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Valor Nuevo", DataPropertyName = "ValorNuevoMostrado", Width = 150 });
             dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Usuario", DataPropertyName = "Usuario", Width = 100 });
             dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { HeaderText = "Descripción", DataPropertyName = "Descripcion", Width = 200 });
             DataGridViewSortHelper.HabilitarOrdenamiento(dgvCambios);
@@ -263,8 +175,8 @@ namespace GUI
                 c.TipoEntidad,
                 c.IdEntidad,
                 c.NombreAtributo,
-                c.ValorAnterior,
-                c.ValorNuevo,
+                ValorAnteriorMostrado = c.ValorAnteriorMostrado,
+                ValorNuevoMostrado = c.ValorNuevoMostrado,
                 Usuario = c.UsuarioModifico?.Username ?? "Sistema",
                 c.Descripcion
             }).ToList();
@@ -300,28 +212,5 @@ namespace GUI
             ActualizarTextos();
         }
 
-        private void CargarSnapshots()
-        {
-            try
-            {
-                var snapshots = BLL_Rollback.ListarSnapshots();
-                dgvCambios.DataSource = null;
-
-                dgvCambios.Columns.Clear();
-                dgvCambios.AutoGenerateColumns = false;
-                dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { Name = "ID", HeaderText = "ID", DataPropertyName = "ID", Width = 50 });
-                dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Nombre", HeaderText = "Nombre", DataPropertyName = "Nombre", Width = 200 });
-                dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Descripcion", HeaderText = "Descripción", DataPropertyName = "Descripcion", Width = 400 });
-                dgvCambios.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Fecha", HeaderText = "Fecha", DataPropertyName = "Fecha", Width = 150, DefaultCellStyle = new DataGridViewCellStyle() { Format = "dd/MM/yyyy HH:mm:ss" } });
-
-                DataGridViewSortHelper.Bind(dgvCambios, snapshots);
-
-                lblTotalCambios.Text = snapshots.Count.ToString();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar snapshots: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
     }
 }

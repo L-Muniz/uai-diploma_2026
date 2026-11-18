@@ -42,18 +42,41 @@ namespace GUI
             CargarTodos();
         }
 
+        /// <summary>
+        /// Los usuarios comunes solo ven sus propios registros. ADMIN y AUDITOR ven la bitácora completa.
+        /// </summary>
+        private bool EsRestringido()
+        {
+            string rol = SV_Singleton.GetInstance().Usuario?.Rol;
+            return !(BLL_USUARIO.EsRolAdministrador(rol) || string.Equals(rol, "AUDITOR", StringComparison.OrdinalIgnoreCase));
+        }
+
         private void CargarFiltrosPorDefecto()
         {
-            opcionTodos = new BE_USUARIO
-            {
-                ID = 0,
-                Username = idiomaManager.Obtener("TODOS")
-            };
-            if (string.IsNullOrWhiteSpace(opcionTodos.Username) || opcionTodos.Username.StartsWith("["))
-                opcionTodos.Username = "Todos";
+            var usuarios = new List<BE_USUARIO>();
 
-            var usuarios = new List<BE_USUARIO> { opcionTodos };
-            usuarios.AddRange(user.ListarUsuarios());
+            if (EsRestringido())
+            {
+                opcionTodos = null;
+                var propio = SV_Singleton.GetInstance().Usuario;
+                if (propio != null)
+                    usuarios.Add(propio);
+                comboBox1.Enabled = false;
+            }
+            else
+            {
+                opcionTodos = new BE_USUARIO
+                {
+                    ID = 0,
+                    Username = idiomaManager.Obtener("TODOS")
+                };
+                if (string.IsNullOrWhiteSpace(opcionTodos.Username) || opcionTodos.Username.StartsWith("["))
+                    opcionTodos.Username = "Todos";
+
+                usuarios.Add(opcionTodos);
+                usuarios.AddRange(user.ListarUsuarios());
+                comboBox1.Enabled = true;
+            }
 
             comboBox1.DataSource = null;
             comboBox1.DisplayMember = "Username";
@@ -120,6 +143,12 @@ namespace GUI
 
         private void CargarTodos()
         {
+            if (EsRestringido())
+            {
+                AplicarFiltrosCombinados();
+                return;
+            }
+
             MostrarEnGrilla(bitacora.Listar());
         }
 

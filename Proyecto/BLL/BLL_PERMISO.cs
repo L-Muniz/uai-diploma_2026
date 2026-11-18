@@ -101,12 +101,38 @@ namespace BLL
                 if (idPermisoCompuesto == idPermisoComponente)
                     throw new Exception("Un permiso no puede ser componente de sí mismo");
 
+                // Evita ciclos: si el candidato ya contiene (directa o indirectamente)
+                // al compuesto, agregarlo como hijo lo convertiría en su propio ancestro.
+                if (ContieneRecursivamente(idPermisoComponente, idPermisoCompuesto, new HashSet<int>()))
+                    throw new Exception("No se puede agregar el permiso: generaría un ciclo (el permiso ya contiene al compuesto)");
+
                 mpPermiso.AgregarComponente(idPermisoCompuesto, idPermisoComponente);
             }
             catch (Exception ex)
             {
                 throw new Exception("Error al agregar componente: " + ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Recorre los componentes de <paramref name="idRaiz"/> en profundidad y devuelve true
+        /// si alguno (o el propio raíz) es <paramref name="idBuscado"/>.
+        /// </summary>
+        public bool ContieneRecursivamente(int idRaiz, int idBuscado, HashSet<int> visitados)
+        {
+            if (idRaiz == idBuscado)
+                return true;
+
+            if (!visitados.Add(idRaiz))
+                return false;
+
+            foreach (var hijo in mpPermiso.ObtenerComponentes(idRaiz))
+            {
+                if (ContieneRecursivamente(hijo.ID, idBuscado, visitados))
+                    return true;
+            }
+
+            return false;
         }
 
         public void QuitarComponente(int idPermisoCompuesto, int idPermisoComponente)

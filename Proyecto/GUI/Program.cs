@@ -72,8 +72,10 @@ namespace GUI
                 {
                     IntegridadFallo = true;
                     MensajeIntegridad = resultado.mensaje;
-                    MessageBox.Show($"⚠️ Error de Integridad detectado:\n{resultado.mensaje}\n\nDeberás iniciar sesión como ADMIN para restaurar la BD.",
-                        "Error de Integridad", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    // El detalle técnico solo se muestra a administradores, después del login
+                    // (ver LogInOut). Antes de autenticar se enmascara el error.
+                    MessageBox.Show(SV_Mensajes.GetIntegridadNoDisponibleMessage(),
+                        "Integridad", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 

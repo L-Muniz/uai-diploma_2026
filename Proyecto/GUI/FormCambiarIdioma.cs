@@ -50,6 +50,7 @@ namespace GUI
                 && !string.Equals(idiomaSeleccionado, idiomaManager.ObtenerIdiomaActual(), StringComparison.OrdinalIgnoreCase))
             {
                 idiomaManager.CambiarIdioma(idiomaSeleccionado);
+                BLL.BLL_USUARIO.GuardarIdiomaPreferidoActual(idiomaSeleccionado);
                 MessageBox.Show("Idioma cambiado exitosamente. Los cambios se aplicarán de inmediato.");
             }
 

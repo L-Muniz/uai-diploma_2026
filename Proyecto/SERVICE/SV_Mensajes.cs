@@ -31,6 +31,15 @@ namespace SERVICE
             return idiomaManager.Obtener("usuario.bloqueado", "El usuario está bloqueado. Contacte al administrador.");
         }
 
+        /// <summary>
+        /// Mensaje genérico que reemplaza el detalle de un error de integridad para roles no administradores.
+        /// </summary>
+        public static string GetIntegridadNoDisponibleMessage()
+        {
+            return idiomaManager.Obtener("integridad.no_disponible",
+                "La información de integridad no está disponible en este momento. Contacte al administrador.");
+        }
+
         public static string GetIntentoFallidoMessage(int intento, int intentosMaximos)
         {
             return $"Usuario o contraseña incorrectos. Intento {intento} de {intentosMaximos}.";

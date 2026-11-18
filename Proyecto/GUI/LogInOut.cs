@@ -75,6 +75,25 @@ namespace GUI
             cmbIdioma.ValueMember = "Key";
         }
 
+        /// <summary>
+        /// Al iniciar sesión, traduce toda la interfaz al idioma preferido del usuario (si tiene uno
+        /// y está disponible). Si no tiene preferencia, se conserva el idioma elegido en la pantalla de login.
+        /// </summary>
+        private void AplicarIdiomaPreferido(BE_USUARIO usuario)
+        {
+            if (string.IsNullOrWhiteSpace(usuario?.CodigoIdioma))
+                return;
+
+            try
+            {
+                idiomaManager.CambiarIdioma(usuario.CodigoIdioma);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"No se pudo aplicar el idioma preferido: {ex.Message}");
+            }
+        }
+
         private void cmbIdioma_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cmbIdioma.SelectedItem is KeyValuePair<string, string> seleccionado)
@@ -174,6 +193,7 @@ namespace GUI
                         }
                     }
 
+                    AplicarIdiomaPreferido(usuario);
                     new MainForm(usuario).Show();
                     this.Hide();
                 }
